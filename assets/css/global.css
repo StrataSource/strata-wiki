@@ -161,3 +161,8 @@ button {
   margin-top: 1rem;
   margin-bottom: 0rem;
 }
+
+.actions-container {
+  padding: 0.5rem;
+  float: inline-end;
+}

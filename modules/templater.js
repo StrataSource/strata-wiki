@@ -35,11 +35,16 @@ module.exports.applyTemplate = (content, slug) => {
     }
   }
 
+  var full_slug = `${info.game}/${info.category}/${info.article}`.replace(
+    "index/index",
+    "index"
+  );
+
   return template
     .replaceAll("%CONTENT%", content)
     .replaceAll(
       "%EDITLINK%",
-      `https://github.com/ChaosInitiative/chaos-wiki/edit/main/pages/${slug}.md`
+      `https://github.com/ChaosInitiative/chaos-wiki/edit/main/pages/${full_slug}.md`
     )
     .replaceAll("%MENU%", menu.generateMenuHTML(slug))
     .replaceAll("%GAMESELECTOR%", gameSelector);
