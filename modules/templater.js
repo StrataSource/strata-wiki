@@ -17,18 +17,22 @@ module.exports.applyTemplate = (content, slug) => {
 
   for (let index = 0; index < games.length; index++) {
     const game = games[index];
-    var gameMeta = require(`../pages/${game}/meta.json`);
 
-    gameSelector += `
+    if (game != "index") {
+      console.log(game);
+      var gameMeta = require(`../pages/${game}/meta.json`);
+
+      gameSelector += `
     <a href="/${game}" class="game${
-      game == info.game ? " active" : ""
-    }" style="--primary: ${gameMeta.color}; --primaryTransparent: ${
-      gameMeta.color
-    }80">
+        game == info.game ? " active" : ""
+      }" style="--primary: ${gameMeta.color}; --primaryTransparent: ${
+        gameMeta.color
+      }80">
       <img
         src="${gameMeta.logo}"
       />
     </a>`;
+    }
   }
 
   return template

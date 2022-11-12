@@ -1,39 +1,48 @@
 const fs = require("fs");
 
-module.exports.generateMenu = () => {
+module.exports.generateMenu = (currentGame) => {
   var games = fs.readdirSync("pages");
   var res = {};
 
   for (let index = 0; index < games.length; index++) {
     const game = games[index];
-    var gameMeta = require(`../pages/${game}/meta.json`);
-    res[game] = {
-      image: gameMeta.logo,
-      icon: gameMeta.icon,
-      name: gameMeta.name,
-      categories: {},
-    };
 
-    var cats = fs.readdirSync(`pages/${game}`);
-    cats = cats.sort((a, b) => a.localeCompare(b));
-    for (let i = 0; i < cats.length; i++) {
-      const cat = cats[i];
-      if (fs.lstatSync(`pages/${game}/${cat}`).isDirectory()) {
-        res[game].categories[cat] = {
-          name: cat.toUpperCase().replaceAll("-", " "),
-          articles: {},
-        };
+    if (game != "index") {
+      var gameMeta = require(`../pages/${game}/meta.json`);
+      res[game] = {
+        image: gameMeta.logo,
+        icon: gameMeta.icon,
+        name: gameMeta.name,
+        categories: {},
+      };
 
-        var articles = fs.readdirSync(`pages/${game}/${cat}`);
-        articles = articles.sort((a, b) => a.localeCompare(b));
-        for (let index = 0; index < articles.length; index++) {
-          const article = articles[index].replaceAll(".md", "");
-          res[game].categories[cat].articles[article] = {
-            name: article.toLocaleUpperCase().replaceAll("-", " "),
+      var cats = fs.readdirSync(`pages/${game}`);
+      cats = cats.sort((a, b) => a.localeCompare(b));
+      for (let i = 0; i < cats.length; i++) {
+        const cat = cats[i];
+        if (fs.lstatSync(`pages/${game}/${cat}`).isDirectory()) {
+          res[game].categories[cat] = {
+            name: cat.toUpperCase().replaceAll("-", " "),
+            articles: {},
           };
+
+          var articles = fs.readdirSync(`pages/${game}/${cat}`);
+          articles = articles.sort((a, b) => a.localeCompare(b));
+          for (let index = 0; index < articles.length; index++) {
+            const article = articles[index].replaceAll(".md", "");
+            res[game].categories[cat].articles[article] = {
+              name: article.toLocaleUpperCase().replaceAll("-", " "),
+            };
+          }
         }
       }
     }
+  }
+
+  if (res[currentGame] == undefined) {
+    res[currentGame] = {
+      categories: {},
+    };
   }
 
   return res;
@@ -49,11 +58,7 @@ module.exports.generateMenuHTML = (slug) => {
   };
 
   var res = ``;
-  var menu = this.generateMenu();
-
-  if (menu[info.game] == undefined) {
-    throw new Error("Trying to access invalid game during menu generation!");
-  }
+  var menu = this.generateMenu(info.game);
 
   for (const [key, value] of Object.entries(menu[info.game].categories)) {
     res += `<h5>${value.name}</h5>`;
