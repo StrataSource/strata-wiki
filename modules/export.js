@@ -29,6 +29,8 @@ module.exports.exportAllPages = () => {
   var list = getAllFiles("pages");
   for (let index = 0; index < list.length; index++) {
     const page = list[index];
-    this.exportPage(page.substring(6).replaceAll(".md", "")); //Janky fix, but it works
+    if (page.includes(".md")) {
+      this.exportPage(page.substring(6).replaceAll(".md", "")), page; //Janky fix, but it works
+    }
   }
 };

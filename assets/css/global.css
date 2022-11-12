@@ -1,5 +1,95 @@
-body {
+html {
   --primary: #ff7b02;
+  --textOnPrimary: #ffffff;
+  --headings: #000000;
+  --text: #1a1a1a;
+  --bg: #ffffff;
+  --bgAccent: #e6e6e6;
+}
+
+html.dark {
+  --headings: #ffffff;
   --text: #c8c8c8;
   --bg: #191919;
+  --bgAccent: #000000;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--text);
+  margin: 0;
+  font-family: "Heebo", sans-serif;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--headings);
+}
+
+.btn,
+button {
+  border: none;
+  padding: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 0.25rem;
+  background: var(--primary);
+  color: var(--textOnPrimary);
+  text-decoration: none;
+}
+
+#wrapper {
+  transition: 500ms;
+  background: var(--bg);
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: var(--bgAccent);
+  height: 100vh;
+  width: 18rem;
+  position: fixed;
+  top: 0;
+  left: -20rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  transition: 500ms;
+  z-index: 10;
+}
+.sidebar-pinned .sidebar,
+.sidebar-open .sidebar {
+  left: 0;
+}
+
+.sidebar-open #wrapper {
+  transform: translateX(20rem);
+  pointer-events: none;
+}
+
+.sidebar-close {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: black;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.sidebar-open .sidebar-close {
+  opacity: 0.5;
+  pointer-events: all;
+}
+
+.sidebar-pinned #wrapper {
+  padding-left: 20rem;
 }
