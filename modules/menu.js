@@ -57,7 +57,11 @@ module.exports.generateMenuHTML = (slug) => {
     article: slugSplit[2] || "index",
   };
 
-  var res = ``;
+  var res = `
+  <a href="/${info.game}"${
+    info.game == slug ? ' class="active"' : ""
+  }">Home</a>`;
+
   var menu = this.generateMenu(info.game);
 
   for (const [key, value] of Object.entries(menu[info.game].categories)) {
