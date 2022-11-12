@@ -7,6 +7,7 @@
     <title>P2CE Wiki</title>
 
     <link rel="stylesheet" href="/assets/css/global.css" />
+    <link rel="stylesheet" href="/assets/css/bootstrap-grid.min.css" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,6 +19,13 @@
   <body class="sidebar-pinned">
     <div class="sidebar">
       <h1>Docs</h1>
+      <div class="menu">%MENU%</div>
+    </div>
+    <div
+      class="sidebar-toggle"
+      onclick="document.body.classList.toggle('sidebar-open')"
+    >
+      TOGGLE SIDEBAR
     </div>
     <div
       class="sidebar-close"
@@ -25,11 +33,31 @@
     ></div>
 
     <div id="wrapper">
-      <h1 style="color: red">P2CE Wiki</h1>
+      <div id="game-header">
+        <a href="#" class="game active">
+          <img
+            src="https://baguettery-alt.chaos-branding-tool.pages.dev/media/p2ce/full_mono_white.svg"
+          />
+        </a>
+        <a
+          href="#"
+          class="game"
+          style="--primary: #db4141; --primaryTransparent: #db414180"
+        >
+          <img
+            style="max-height: 65%; padding: 1.5rem"
+            src="https://baguettery-alt.chaos-branding-tool.pages.dev/media/chaos/full_mono_white.svg"
+          />
+        </a>
+      </div>
+      <div class="container">
+        <h1 style="color: red">P2CE Wiki</h1>
 
-      <a class="btn" href="%EDITLINK%" target="_blank">Edit</a>
+        <a class="btn" href="%EDITLINK%" target="_blank">Edit</a>
 
-      %CONTENT%
+        %CONTENT%
+      </div>
     </div>
+    <script src="/assets/js/global.js"></script>
   </body>
 </html>
