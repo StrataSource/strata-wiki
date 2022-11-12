@@ -48,8 +48,6 @@ module.exports.generateMenuHTML = (slug) => {
     article: slugSplit[2] || "index",
   };
 
-  console.log(info);
-
   var res = ``;
   var menu = this.generateMenu();
 
@@ -74,8 +72,6 @@ module.exports.generateMenuHTML = (slug) => {
       res += `<a href="${link}"${link == "/" + slug ? ' class="active"' : ""}>${
         v.name
       }</a>`;
-
-      console.log(link, "vs", slug);
     }
   }
 

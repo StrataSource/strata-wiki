@@ -1,6 +1,7 @@
 const fs = require("fs");
 const md = require("./render");
 const path = require("path");
+const templater = require("./templater");
 
 function getAllFiles(dir, allFilesList = []) {
   const files = fs.readdirSync(dir);
@@ -18,7 +19,7 @@ function getAllFiles(dir, allFilesList = []) {
 }
 
 module.exports.exportPage = (slug) => {
-  var html = md.renderPage(slug);
+  var html = templater.applyTemplate(md.renderPage(slug), slug);
 
   var location = `public/${slug}.html`;
 
