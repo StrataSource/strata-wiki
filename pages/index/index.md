@@ -1,3 +1,3 @@
-# Welcome!
+# Welcome to the Documentation!
 
-This is the default index site
+Select the game/engine above to get started.

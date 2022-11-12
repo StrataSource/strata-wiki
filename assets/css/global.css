@@ -105,6 +105,12 @@ button {
 .sidebar-pinned .sidebar-toggle {
   display: none;
 }
+.sidebar-header{
+    text-align: center;
+}
+.sidebar-header h1{
+    margin-bottom: 0;
+}
 
 #game-header {
   background: var(--bgAccent);
