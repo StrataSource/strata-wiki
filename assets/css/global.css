@@ -172,6 +172,9 @@ button {
 .menu a:hover {
   color: var(--primary);
 }
+.menu a.scrollspy {
+  padding-left: 1rem;
+}
 .menu h5 {
   margin-top: 1rem;
   margin-bottom: 0rem;
@@ -180,4 +183,13 @@ button {
 .actions-container {
   padding: 0.5rem;
   float: inline-end;
+}
+
+.debug-line {
+  background-color: red;
+  position: absolute;
+  left: 0;
+  width: 100vw;
+  height: 1px;
+  z-index: 100;
 }
