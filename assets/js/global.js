@@ -39,7 +39,7 @@ function scrollSpy_calculate() {
 
     var bbox = heading.getBoundingClientRect();
 
-    var height = bbox.top + window.scrollY;
+    var height = bbox.top + window.scrollY - 1;
 
     scrollSpy_targets.push(height);
 
@@ -58,7 +58,7 @@ function scrollSpy_calculate() {
   }
 
   scrollSpy_breakpoint_up = -2;
-  scrollSpy_breakpoint_down = scrollSpy_targets[1];
+  scrollSpy_breakpoint_down = scrollSpy_targets[0];
 
   window.addEventListener("scroll", scrollSpy_compare);
 }
