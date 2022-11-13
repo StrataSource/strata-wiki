@@ -1,11 +1,20 @@
 html {
-  --primary: #ff7b02;
-  --primaryTransparent: #ff7c0280;
+  --primary: #db4141;
+  --primaryTransparent: #db414180;
   --textOnPrimary: #ffffff;
   --headings: #000000;
   --text: #1a1a1a;
   --bg: #ffffff;
   --bgAccent: #e6e6e6;
+}
+
+body.p2ce {
+  --primary: #ff7b02;
+  --primaryTransparent: #ff7b0280;
+}
+body.chaos {
+  --primary: #db4141;
+  --primaryTransparent: #db414180;
 }
 
 html.dark {
@@ -105,11 +114,11 @@ button {
 .sidebar-pinned .sidebar-toggle {
   display: none;
 }
-.sidebar-header{
-    text-align: center;
+.sidebar-header {
+  text-align: center;
 }
-.sidebar-header h1{
-    margin-bottom: 0;
+.sidebar-header h1 {
+  margin-bottom: 0;
 }
 
 #game-header {

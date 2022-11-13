@@ -1,7 +1,7 @@
 const fs = require("fs");
 const menu = require("./menu");
 
-module.exports.applyTemplate = (content, slug) => {
+module.exports.applyTemplate = (input, slug) => {
   var template = fs.readFileSync("templates/wiki.html", "utf-8");
 
   var slugSplit = slug.split("/");
@@ -19,7 +19,6 @@ module.exports.applyTemplate = (content, slug) => {
     const game = games[index];
 
     if (game != "index") {
-      console.log(game);
       var gameMeta = require(`../pages/${game}/meta.json`);
 
       gameSelector += `
@@ -41,11 +40,13 @@ module.exports.applyTemplate = (content, slug) => {
   );
 
   return template
-    .replaceAll("%CONTENT%", content)
+    .replaceAll("%CONTENT%", input.content)
     .replaceAll(
       "%EDITLINK%",
       `https://github.com/ChaosInitiative/chaos-wiki/edit/main/pages/${full_slug}.md`
     )
     .replaceAll("%MENU%", menu.generateMenuHTML(slug))
-    .replaceAll("%GAMESELECTOR%", gameSelector);
+    .replaceAll("%GAMESELECTOR%", gameSelector)
+    .replaceAll("%TITLE%", input.meta.title || info.article)
+    .replaceAll("%GAME%", info.game);
 };
