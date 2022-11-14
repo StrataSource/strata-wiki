@@ -192,4 +192,5 @@ button {
   width: 100vw;
   height: 1px;
   z-index: 100;
+  display: none;
 }

@@ -51,10 +51,10 @@ function scrollSpy_calculate() {
     scrollSpy_menu.push(menuItem);
 
     //Debugging thingy
-    /*var debug = document.createElement("div");
+    var debug = document.createElement("div");
     debug.classList.add("debug-line");
     debug.style.top = `${height}px`;
-    document.body.prepend(debug);*/
+    document.body.prepend(debug);
   }
 
   scrollSpy_breakpoint_up = -2;
