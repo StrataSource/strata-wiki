@@ -20,7 +20,6 @@ var md = require("markdown-it")({
 })
   .use(require("markdown-it-front-matter"), function (fm) {
     meta = yaml.parse(fm);
-    console.log(meta);
   })
   .use(container_block, "p2ce", {
     render: function (tokens, idx) {
