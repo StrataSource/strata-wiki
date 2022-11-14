@@ -64,7 +64,7 @@ module.exports.renderPage = (slug) => {
       encoding: "utf-8",
     });
   } else {
-    throw new Error("No file is responsible for " + slug);
+    var source = fs.readFileSync("pages/index/404/index.md", { encoding: "utf-8" });
   }
   return this.render(source);
 };

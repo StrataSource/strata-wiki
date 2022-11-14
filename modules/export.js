@@ -1,4 +1,4 @@
-const fs = require("fs");
+const fs = require("fs-extra");
 const md = require("./render");
 const path = require("path");
 const templater = require("./templater");
@@ -26,6 +26,7 @@ module.exports.exportPage = (slug) => {
   fs.mkdirSync(path.parse(location).dir, { recursive: true });
   fs.writeFileSync(location, html);
 };
+
 module.exports.exportAllPages = () => {
   var list = getAllFiles("pages");
   for (let index = 0; index < list.length; index++) {
@@ -34,4 +35,8 @@ module.exports.exportAllPages = () => {
       this.exportPage(page.substring(6).replaceAll(".md", "")), page; //Janky fix, but it works
     }
   }
+
+  fs.copySync("assets", "public/assets");
+  fs.copySync("public/index/index.html", "public/index.html");
+  fs.copySync("public/index/404.html", "public/404.html");
 };
