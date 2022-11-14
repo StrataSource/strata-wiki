@@ -38,5 +38,5 @@ module.exports.exportAllPages = () => {
 
   fs.copySync("assets", "public/assets");
   fs.copySync("public/index/index.html", "public/index.html");
-  fs.copySync("public/index/404.html", "public/404.html");
+  fs.copySync("public/index/404/index.html", "public/404.html");
 };
