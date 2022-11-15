@@ -22,7 +22,9 @@ function getAllFiles(dir, allFilesList = []) {
 module.exports.exportPage = (slug) => {
   var html = templater.applyTemplate(md.renderPage(slug), slug);
 
-  var location = `public/${slug}.html`.replaceAll("/.html", "/index.html").replaceAll("//", "/");
+  var location = `public/${slug}.html`
+    .replaceAll("/.html", "/index.html")
+    .replaceAll("//", "/");
 
   console.log("Exporting file", slug, "->", location);
 
@@ -39,6 +41,8 @@ module.exports.exportAllPages = () => {
     console.log("Exporting", game.id);
 
     pages.rebuildPageIndex(game.id);
+
+    this.exportPage(game.id + "/");
 
     var cats = pages.pageIndex[game.id];
 

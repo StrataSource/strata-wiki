@@ -21,7 +21,7 @@ module.exports.applyTemplate = (input, slug) => {
 
     gameSelector += `
     <a href="/${game.id}" class="game${
-      game == info.game ? " active" : ""
+      game.id == info.game ? " active" : ""
     }" style="--primary: ${game.color}; --primaryTransparent: ${game.color}80">
       <img
         src="${game.logo}"
