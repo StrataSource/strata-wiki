@@ -19,7 +19,7 @@ module.exports.generateMenuHTML = (slug) => {
 
   var res = `
   <a href="/${info.game}"${
-    info.game == slug ? ' class="active"' : ""
+    info.game == slug || info.game + "/" == slug ? ' class="active"' : ""
   }>Home</a>`;
 
   if (info.game == "index") {
