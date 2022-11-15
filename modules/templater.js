@@ -1,5 +1,6 @@
 const fs = require("fs");
 const menu = require("./menu");
+const pages = require("./list");
 
 module.exports.applyTemplate = (input, slug) => {
   var template = fs.readFileSync("templates/wiki.html", "utf-8");
@@ -13,37 +14,28 @@ module.exports.applyTemplate = (input, slug) => {
   };
 
   var gameSelector = ``;
-  var games = fs.readdirSync("pages");
+  var games = pages.games();
 
   for (let index = 0; index < games.length; index++) {
     const game = games[index];
 
-    if (game != "index") {
-      var gameMeta = require(`../pages/${game}/meta.json`);
-
-      gameSelector += `
-    <a href="/${game}" class="game${
-        game == info.game ? " active" : ""
-      }" style="--primary: ${gameMeta.color}; --primaryTransparent: ${
-        gameMeta.color
-      }80">
+    gameSelector += `
+    <a href="/${game.id}" class="game${
+      game == info.game ? " active" : ""
+    }" style="--primary: ${game.color}; --primaryTransparent: ${game.color}80">
       <img
-        src="${gameMeta.logo}"
+        src="${game.logo}"
       />
     </a>`;
-    }
   }
-
-  var full_slug = `${info.game}/${info.category}/${info.article}`.replace(
-    "index/index",
-    "index"
-  );
 
   return template
     .replaceAll("%CONTENT%", input.content)
     .replaceAll(
       "%EDITLINK%",
-      `https://github.com/ChaosInitiative/chaos-wiki/edit/main/pages/${full_slug}.md`
+      `https://github.com/ChaosInitiative/chaos-wiki/edit/main/${pages.slugToPath(
+        slug
+      )}`
     )
     .replaceAll("%MENU%", menu.generateMenuHTML(slug))
     .replaceAll("%GAMESELECTOR%", gameSelector)

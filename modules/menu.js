@@ -1,51 +1,11 @@
 const fs = require("fs");
+const pages = require("./list");
 
 module.exports.generateMenu = (currentGame) => {
-  var games = fs.readdirSync("pages");
-  var res = {};
-
-  for (let index = 0; index < games.length; index++) {
-    const game = games[index];
-
-    if (game != "index") {
-      var gameMeta = require(`../pages/${game}/meta.json`);
-      res[game] = {
-        image: gameMeta.logo,
-        icon: gameMeta.icon,
-        name: gameMeta.name,
-        categories: {},
-      };
-
-      var cats = fs.readdirSync(`pages/${game}`);
-      cats = cats.sort((a, b) => a.localeCompare(b));
-      for (let i = 0; i < cats.length; i++) {
-        const cat = cats[i];
-        if (fs.lstatSync(`pages/${game}/${cat}`).isDirectory()) {
-          res[game].categories[cat] = {
-            name: cat.toUpperCase().replaceAll("-", " "),
-            articles: {},
-          };
-
-          var articles = fs.readdirSync(`pages/${game}/${cat}`);
-          articles = articles.sort((a, b) => a.localeCompare(b));
-          for (let index = 0; index < articles.length; index++) {
-            const article = articles[index].replaceAll(".md", "");
-            res[game].categories[cat].articles[article] = {
-              name: article.toLocaleUpperCase().replaceAll("-", " "),
-            };
-          }
-        }
-      }
-    }
+  if (pages.pageIndex[currentGame] != undefined) {
+    return pages.pageIndex[currentGame];
   }
-
-  if (res[currentGame] == undefined) {
-    res[currentGame] = {
-      categories: {},
-    };
-  }
-
-  return res;
+  return pages.rebuildPageIndex(currentGame);
 };
 
 module.exports.generateMenuHTML = (slug) => {
@@ -60,14 +20,18 @@ module.exports.generateMenuHTML = (slug) => {
   var res = `
   <a href="/${info.game}"${
     info.game == slug ? ' class="active"' : ""
-  }">Home</a>`;
+  }>Home</a>`;
 
-  var menu = this.generateMenu(info.game);
+  if (info.game == "index") {
+    var menu = {};
+  } else {
+    var menu = this.generateMenu(info.game);
+  }
 
-  for (const [key, value] of Object.entries(menu[info.game].categories)) {
-    res += `<h5>${value.name}</h5>`;
+  for (const [key, value] of Object.entries(menu)) {
+    res += `<h5>${key.toUpperCase().replaceAll("-", " ")}</h5>`;
 
-    for (const [k, v] of Object.entries(value.articles)) {
+    for (const [k, v] of Object.entries(value)) {
       if (info.game == "index") {
         var link = "/";
       } else if (key == "index") {
@@ -79,7 +43,7 @@ module.exports.generateMenuHTML = (slug) => {
       }
 
       res += `<a href="${link}"${link == "/" + slug ? ' class="active"' : ""}>${
-        v.name
+        v.title || v.id.replaceAll("-", " ")
       }</a>`;
     }
   }

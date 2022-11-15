@@ -1,3 +1,3 @@
-# Welcome to the Documentation!
+# Welcome to the documentation!
 
-Select the game/engine above to get started.
+Select your game/engine above in order to get started.
