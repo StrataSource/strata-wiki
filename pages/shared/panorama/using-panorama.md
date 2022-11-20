@@ -14,7 +14,7 @@ To use Panorama, you must launch the game *without* the `-legacyui` option. P2CE
 for Panorama, so Steam should ask you when you're trying to launch the game. Momentum Mod launches with Panorama
 by default.
 
-## Tinkering with Panorama
+# Tinkering with Panorama
 
 All current Chaos engine games do not pack Panorama assets, letting users freely modify them. However, this is subject
 to change. If `<game>/panorama/code.pbin` is present, you must extract the contents of `<game>/panorama/code.pbin`
@@ -24,7 +24,7 @@ the game needs to be run with `-dev`.
 
 Keep in mind that `code.pbin` is signed to prevent modification, and if present it must exist for the game to start with Panorama.
 
-## Reloading Your Changes
+# Reloading Your Changes
 
 When running the game with `-dev`, layouts, styles, and scripts can be reloaded by pressing `F7` or `F8` with a panel focused.
 Pressing `F7` reloads everything that has changed since the last reload, and `F8` forcibly reloads every Panorama UI file.
@@ -33,16 +33,16 @@ Panels that use the global v8 context need special care taken when writing scrip
 functions should be completely avoided, since in global contexts, scripts aren't reloaded, but rather re-executed in the same
 environment. The main menu's script is a good example of a "global context safe" script.
 
-## Panorama Debugger
+# Panorama Debugger
 
 The panorama debugger can be enabled by entering `panorama_debugger_toggle` in the console, or by pressing `F6` with a
 panel focused. The debugger is supported on Windows and Linux.
 
-## Developing Panorama
+# Developing Panorama
 
 When developing Panorama, it is recommended to use [Visual Studio Code](https://code.visualstudio.com/) with the [Panorama CSS Support](https://marketplace.visualstudio.com/items?itemName=braemie.panorama-css) extension active. This extension is developed by brae, a member of the Momentum team, and the source can be found [here](https://github.com/braem/vscode-panorama-css). The extension adds several quality of life features, including but not limited to autocomplete and highlighting.
 
-## Useful References
+# Useful References
 
 The Valve Developer Community wiki has several useful articles to assist with creating a UI in Panorama. Note that these
 articles target CSGO and do not cover any new Chaos engine features.

@@ -20,7 +20,7 @@ of launch options, please see
 | -dx11                    | Launch game with DirectX 11 shaderapi (On Linux, this will launch dx11 with dxvk)                          |
 | -multirun/-allowmultiple | Disables the creation of the source engine mutex, and allows the game to start even if one already exists  |
 
-## POSIX-specific options (Not available on Windows)
+# POSIX-specific options (Not available on Windows)
 
 The following options are only available on Linux currently.
 
@@ -31,7 +31,7 @@ The following options are only available on Linux currently.
 | -noexclusivefs | Run game with desktop friendly fullscreen, which is the default regardless (Deprecated)              |
 | -d9vk          | Launches the game with dx9 through dxvk                                                              |
 
-## Hammer Options
+# Hammer Options
 
 | Option      | Description                                                 |
 | ----------- | ----------------------------------------------------------- |

@@ -9,7 +9,7 @@ parent: Modding
 In order to support the new filesystem changes in Chaos, modifications have been
 made to Source's existing GameInfo.txt format.
 
-## Mounts Block
+# Mounts Block
 
 The mounts block is designed to supplement the user-editable mounts.kv file in
 cfg. This block should be used to setup the required paths for your mod.
@@ -53,7 +53,7 @@ mount
 }
 ```
 
-## Other Considerations
+# Other Considerations
 
 When making a P2CE mod, you should omit the `gamebin` entry from the
 `SearchPaths` block. This will cause the game to attempt to load binaries from

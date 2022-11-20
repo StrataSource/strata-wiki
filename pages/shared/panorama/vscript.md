@@ -14,7 +14,7 @@ additional value to be sent to JavaScript (currently only strings are
 supported), and dispatches a global Panorama event with the given name and
 argument.
 
-## Usage Example
+# Usage Example
 
 First the event needs to be defined in `eventdefinition.js`:
 

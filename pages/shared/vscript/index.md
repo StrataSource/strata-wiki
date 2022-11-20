@@ -11,7 +11,7 @@ VScript.
 
 Currently the only Chaos game that ships VScript is Portal 2: Community Edition.
 
-## Global Functions
+# Global Functions
 
 |Signature|Description|
 |---|---|
@@ -72,21 +72,21 @@ Currently the only Chaos game that ships VScript is Portal 2: Community Edition.
 | void UpgradePlayerPortalgun()|Give player the portalgun.|
 | void UpgradePlayerPotatogun()|Give player the portalgun.|
 
-## CLinkedPortalDoor
+# CLinkedPortalDoor
 
 |Signature|Description|
 |---|---|
 | handle CLinkedPortalDoor::GetPartnerInstance() | Get the instance handle of the door's linked partner | 
 | string CLinkedPortalDoor::GetPartnername() | Returns the partnername of the door. | 
 
-## CBaseFilter
+# CBaseFilter
 
 |Signature|Description|
 |---|---|
 | bool CBaseFilter::PassesDamageFilter(handle, handle) | Check if the given caller and damage info pass the damage filter, with the second parameter being a CTakeDamageInfo instance. The caller is the one who requests the filter result; For example, the entity being damaged when using this as a damage filter. | 
 | bool CBaseFilter::PassesFilter(handle, handle) | Check if the given caller and entity pass the filter. The caller is the one who requests the filter result; For example, the entity being damaged when using this as a damage filter. | 
 
-## CEntities
+# CEntities
 
 |Signature|Description|
 |---|---|
@@ -103,20 +103,20 @@ Currently the only Chaos game that ships VScript is Portal 2: Community Edition.
 | handle CEntities::First() | Begin an iteration over the list of entities | 
 | handle CEntities::Next(handle) | Continue an iteration over the list of entities, providing reference to a previously found entity | 
 
-## CBaseFlex
+# CBaseFlex
 
 |Signature|Description|
 |---|---|
 | handle CBaseFlex::GetCurrentScene() | Returns the instance of the oldest active scene entity (if any). | 
 | handle CBaseFlex::GetSceneByIndex(int) | Returns the instance of the scene entity at the specified index. | 
 
-## CBasePlayer
+# CBasePlayer
 
 |Signature|Description|
 |---|---|
 | bool CBasePlayer::IsNoclipping() | Returns true if the player is in noclip mode. | 
 
-## CEnvEntityMaker
+# CEnvEntityMaker
 
 |Signature|Description|
 |---|---|
@@ -125,13 +125,13 @@ Currently the only Chaos game that ships VScript is Portal 2: Community Edition.
 | void CEnvEntityMaker::SpawnEntityAtLocation(Vector, Vector) | Create an entity at a specified location and orientaton, orientation is Euler angle in degrees (pitch, yaw, roll) | 
 | void CEnvEntityMaker::SpawnEntityAtNamedEntityOrigin(string) | Create an entity at the location of a named entity | 
 
-## CFuncTrackTrain
+# CFuncTrackTrain
 
 |Signature|Description|
 |---|---|
 | Vector CFuncTrackTrain::GetFuturePosition(float, float) | Get a position on the track x seconds in the future | 
 
-## CBaseAnimating
+# CBaseAnimating
 
 |Signature|Description|
 |---|---|
@@ -142,20 +142,20 @@ Currently the only Chaos game that ships VScript is Portal 2: Community Edition.
 | int CBaseAnimating::LookupAttachment(string) | Get the named attachement id | 
 | void CBaseAnimating::SetBodygroup(int, int) | Sets a bodygroup | 
 
-## CPropLinkedPortalDoor [Portal 2: Community Edition Only]
+# CPropLinkedPortalDoor [Portal 2: Community Edition Only]
 
 |Signature|Description|
 |---|---|
 | handle CPropLinkedPortalDoor::GetPartnerInstance() | Get the instance handle of the door's linked partner | 
 | string CPropLinkedPortalDoor::GetPartnername() | Returns the partnername of the door. | 
 
-## CPropWeightedCube [Portal 2: Community Edition Only]
+# CPropWeightedCube [Portal 2: Community Edition Only]
 
 |Signature|Description|
 |---|---|
 | handle CPropWeightedCube::GetPartner() | Get the instance handle of the schrodinger's partner | 
 
-## CSceneEntity
+# CSceneEntity
 
 |Signature|Description|
 |---|---|
@@ -167,7 +167,7 @@ Currently the only Chaos game that ships VScript is Portal 2: Community Edition.
 | bool CSceneEntity::LoadSceneFromString(string, string) | given a dummy scene name and a vcd string, load the scene | 
 | void CSceneEntity::RemoveBroadcastTeamTarget(int) | Removes a team (by index) from the broadcast list | 
 
-## CScriptKeyValues
+# CScriptKeyValues
 
 |Signature|Description|
 |---|---|
@@ -186,7 +186,7 @@ Currently the only Chaos game that ships VScript is Portal 2: Community Edition.
 | void CScriptKeyValues::SetKeyInt(string, int) | Given a KeyValues object and a key name, sets the associated integer value | 
 | void CScriptKeyValues::SetKeyString(string, string) | Given a KeyValues object and a key name, sets the associated string value | 
 
-## CTakeDamageInfo
+# CTakeDamageInfo
 
 |Signature|Description|
 |---|---|
@@ -225,14 +225,14 @@ Currently the only Chaos game that ships VScript is Portal 2: Community Edition.
 | void CTakeDamageInfo::SetWeapon(handle) | Sets the weapon. | 
 | void CTakeDamageInfo::SubtractDamage(float) | Removes from the damage. | 
 
-## CPlayerVoiceListener
+# CPlayerVoiceListener
 
 |Signature|Description|
 |---|---|
 | float CPlayerVoiceListener::GetPlayerSpeechDuration(int) | Returns the number of seconds the player has been continuously speaking. | 
 | bool CPlayerVoiceListener::IsPlayerSpeaking(int) | Returns whether the player specified is speaking. | 
 
-## CBaseEntity
+# CBaseEntity
 
 |Signature|Description|
 |---|---|
@@ -292,7 +292,7 @@ Currently the only Chaos game that ships VScript is Portal 2: Community Edition.
 | bool CBaseEntity::ValidateScriptScope() | Ensure that an entity's script scope has been created | 
 | int CBaseEntity::entindex() |  | 
 
-## CGameTrace
+# CGameTrace
 
 |Signature|Description|
 |---|---|
@@ -307,14 +307,14 @@ Currently the only Chaos game that ships VScript is Portal 2: Community Edition.
 | Vector CGameTrace::GetImpactNormal() | Returns the normal of the plane where the trace hit | 
 | Vector CGameTrace::GetStartPos() | Returns the start position of the trace | 
 
-## CPointViewControl
+# CPointViewControl
 
 |Signature|Description|
 |---|---|
 | int CPointViewControl::GetFov() | get camera's current fov setting as integer | 
 | void CPointViewControl::SetFov(int, float) | set camera's current fov in integer degrees and fov change rate as float | 
 
-## CPortal\_Player [Portal 2: Community Edition Only]
+# CPortal\_Player [Portal 2: Community Edition Only]
 
 |Signature|Description|
 |---|---|
@@ -323,7 +323,7 @@ Currently the only Chaos game that ships VScript is Portal 2: Community Edition.
 | void CPortal_Player::TurnOffPotatos() | Turns Off the Potatos material light | 
 | void CPortal_Player::TurnOnPotatos() | Turns On the Potatos material light | 
 
-## Script Constants
+# Script Constants
 
 
 |Name|Value|

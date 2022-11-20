@@ -8,7 +8,7 @@ parent: Panorama
 
 The Label control is a simple text display.
 
-## Example
+# Example
 
 ```xml
 <!-- Simple text -->
@@ -18,16 +18,16 @@ The Label control is a simple text display.
 <Label text="#PORTAL2_NewGame"/>
 ```
 
-## Properties
+# Properties
 
 | Name | Type   | Description                                      |
 | ---- | ------ | ------------------------------------------------ |
 | text | string | The text to display                              |
 | html | bool   | Whether or not the text should be parsed as html |
 
-## Methods
+# Methods
 
-### SetLocalizationString
+## SetLocalizationString
 
 Assign a localization string to the label
 
@@ -35,7 +35,7 @@ Assign a localization string to the label
 myLabel.SetLocalizationString("PORTAL2_NewGame");
 ```
 
-### SetProceduralTextThatIPromiseIsLocalizedAndEscaped
+## SetProceduralTextThatIPromiseIsLocalizedAndEscaped
 
 Yes that's an actual function name. Assigns raw text to a label. Use with
 caution.

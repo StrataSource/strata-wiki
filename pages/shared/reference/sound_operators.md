@@ -8,85 +8,85 @@ parent: Reference
 
 This document contains a list of available sound stack operators in Chaos.
 
-## Operator `sys_block_entries`
+# Operator `sys_block_entries`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_duration`
 - `input_active`
 
-## Operator `set_convar`
+# Operator `set_convar`
 
-### Inputs
-
-- `input_execute`
-- `input`
-
-## Operator `get_convar`
-
-### Inputs
-
-- `input_execute`
-
-### Outputs
-
-- `output`
-
-## Operator `get_dashboard`
-
-### Inputs
-
-- `input_execute`
-
-### Outputs
-
-- `output`
-
-## Operator `math_delta`
-
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input`
 
-### Outputs
+# Operator `get_convar`
+
+## Inputs
+
+- `input_execute`
+
+## Outputs
 
 - `output`
 
-## Operator `calc_distant_dsp`
+# Operator `get_dashboard`
 
-### Inputs
+## Inputs
+
+- `input_execute`
+
+## Outputs
+
+- `output`
+
+# Operator `math_delta`
+
+## Inputs
+
+- `input_execute`
+- `input`
+
+## Outputs
+
+- `output`
+
+# Operator `calc_distant_dsp`
+
+## Inputs
 
 - `input_execute`
 - `input_distance`
 - `input_level`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `get_entry_time`
+# Operator `get_entry_time`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 
-### Outputs
+## Outputs
 
 - `output_entry_elapsed`
 - `output_sound_elapsed`
 - `output_stop_elapsed`
 - `output_sound_duration`
 
-## Operator `game_entity_info`
+# Operator `game_entity_info`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_entity_index`
 
-### Outputs
+## Outputs
 
 - `output_position`
 - `output_position_x`
@@ -100,21 +100,21 @@ This document contains a list of available sound stack operators in Chaos.
 - `output_velocity`
 - `output_velocity_xy`
 
-## Operator `calc_falloff`
+# Operator `calc_falloff`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_distance`
 - `input_level`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `calc_falloff_curve`
+# Operator `calc_falloff_curve`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_distance`
@@ -124,95 +124,95 @@ This document contains a list of available sound stack operators in Chaos.
 - `input_atten`
 - `input_volume_min`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `math_float_filter`
+# Operator `math_float_filter`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input`
 - `input_max_velocity`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `iterate_merge_speakers`
+# Operator `iterate_merge_speakers`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_max_iterations`
 - `input`
 
-### Outputs
+## Outputs
 
 - `output_index`
 - `output`
 
-## Operator `get_map_name`
+# Operator `get_map_name`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `math_func1`
+# Operator `math_func1`
 
-### Inputs
-
-- `input_execute`
-- `input1`
-
-### Outputs
-
-- `output`
-
-## Operator `math_float`
-
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input1`
-- `input2`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `math_vec3`
+# Operator `math_float`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input1`
 - `input2`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `math_speakers`
+# Operator `math_vec3`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input1`
 - `input2`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `math_float_accumulate12`
+# Operator `math_speakers`
 
-### Inputs
+## Inputs
+
+- `input_execute`
+- `input1`
+- `input2`
+
+## Outputs
+
+- `output`
+
+# Operator `math_float_accumulate12`
+
+## Inputs
 
 - `input_execute`
 - `input1`
@@ -228,35 +228,35 @@ This document contains a list of available sound stack operators in Chaos.
 - `input11`
 - `input12`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `calc_source_distance`
+# Operator `calc_source_distance`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_position`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `calc_angles_facing`
+# Operator `calc_angles_facing`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_angles`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `math_remap_float`
+# Operator `math_remap_float`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input`
@@ -265,13 +265,13 @@ This document contains a list of available sound stack operators in Chaos.
 - `input_map_min`
 - `input_map_max`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `math_curve_2d_4knot`
+# Operator `math_curve_2d_4knot`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input`
@@ -284,125 +284,125 @@ This document contains a list of available sound stack operators in Chaos.
 - `input_X4`
 - `input_Y4`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `math_random`
+# Operator `math_random`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_min`
 - `input_max`
 - `input_seed`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `math_logic_switch`
+# Operator `math_logic_switch`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input1`
 - `input2`
 - `input_switch`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `get_soundmixer`
+# Operator `get_soundmixer`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 
-### Outputs
+## Outputs
 
 - `output_volume`
 - `output_level`
 - `output_dsp`
 
-## Operator `sys_mixlayer`
+# Operator `sys_mixlayer`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input`
 
-## Operator `calc_occlusion`
+# Operator `calc_occlusion`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_trace_interval`
 - `input_scalar`
 - `input_position`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `set_opvar_float`
+# Operator `set_opvar_float`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input`
 
-## Operator `get_opvar_float`
+# Operator `get_opvar_float`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 
-### Outputs
+## Outputs
 
 - `output`
 - `output_opvar_exists`
 
-## Operator `increment_opvar_float`
+# Operator `increment_opvar_float`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input`
 
-### Outputs
+## Outputs
 
 - `output`
 - `output_opvar_exists`
 
-## Operator `sys_output`
+# Operator `sys_output`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_speakers`
 - `input_vec3`
 - `input_float`
 
-## Operator `sys_platform`
+# Operator `sys_platform`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `game_view_info`
+# Operator `game_view_info`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_source_index`
 
-### Outputs
+## Outputs
 
 - `output_position`
 - `output_position_x`
@@ -416,9 +416,9 @@ This document contains a list of available sound stack operators in Chaos.
 - `output_velocity`
 - `output_velocity_xy`
 
-## Operator `util_pos_vec8`
+# Operator `util_pos_vec8`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_index`
@@ -432,19 +432,19 @@ This document contains a list of available sound stack operators in Chaos.
 - `input_position_6`
 - `input_position_7`
 
-### Outputs
+## Outputs
 
 - `output_position`
 - `output_max_index`
 
-## Operator `get_source_info`
+# Operator `get_source_info`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_source_index`
 
-### Outputs
+## Outputs
 
 - `output_entity_index`
 - `output_position`
@@ -455,9 +455,9 @@ This document contains a list of available sound stack operators in Chaos.
 - `output_pitch`
 - `output_source_count`
 
-## Operator `calc_spatialize_speakers`
+# Operator `calc_spatialize_speakers`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_radius`
@@ -470,82 +470,82 @@ This document contains a list of available sound stack operators in Chaos.
 - `input_distance`
 - `input_position`
 
-### Outputs
+## Outputs
 
 - `output`
 
-## Operator `sys_start_entry`
+# Operator `sys_start_entry`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_start`
 - `input_start_delay`
 
-## Operator `sys_stop_entries`
+# Operator `sys_stop_entries`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_max_entries`
 - `input_stop_delay`
 
-### Outputs
+## Outputs
 
 - `output_entries_matching`
 - `output_this_matches_index`
 
-## Operator `get_sys_time`
+# Operator `get_sys_time`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 
-### Outputs
+## Outputs
 
 - `output_client_time`
 - `output_host_time`
 
-## Operator `get_track_syncpoint`
+# Operator `get_track_syncpoint`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 - `input_min_time_to_next_sync`
 - `input_max_time_to_next_sync`
 
-### Outputs
+## Outputs
 
 - `output_first_syncpoint`
 - `output_last_syncpoint`
 - `output_time_to_next_syncpoint`
 
-## Operator `track_queue`
+# Operator `track_queue`
 
-### Inputs
+## Inputs
 
 - `input_execute`
 
-### Outputs
+## Outputs
 
 - `output_time_to_next_syncpoint`
 - `output_time_to_start`
 
-## Operator `track_update`
+# Operator `track_update`
 
-### Inputs
-
-- `input_execute`
-
-## Operator `track_stop`
-
-### Inputs
+## Inputs
 
 - `input_execute`
 
-## Operator `util_print_float`
+# Operator `track_stop`
 
-### Inputs
+## Inputs
+
+- `input_execute`
+
+# Operator `util_print_float`
+
+## Inputs
 
 - `input_execute`
 - `input`
