@@ -1,4 +1,4 @@
-﻿---
+---
 layout: default
 title: GameInfo.txt Format
 parent: Modding
