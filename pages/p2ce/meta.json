@@ -3,6 +3,6 @@
   "icon": "https://baguettery-alt.chaos-branding-tool.pages.dev/media/p2ce/square_mono_white.svg",
   "name": "Portal 2 Community Edition",
   "color": "#ff7b02",
-  "categories": ["magic", "more-magic"],
+  "categories": ["modding", "panorama", "reference", "vscript"],
   "features": ["USE_PORTALS", "BE_IN_SPACE"]
 }
