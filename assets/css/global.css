@@ -71,6 +71,8 @@ button {
   padding-right: 1rem;
   transition: 500ms;
   z-index: 10;
+  max-height: 100vh;
+  overflow-y: auto;
 }
 .sidebar-pinned .sidebar,
 .sidebar-open .sidebar {
