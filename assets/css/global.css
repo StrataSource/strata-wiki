@@ -21,8 +21,8 @@ body.chaos {
 html.dark {
   --headings: #ffffff;
   --text: #c8c8c8;
-  --bg: #191919;
-  --bgAccent: #000000;
+  --bg: #202020;
+  --bgAccent: #151515;
 }
 
 body {
@@ -92,7 +92,7 @@ button {
   left: 0;
   height: 100vh;
   width: 100vw;
-  background-color: black;
+  background-color: #202020;
   z-index: 2;
   pointer-events: none;
   opacity: 0;
