@@ -4,5 +4,5 @@
   "name": "Portal 2 Community Edition",
   "color": "#ff7b02",
   "categories": ["modding", "panorama", "reference", "vscript"],
-  "features": ["USE_PORTALS", "BE_IN_SPACE"]
+  "features": ["USE_PORTALS", "USE_VSCRIPT"]
 }
