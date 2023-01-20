@@ -12,6 +12,7 @@ body.p2ce {
   --primary: #ff7b02;
   --primaryTransparent: #ff7b0280;
 }
+
 body.chaos {
   --primary: #db4141;
   --primaryTransparent: #db414180;
@@ -74,14 +75,17 @@ button {
   max-height: 100vh;
   overflow-y: auto;
 }
+
 .sidebar-pinned .sidebar,
 .sidebar-open .sidebar {
   left: 0;
 }
+
 .sidebar-open #wrapper {
   transform: translateX(20rem);
   pointer-events: none;
 }
+
 .sidebar-close {
   position: fixed;
   top: 0;
@@ -94,13 +98,16 @@ button {
   opacity: 0;
   cursor: pointer;
 }
+
 .sidebar-open .sidebar-close {
   opacity: 0.5;
   pointer-events: all;
 }
+
 .sidebar-pinned #wrapper {
   padding-left: 20rem;
 }
+
 .sidebar-toggle {
   position: fixed;
   top: 6.3rem;
@@ -110,15 +117,19 @@ button {
   cursor: pointer;
   background: var(--bgAccent);
 }
+
 .sidebar-open .sidebar-toggle {
   left: 20rem;
 }
+
 .sidebar-pinned .sidebar-toggle {
   display: none;
 }
+
 .sidebar-header {
   text-align: center;
 }
+
 .sidebar-header h1 {
   margin-bottom: 0;
 }
@@ -130,6 +141,7 @@ button {
   height: 6rem;
   border-bottom: var(--bgAccent) 0.3rem solid;
 }
+
 #game-header .game {
   aspect-ratio: 16/9;
   height: 100%;
@@ -141,6 +153,7 @@ button {
   align-items: center;
   justify-content: center;
 }
+
 @media screen {
   @media only screen and (max-width: 700px) {
     #game-header .game {
@@ -148,35 +161,40 @@ button {
     }
   }
 }
+
 #game-header .game img {
   max-height: 100%;
 }
+
 #game-header .game.active,
 #game-header .game:hover {
   padding-bottom: 0;
   border-bottom: var(--primary) 0.3rem solid;
   border-top: transparent 0.3rem hidden;
-  background: linear-gradient(
-    0deg,
-    var(--primaryTransparent) 0%,
-    transparent 50%
-  );
+  background: linear-gradient(0deg,
+      var(--primaryTransparent) 0%,
+      transparent 50%);
 }
 
 .menu a {
   color: var(--text);
   text-decoration: none;
   display: block;
+  padding-left: 0.5rem;
 }
+
 .menu a.active {
   color: var(--primary);
 }
+
 .menu a:hover {
   color: var(--primary);
 }
+
 .menu a.scrollspy {
-  padding-left: 1rem;
+  padding-left: 1.5rem;
 }
+
 .menu h5 {
   margin-top: 1rem;
   margin-bottom: 0rem;
