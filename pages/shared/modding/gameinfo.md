@@ -9,7 +9,7 @@ parent: Modding
 In order to support the new filesystem changes in Chaos, modifications have been
 made to Source's existing GameInfo.txt format.
 
-## Mounts Block
+# Mounts Block
 
 The mounts block is designed to supplement the user-editable mounts.kv file in
 cfg. This block should be used to setup the required paths for your mod.
@@ -53,14 +53,14 @@ mount
 }
 ```
 
-## Custom Folder
+# Custom Folder
 
 Chaos supports many Source 2013/TF2-style constructs in the gameinfo, such as the custom folder.
 
 To support the custom folder, simply add `game "<your mod>/custom/*"` to your `SearchPaths` block.
 Anything under the `<your mod>/custom/` folder will be mounted as if it were a game.
 
-## Other Considerations
+# Other Considerations
 
 * When making a P2CE mod, you should omit the `gamebin` entry from the
 `SearchPaths` block. This will cause the game to attempt to load binaries from
@@ -69,7 +69,7 @@ your mod's bin directory instead of P2CE's.
 * When adding p2ce to your gameinfo, add it as `game+mod`. Otherwise, the game will not be
 able to find `steam.inf` unless your mod ships it.
 
-## Example GameInfo.txt
+# Example GameInfo.txt
 
 The following is an example gameinfo.txt from our template mod repo found [here](https://github.com/ChaosInitiative/p2ce-mod-template)
 
