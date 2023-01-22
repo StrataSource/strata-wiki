@@ -1,3 +1,6 @@
+---
+title: "Portal 2: Community Edition Wiki"
+---
 # Portal 2: Community Edition Wiki
 
 Welcome to the Portal 2: Community Edition wiki!
