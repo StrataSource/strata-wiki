@@ -225,7 +225,7 @@ a:not(.btn):hover {
 
 .actions-container {
     padding: 0.5rem;
-    float: inline-end;
+    float: right;
 }
 
 .debug-line {
