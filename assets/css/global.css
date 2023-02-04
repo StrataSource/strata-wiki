@@ -1,37 +1,40 @@
 html {
-  --primary: #db4141;
-  --primaryTransparent: #db414180;
-  --textOnPrimary: #ffffff;
-  --headings: #000000;
-  --text: #1a1a1a;
-  --bg: #ffffff;
-  --bgAccent: #e6e6e6;
+    --primary: #db4141;
+    --primaryTransparent: #db414180;
+    --textOnPrimary: #ffffff;
+    --headings: #000000;
+    --text: #1a1a1a;
+    --bg: #ffffff;
+    --bgAccent: #e6e6e6;
 }
 
 body.p2ce {
-  --primary: #ff7b02;
-  --primaryTransparent: #ff7b0280;
+    --primary: #ff7b02;
+    --primaryTransparent: #ff7b0280;
 }
 
 body.chaos {
-  --primary: #db4141;
-  --primaryTransparent: #db414180;
+    --primary: #db4141;
+    --primaryTransparent: #db414180;
 }
 
 html.dark {
-  --headings: #ffffff;
-  --text: #c8c8c8;
-  --bg: #202020;
-  --bgAccent: #151515;
+    --headings: #ffffff;
+    --text: #c8c8c8;
+    --bg: #202020;
+    --bgAccent: #151515;
 }
 
 body {
-  min-height: 100vh;
-  background-color: var(--bg);
-  color: var(--text);
-  margin: 0;
-  font-family: "Heebo", sans-serif;
-  overflow-x: hidden;
+    min-height: 100vh;
+    background-color: var(--bg);
+    color: var(--text);
+    margin: 0;
+    font-family: "Heebo", sans-serif;
+    overflow-x: hidden;
+
+    scrollbar-color: var(--primary) transparent;
+    scrollbar-width: thin;
 }
 
 h1,
@@ -40,177 +43,188 @@ h3,
 h4,
 h5,
 h6 {
-  color: var(--headings);
+    color: var(--headings);
 }
 
 .btn,
 button {
-  border: none;
-  padding: 1rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  border-radius: 0.25rem;
-  background: var(--primary);
-  color: var(--textOnPrimary);
-  text-decoration: none;
+    border: none;
+    padding: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-radius: 0.25rem;
+    background: var(--primary);
+    color: var(--textOnPrimary);
+    text-decoration: none;
 }
 
 #wrapper {
-  transition: 500ms;
-  background: var(--bg);
-  min-height: 100vh;
+    transition: 500ms;
+    background: var(--bg);
+    min-height: 100vh;
+
+    scrollbar-color: var(--primary) transparent;
+    scrollbar-width: thin;
 }
 
 .sidebar {
-  background: var(--bgAccent);
-  height: 100vh;
-  width: 18rem;
-  position: fixed;
-  top: 0;
-  left: -20rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  transition: 500ms;
-  z-index: 10;
-  max-height: 100vh;
-  overflow-y: auto;
+    background: var(--bgAccent);
+    height: 100vh;
+    width: 18rem;
+    position: fixed;
+    top: 0;
+    left: -20rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    transition: 500ms;
+    z-index: 10;
+    max-height: 100vh;
+    overflow-y: auto;
+
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+.sidebar:hover {
+    scrollbar-color: var(--primary) transparent;
 }
 
 .sidebar-pinned .sidebar,
 .sidebar-open .sidebar {
-  left: 0;
+    left: 0;
 }
 
 .sidebar-open #wrapper {
-  transform: translateX(20rem);
-  pointer-events: none;
+    transform: translateX(20rem);
+    pointer-events: none;
 }
 
 .sidebar-close {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  background-color: #202020;
-  z-index: 2;
-  pointer-events: none;
-  opacity: 0;
-  cursor: pointer;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: #202020;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    cursor: pointer;
 }
 
 .sidebar-open .sidebar-close {
-  opacity: 0.5;
-  pointer-events: all;
+    opacity: 0.5;
+    pointer-events: all;
 }
 
 .sidebar-pinned #wrapper {
-  padding-left: 20rem;
+    padding-left: 20rem;
 }
 
 .sidebar-toggle {
-  position: fixed;
-  top: 6.3rem;
-  left: 0rem;
-  transition: 500ms;
-  z-index: 15;
-  cursor: pointer;
-  background: var(--bgAccent);
+    position: fixed;
+    top: 6.3rem;
+    left: 0rem;
+    transition: 500ms;
+    z-index: 15;
+    cursor: pointer;
+    background: var(--bgAccent);
 }
 
 .sidebar-open .sidebar-toggle {
-  left: 20rem;
+    left: 20rem;
 }
 
 .sidebar-pinned .sidebar-toggle {
-  display: none;
+    display: none;
 }
 
 .sidebar-header {
-  text-align: center;
+    text-align: center;
 }
 
 .sidebar-header h1 {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 #game-header {
-  background: var(--bgAccent);
-  display: flex;
-  align-items: center;
-  height: 6rem;
-  border-bottom: var(--bgAccent) 0.3rem solid;
+    background: var(--bgAccent);
+    display: flex;
+    align-items: center;
+    height: 6rem;
+    border-bottom: var(--bgAccent) 0.3rem solid;
 }
 
 #game-header .game {
-  aspect-ratio: 16/9;
-  height: 100%;
-  max-width: 20vw;
-  padding: 0.3rem;
-  padding-bottom: 0;
-  border-bottom: var(--bgAccent) 0.3rem solid;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    aspect-ratio: 16/9;
+    height: 100%;
+    max-width: 20vw;
+    padding: 0.3rem;
+    padding-bottom: 0;
+    border-bottom: var(--bgAccent) 0.3rem solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @media screen {
-  @media only screen and (max-width: 700px) {
-    #game-header .game {
-      max-width: 100%;
+    @media only screen and (max-width: 700px) {
+        #game-header .game {
+            max-width: 100%;
+        }
     }
-  }
 }
 
 #game-header .game img {
-  max-height: 100%;
+    max-height: 100%;
 }
 
 #game-header .game.active,
 #game-header .game:hover {
-  padding-bottom: 0;
-  border-bottom: var(--primary) 0.3rem solid;
-  border-top: transparent 0.3rem hidden;
-  background: linear-gradient(0deg,
-      var(--primaryTransparent) 0%,
-      transparent 50%);
+    padding-bottom: 0;
+    border-bottom: var(--primary) 0.3rem solid;
+    border-top: transparent 0.3rem hidden;
+    background: linear-gradient(
+        0deg,
+        var(--primaryTransparent) 0%,
+        transparent 50%
+    );
 }
 
 .menu a {
-  color: var(--text);
-  text-decoration: none;
-  display: block;
-  padding-left: 0.5rem;
+    color: var(--text);
+    text-decoration: none;
+    display: block;
+    padding-left: 0.5rem;
 }
 
 .menu a.active {
-  color: var(--primary);
+    color: var(--primary);
 }
 
 .menu a:hover {
-  color: var(--primary);
+    color: var(--primary);
 }
 
 .menu a.scrollspy {
-  padding-left: 1.5rem;
+    padding-left: 1.5rem;
 }
 
 .menu h5 {
-  margin-top: 1rem;
-  margin-bottom: 0rem;
+    margin-top: 1rem;
+    margin-bottom: 0rem;
 }
 
 .actions-container {
-  padding: 0.5rem;
-  float: inline-end;
+    padding: 0.5rem;
+    float: inline-end;
 }
 
 .debug-line {
-  background-color: red;
-  position: absolute;
-  left: 0;
-  width: 100vw;
-  height: 1px;
-  z-index: 100;
-  display: none;
+    background-color: red;
+    position: absolute;
+    left: 0;
+    width: 100vw;
+    height: 1px;
+    z-index: 100;
+    display: none;
 }
