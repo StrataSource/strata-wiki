@@ -48,6 +48,15 @@ button {
     text-decoration: none;
 }
 
+a:not(.btn) {
+    color: var(--primary);
+    text-decoration: none;
+    transition: 100ms;
+}
+a:not(.btn):hover {
+    filter: brightness(1.3);
+}
+
 #wrapper {
     transition: 500ms;
     background: var(--bg);
@@ -212,7 +221,7 @@ button {
 .actions-container {
     padding: 0.5rem;
     padding-right: 0;
-    float: inline-end;
+    float: right;
 }
 
 .debug-line {
