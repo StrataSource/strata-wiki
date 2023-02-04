@@ -8,16 +8,6 @@ html {
     --bgAccent: #e6e6e6;
 }
 
-body.p2ce {
-    --primary: #ff7b02;
-    --primaryTransparent: #ff7b0280;
-}
-
-body.chaos {
-    --primary: #db4141;
-    --primaryTransparent: #db414180;
-}
-
 html.dark {
     --headings: #ffffff;
     --text: #c8c8c8;
@@ -65,6 +55,11 @@ button {
 
     scrollbar-color: var(--primary) transparent;
     scrollbar-width: thin;
+}
+
+.container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
 }
 
 .sidebar {
@@ -216,6 +211,7 @@ button {
 
 .actions-container {
     padding: 0.5rem;
+    padding-right: 0;
     float: inline-end;
 }
 
@@ -227,4 +223,19 @@ button {
     height: 1px;
     z-index: 100;
     display: none;
+}
+
+.exclusive {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 1rem;
+    padding: 1rem;
+    background: var(--primaryTransparent);
+}
+.exclusive .exclusive-header {
+    color: var(--textOnPrimary);
+    font-weight: bold;
+}
+.exclusive p:last-child {
+    margin-bottom: 0;
 }

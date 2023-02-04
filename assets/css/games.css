@@ -1,0 +1,21 @@
+body.p2ce {
+    --primary: #ff7b02;
+    --primaryTransparent: #ff7b0280;
+}
+.p2ce-only {
+    display: none;
+}
+.p2ce .p2ce-only {
+    display: inherit;
+}
+
+body.chaos {
+    --primary: #db4141;
+    --primaryTransparent: #db414180;
+}
+.chaos-only {
+    display: none;
+}
+.chaos .chaos-only {
+    display: inherit;
+}
