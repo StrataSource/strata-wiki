@@ -6,7 +6,7 @@ var navs = {};
 /**
  *
  * @param {string} html The HTML input to be put inside the content
- * @param {{slug: string, title: string}} opts Options for generating
+ * @param {{slug: string, title: string, file: string}} opts Options for generating
  * @returns {string} The generated HTML with the template applied
  */
 module.exports.applyTemplate = (html, opts = {}) => {
