@@ -1,63 +1,85 @@
 const fs = require("fs-extra");
 const md = require("./render");
-const path = require("path");
-const templater = require("./templater");
-const pages = require("./list");
+const pages = require("./pages");
+const template = require("./template");
 
-function getAllFiles(dir, allFilesList = []) {
-  const files = fs.readdirSync(dir);
-  files.map((file) => {
-    const name = dir + "/" + file;
-    if (fs.statSync(name).isDirectory()) {
-      // check if subdirectory is present
-      getAllFiles(name, allFilesList); // do recursive execution for subdirectory
-    } else {
-      allFilesList.push(name); // push filename into the array
+module.exports.all = () => {
+    function step(i) {
+        console.log(`--------------`);
+        console.log(`    Step ${i}`);
+        console.log(`--------------`);
     }
-  });
 
-  return allFilesList;
-}
+    step(1);
+    this.clean();
 
-module.exports.exportPage = (slug) => {
-  var html = templater.applyTemplate(md.renderPage(slug), slug);
+    step(2);
+    this.copyAssets();
 
-  var location = `public/${slug}.html`
-    .replaceAll("/.html", "/index.html")
-    .replaceAll("//", "/");
+    step(3);
+    template.generateNav();
 
-  console.log("Exporting file", slug, "->", location);
+    step(4);
+    pages.buildIndex();
 
-  fs.mkdirSync(path.parse(location).dir, { recursive: true });
-  fs.writeFileSync(location, html);
+    step(5);
+    this.saveAllPages();
+
+    step(6);
+    this.generateSpecialPages();
+
+    step(7);
+    this.copyGameMeta();
+
+    step(8);
+    console.log("Done!");
 };
 
-module.exports.exportAllPages = () => {
-  var games = pages.games();
+module.exports.clean = () => {
+    console.log("Clearing public folder...");
+    fs.rmSync("public", { recursive: true });
+    fs.mkdirSync("public");
 
-  for (let game_i = 0; game_i < games.length; game_i++) {
-    const game = games[game_i];
+    fs.mkdirSync("public/ajax");
+};
 
-    console.log("Exporting", game.id);
+module.exports.copyAssets = () => {
+    console.log("Copying assets...");
+    fs.copySync("assets", "public/assets");
+};
 
-    pages.rebuildPageIndex(game.id);
-
-    this.exportPage(game.id + "/");
-
-    var cats = pages.pageIndex[game.id];
-
-    for (const [cat_id, cat] of Object.entries(cats)) {
-      for (const [key, article] of Object.entries(cat)) {
-        this.exportPage(`${game.id}/${cat_id}/${article.id}`);
-      }
+module.exports.saveAllPages = () => {
+    for (let index = 0; index < pages.all.length; index++) {
+        const entry = pages.all[index];
+        pages.savePage(entry);
     }
-  }
+};
 
-  fs.copySync("assets", "public/assets");
+module.exports.copyGameMeta = () => {
+    var gameList = pages.games();
+    var games = {};
 
-  this.exportPage("");
-  this.exportPage("/404");
+    for (let index = 0; index < gameList.length; index++) {
+        const game = gameList[index];
+        console.log("Processing game", game.id);
+        games[game.id] = game;
+    }
 
-  //fs.copySync("public/index/index.html", "public/index.html");
-  //fs.copySync("public/index/404/index.html", "public/404.html");
+    fs.writeFileSync("public/ajax/games.json", JSON.stringify(games));
+};
+
+module.exports.generateSpecialPages = () => {
+    var games = pages.games();
+    for (let index = 0; index < games.length; index++) {
+        const game = games[index];
+        var content = md.renderPage(`${game.id}/index`);
+        content = {
+            slug: `/${game.id}`,
+            title: content.meta.title || "Home",
+            file: `/pages/${game.id}/index.md`,
+            id: "index",
+            ...content,
+        };
+        pages.savePage(content);
+    }
 };
