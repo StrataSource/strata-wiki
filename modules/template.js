@@ -6,7 +6,7 @@ var navs = {};
 /**
  *
  * @param {string} html The HTML input to be put inside the content
- * @param {{slug: string}} opts Options for generating
+ * @param {{slug: string, title: string}} opts Options for generating
  * @returns {string} The generated HTML with the template applied
  */
 module.exports.applyTemplate = (html, opts = {}) => {
@@ -14,10 +14,16 @@ module.exports.applyTemplate = (html, opts = {}) => {
 
     opts.sidebar = this.generateSidebar(opts.slug);
     opts.nav = navs[info.game];
+
+    //Generate title
+    opts.title = opts.title;
     opts.content = html;
+
+    //Read template HTML
     var res = fs.readFileSync("templates/main.html", "utf-8");
     console.log("Templating", opts);
 
+    //Replacing values from opts in HTML
     for (const [key, value] of Object.entries(opts)) {
         res = res.replaceAll(`%${key.toUpperCase()}%`, value);
     }
