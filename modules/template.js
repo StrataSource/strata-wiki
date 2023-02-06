@@ -22,7 +22,7 @@ module.exports.applyTemplate = (html, opts = {}) => {
         res = res.replaceAll(`%${key.toUpperCase()}%`, value);
     }
 
-    return "TEMPLATE" + res;
+    return res;
 };
 
 /**

@@ -2,7 +2,7 @@ const fs = require("fs");
 var hljs = require("highlight.js");
 const yaml = require("yaml");
 const container_block = require("markdown-it-container");
-const pages = require("./list");
+const pages = require("./pages");
 
 var meta = {};
 
@@ -36,7 +36,9 @@ for (let index = 0; index < games.length; index++) {
         render: function (tokens, idx) {
             if (tokens[idx].nesting === 1) {
                 // opening tag
-                return `<div class='${game.id}-only exclusive'><div class="exclusive-header">${
+                return `<div class='${
+                    game.id
+                }-only exclusive'><div class="exclusive-header">${
                     game.nameShort || game.name || game.id
                 } only!</div>\n`;
             } else {
@@ -47,6 +49,12 @@ for (let index = 0; index < games.length; index++) {
     });
 }
 
+/**
+ * Renders any Markdown string into HTML
+ * @param {string} str A string of raw Markdown
+ * @param {string} slug The slug of the current page, used for passthrough
+ * @returns {{content: string, meta: object, slug: string}} An object that includes the rendered HTML.
+ */
 module.exports.render = (str, slug = undefined) => {
     meta = {};
     return {
@@ -56,15 +64,20 @@ module.exports.render = (str, slug = undefined) => {
     };
 };
 
+/**
+ * Renders Markdown into a page based on the slug
+ * @param {string} slug The slug to the page
+ * @returns {{content: string, meta: {title: string, features: string[]}, slug: string}} rendered HTML of the page
+ */
 module.exports.renderPage = (slug) => {
     var source = pages.slugToPath(slug);
 
-    console.log("Rendering page", slug, "->", source);
+    console.log("Rendering file", slug, "->", source);
 
     return this.render(
         fs.readFileSync(source, {
             encoding: "utf-8",
         }),
-        source
+        slug
     );
 };
