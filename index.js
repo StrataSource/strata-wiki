@@ -1,7 +1,8 @@
-const dev = require("./modules/dev");
-const exp = require("./modules/export");
+const dev = require("./modulesNew/dev");
+const exp = require("./modulesNew/export");
 
-exp.exportAllPages();
+exp.all();
 if (process.argv[1] == "dev" || process.argv[2] == "dev") {
-  dev.run();
+    dev.run();
 }
+setTimeout(() => {}, 999999);
