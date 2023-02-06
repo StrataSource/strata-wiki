@@ -221,6 +221,6 @@ module.exports.savePage = (article) => {
     fs.mkdirSync("public/" + path, { recursive: true });
     fs.writeFileSync(
         "public/" + path + "/" + article.id + ".html",
-        applyTemplate(article.content, { slug: article.slug })
+        applyTemplate(article.content, { slug: article.slug, title: article.title })
     );
 };
