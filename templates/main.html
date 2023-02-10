@@ -5,9 +5,13 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>%TITLE% - Chaos Wiki</title>
+        <link rel="stylesheet" href="/assets/css/global.css" />
     </head>
     <body>
-        <div class="top-nav">%NAV%</div>
+        <div class="top-nav">
+            <div class="games">Loading...</div>
+            <div class="categories">%CATEGORIES%</div>
+        </div>
         <div class="sidebar">%SIDEBAR%</div>
         <div class="edit">
             <a
@@ -16,5 +20,7 @@
             >
         </div>
         <div class="content">%CONTENT%</div>
+
+        <script src="/assets/js/navigation.js"></script>
     </body>
 </html>

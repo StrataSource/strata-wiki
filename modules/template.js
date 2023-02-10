@@ -13,7 +13,7 @@ module.exports.applyTemplate = (html, opts = {}) => {
     var info = pages.parseSlug(opts.slug);
 
     opts.sidebar = this.generateSidebar(opts.slug);
-    opts.nav = navs[info.game];
+    opts.categories = navs[info.game];
 
     //Generate title
     opts.title = opts.title;
@@ -54,6 +54,9 @@ module.exports.generateSidebar = (slug) => {
 
     return res;
 };
+/**
+ * Generates the top nav links for all pages
+ */
 module.exports.generateNav = () => {
     var games = pages.games();
 
