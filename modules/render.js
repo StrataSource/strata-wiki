@@ -24,9 +24,7 @@ const md = require("markdown-it")({
 
 const games = pages.games();
 
-for (let index = 0; index < games.length; index++) {
-    const game = games[index];
-
+for (const game of games) {
     console.log("Registered game", game.id);
 
     md.use(container_block, game.id, {

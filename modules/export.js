@@ -49,8 +49,7 @@ module.exports.copyAssets = () => {
 };
 
 module.exports.saveAllPages = () => {
-    for (let index = 0; index < pages.all.length; index++) {
-        const entry = pages.all[index];
+    for (const entry of pages.all) {
         pages.savePage(entry);
     }
 };
@@ -70,8 +69,7 @@ module.exports.copyGameMeta = () => {
 
 module.exports.generateSpecialPages = () => {
     const games = pages.games();
-    for (let index = 0; index < games.length; index++) {
-        const game = games[index];
+    for (const game of games) {
         let content = md.renderPage(`${game.id}/index`);
         content = {
             slug: `/${game.id}`,

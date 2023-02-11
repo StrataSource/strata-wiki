@@ -11,8 +11,7 @@ module.exports.games = () => {
 
     const games = fs.readdirSync("pages");
 
-    for (let index = 0; index < games.length; index++) {
-        const game = games[index];
+    for (const game of games) {
         if (fs.existsSync(`pages/${game}/meta.json`)) {
             res.push({
                 ...require(`../pages/${game}/meta.json`),
@@ -40,8 +39,7 @@ module.exports.slugToPath = (slug) => {
         `shared/index.md`,
     ];
 
-    for (let index = 0; index < possiblePaths.length; index++) {
-        const p = possiblePaths[index];
+    for (const p of possiblePaths) {
         console.log("Checking file path", "pages/" + p);
         if (path === undefined && fs.existsSync("pages/" + p)) {
             path = "pages/" + p;
@@ -89,8 +87,7 @@ module.exports.buildIndex = () => {
 
     const gameList = this.games();
 
-    for (let index = 0; index < gameList.length; index++) {
-        const game = gameList[index];
+    for (const game of gameList) {
         res[game.id] = {
             id: game.id,
             meta: game,
@@ -99,9 +96,7 @@ module.exports.buildIndex = () => {
 
         this.menu[game.id] = {};
 
-        for (let index = 0; index < game.categories.length; index++) {
-            const category = game.categories[index];
-
+        for (const category of game.categories) {
             res[game.id].categories[category.id] = {
                 id: category.id,
                 meta: category,
@@ -110,8 +105,7 @@ module.exports.buildIndex = () => {
 
             let menu = [];
 
-            for (let index = 0; index < category.topics.length; index++) {
-                const topic = category.topics[index];
+            for (const topic of category.topics) {
                 //Check if index.md exists
                 let path = this.slugToPath(
                     `${game.id}/${category.id}/${topic.id}`
@@ -133,8 +127,8 @@ module.exports.buildIndex = () => {
 
                 const articles = fs.readdirSync(path);
 
-                for (let index = 0; index < articles.length; index++) {
-                    const article = articles[index].replace(".md", "");
+                for (let article of articles) {
+                    article = article.replace(".md", "");
                     const result = renderer.renderPage(
                         `${game.id}/${category.id}/${topic.id}/${article}`
                     );
@@ -145,9 +139,7 @@ module.exports.buildIndex = () => {
                     let willBeAdded = true;
 
                     if (meta.features != undefined && meta.features != []) {
-                        for (let ind = 0; ind < meta.features.length; ind++) {
-                            const feature = meta.features[ind];
-
+                        for (const feature of meta.features) {
                             if (!meta.features.includes(feature)) {
                                 willBeAdded = false;
                             }
