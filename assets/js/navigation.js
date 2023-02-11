@@ -12,7 +12,7 @@ async function init() {
     menu = await menuReq.json();
 
     //Regenerate UI
-    const info = parseSlug(location.pathname.substring(1));
+    const info = parseSlug(location.pathname.slice(1));
     regenerateNav(info);
     regenerateSidebar(info);
     generateGameSelector(info.game);
@@ -86,7 +86,7 @@ async function navigate(slug, replace = false) {
     updateAllLinkListeners();
 }
 window.addEventListener("popstate", () => {
-    navigate(location.pathname.substring(1), true);
+    navigate(location.pathname.slice(1), true);
 });
 function regenerateSidebar(info) {
     const data = menu[info.game][info.category];
@@ -112,7 +112,7 @@ function regenerateSidebar(info) {
                 el.classList.add("article");
                 break;
         }
-        const loc = location.pathname.substring(1).replace(/\/$/, "");
+        const loc = location.pathname.slice(1).replace(/\/$/, "");
         if (entry.link === loc || entry.link === loc + "/index") {
             el.classList.add("active");
         }
@@ -146,12 +146,12 @@ function linkClickHandler(e) {
     if (url.host != location.host) {
         window.open(e.target.href, "_blank");
     } else {
-        navigate(url.pathname.substring(1));
+        navigate(url.pathname.slice(1));
     }
 }
 
 async function switchGame(game) {
-    let split = location.pathname.substring(1).split("/");
+    let split = location.pathname.slice(1).split("/");
     split[0] = game;
     try {
         await navigate(split.join("/"));
