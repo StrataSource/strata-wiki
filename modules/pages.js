@@ -224,7 +224,7 @@ module.exports.savePage = (article) => {
         applyTemplate(article.content, {
             slug: article.slug,
             title: article.title,
-            file: article.file.substring(5),
+            file: article.file.slice(5),
         })
     );
 };
