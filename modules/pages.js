@@ -24,7 +24,6 @@ module.exports.games = () => {
 module.exports.slugToPath = (slug) => {
     const info = this.parseSlug(slug);
 
-    let path = undefined;
     const possiblePaths = [
         `${info.game}/${info.topic}/${info.article}.md`,
         `shared/${info.topic}/${info.article}.md`,
@@ -34,16 +33,12 @@ module.exports.slugToPath = (slug) => {
 
     for (const p of possiblePaths) {
         console.log("Checking file path", "pages/" + p);
-        if (path === undefined && fs.existsSync("pages/" + p)) {
-            path = "pages/" + p;
+        if (fs.existsSync("pages/" + p)) {
+            return "pages/" + p;
         }
     }
 
-    if (path === undefined) {
-        throw new Error("Could not locate Markdown file for slug: " + slug);
-    }
-
-    return path;
+    throw new Error("Could not locate Markdown file for slug: " + slug);
 };
 
 /**
