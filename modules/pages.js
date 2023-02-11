@@ -69,13 +69,12 @@ module.exports.parseSlug = (slug) => {
     }
 
     const slugParsed = slug.split("/");
-    const info = {
+    return {
         game: slugParsed[0] || "index",
         category: slugParsed[1] || "index",
         topic: slugParsed[2] || "index",
         article: slugParsed[3] || "index",
     };
-    return info;
 };
 
 module.exports.index = {};
