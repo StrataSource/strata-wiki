@@ -56,7 +56,7 @@ module.exports.saveAllPages = () => {
 };
 
 module.exports.copyGameMeta = () => {
-    let gameList = pages.games();
+    const gameList = pages.games();
     let games = {};
 
     for (let index = 0; index < gameList.length; index++) {
@@ -69,7 +69,7 @@ module.exports.copyGameMeta = () => {
 };
 
 module.exports.generateSpecialPages = () => {
-    let games = pages.games();
+    const games = pages.games();
     for (let index = 0; index < games.length; index++) {
         const game = games[index];
         let content = md.renderPage(`${game.id}/index`);

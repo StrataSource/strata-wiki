@@ -10,7 +10,7 @@ let navs = {};
  * @returns {string} The generated HTML with the template applied
  */
 module.exports.applyTemplate = (html, opts = {}) => {
-    let info = pages.parseSlug(opts.slug);
+    const info = pages.parseSlug(opts.slug);
 
     opts.sidebar = this.generateSidebar(opts.slug);
     opts.categories = navs[info.game];
@@ -37,8 +37,8 @@ module.exports.applyTemplate = (html, opts = {}) => {
  * @returns {string} HTML generated for the sidebar
  */
 module.exports.generateSidebar = (slug) => {
-    let info = pages.parseSlug(slug);
-    let data = pages.menu[info.game][info.category];
+    const info = pages.parseSlug(slug);
+    const data = pages.menu[info.game][info.category];
 
     console.log("DATA", data, "INFO", info, "SLUG", slug);
 

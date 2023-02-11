@@ -1,12 +1,12 @@
 const fs = require("fs");
-let hljs = require("highlight.js");
+const hljs = require("highlight.js");
 const yaml = require("yaml");
 const container_block = require("markdown-it-container");
 const pages = require("./pages");
 
 let meta = {};
 
-let md = require("markdown-it")({
+const md = require("markdown-it")({
     linkify: true,
     typographer: true,
     highlight: function (str, lang) {
@@ -22,7 +22,7 @@ let md = require("markdown-it")({
     meta = yaml.parse(fm);
 });
 
-let games = pages.games();
+const games = pages.games();
 
 for (let index = 0; index < games.length; index++) {
     const game = games[index];
@@ -70,7 +70,7 @@ module.exports.render = (str, slug = undefined) => {
  * @returns {{content: string, meta: {title: string, features: string[]}, slug: string}} rendered HTML of the page
  */
 module.exports.renderPage = (slug) => {
-    let source = pages.slugToPath(slug);
+    const source = pages.slugToPath(slug);
 
     console.log("Rendering file", slug, "->", source);
 
