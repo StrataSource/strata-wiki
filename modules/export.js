@@ -16,6 +16,8 @@ module.exports.all = () => {
 
     const step = stepGenerator();
 
+    const startTime = performance.now();
+
     step.next();
     this.clean();
 
@@ -38,7 +40,13 @@ module.exports.all = () => {
     this.copyGameMeta();
 
     step.next();
+    const endTime = performance.now();
     console.log("Done!");
+    console.log(
+        "Building took",
+        Math.ceil(endTime - startTime) / 1000,
+        "seconds."
+    );
 };
 
 module.exports.clean = () => {
