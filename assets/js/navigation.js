@@ -6,10 +6,10 @@ let menu = {};
  */
 async function init() {
     updateAllLinkListeners();
-    let req = await fetch("/ajax/games.json");
-    games = await req.json();
-    req = await fetch("/ajax/menu.json");
-    menu = await req.json();
+    let gameReq = await fetch("/ajax/games.json");
+    games = await gameReq.json();
+    let menuReq = await fetch("/ajax/menu.json");
+    menu = await menuReq.json();
 
     //Regenerate UI
     let info = parseSlug(location.pathname.substring(1));
