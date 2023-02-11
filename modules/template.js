@@ -1,7 +1,7 @@
 const pages = require("./pages");
 const fs = require("fs-extra");
 
-var navs = {};
+let navs = {};
 
 /**
  *
@@ -10,7 +10,7 @@ var navs = {};
  * @returns {string} The generated HTML with the template applied
  */
 module.exports.applyTemplate = (html, opts = {}) => {
-    var info = pages.parseSlug(opts.slug);
+    let info = pages.parseSlug(opts.slug);
 
     opts.sidebar = this.generateSidebar(opts.slug);
     opts.categories = navs[info.game];
@@ -20,7 +20,7 @@ module.exports.applyTemplate = (html, opts = {}) => {
     opts.content = html;
 
     //Read template HTML
-    var res = fs.readFileSync("templates/main.html", "utf-8");
+    let res = fs.readFileSync("templates/main.html", "utf-8");
     console.log("Templating", opts);
 
     //Replacing values from opts in HTML
@@ -37,8 +37,8 @@ module.exports.applyTemplate = (html, opts = {}) => {
  * @returns {string} HTML generated for the sidebar
  */
 module.exports.generateSidebar = (slug) => {
-    var info = pages.parseSlug(slug);
-    var data = pages.menu[info.game][info.category];
+    let info = pages.parseSlug(slug);
+    let data = pages.menu[info.game][info.category];
 
     console.log("DATA", data, "INFO", info, "SLUG", slug);
 
@@ -46,7 +46,7 @@ module.exports.generateSidebar = (slug) => {
         return ``;
     }
 
-    var res = ``;
+    let res = ``;
     for (let index = 0; index < data.length; index++) {
         const entry = data[index];
         res += `<a href="/${entry.link}" class="${entry.type}">${entry.text}</a>`;
@@ -58,11 +58,11 @@ module.exports.generateSidebar = (slug) => {
  * Generates the top nav links for all pages
  */
 module.exports.generateNav = () => {
-    var games = pages.games();
+    let games = pages.games();
 
     for (let index = 0; index < games.length; index++) {
         const game = games[index];
-        var res = ``;
+        let res = ``;
 
         for (let index = 0; index < game.categories.length; index++) {
             const category = game.categories[index];

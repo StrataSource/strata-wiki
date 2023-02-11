@@ -7,9 +7,9 @@ const { applyTemplate } = require("./template");
  * @returns {{id: string, logo: string, icon: string, name: string, nameShort: string, color: string, categories: {label: string, id: string, home: string, topics: {id: string, name: string}[]}[], features: string[]}[]} An array of game objects, metadata included
  */
 module.exports.games = () => {
-    var res = [];
+    let res = [];
 
-    var games = fs.readdirSync("pages");
+    let games = fs.readdirSync("pages");
 
     for (let index = 0; index < games.length; index++) {
         const game = games[index];
@@ -30,10 +30,10 @@ module.exports.games = () => {
  * @returns {string} Path to a makrdown file
  */
 module.exports.slugToPath = (slug) => {
-    var info = this.parseSlug(slug);
+    let info = this.parseSlug(slug);
 
-    var path = undefined;
-    var possiblePaths = [
+    let path = undefined;
+    let possiblePaths = [
         `${info.game}/${info.topic}/${info.article}.md`,
         `shared/${info.topic}/${info.article}.md`,
         `${info.game}/index.md`,
@@ -70,8 +70,8 @@ module.exports.parseSlug = (slug) => {
         );
     }
 
-    var slugParsed = slug.split("/");
-    var info = {
+    let slugParsed = slug.split("/");
+    let info = {
         game: slugParsed[0] || "index",
         category: slugParsed[1] || "index",
         topic: slugParsed[2] || "index",
@@ -85,9 +85,9 @@ module.exports.menu = {};
 module.exports.all = [];
 
 module.exports.buildIndex = () => {
-    var res = {};
+    let res = {};
 
-    var gameList = this.games();
+    let gameList = this.games();
 
     for (let index = 0; index < gameList.length; index++) {
         const game = gameList[index];
@@ -108,12 +108,12 @@ module.exports.buildIndex = () => {
                 topics: {},
             };
 
-            var menu = [];
+            let menu = [];
 
             for (let index = 0; index < category.topics.length; index++) {
                 const topic = category.topics[index];
                 //Check if index.md exists
-                var path = this.slugToPath(
+                let path = this.slugToPath(
                     `${game.id}/${category.id}/${topic.id}`
                 ).replace("index.md", "");
 
@@ -131,18 +131,18 @@ module.exports.buildIndex = () => {
                     link: `${game.id}/${category.id}/${topic.id}`,
                 });
 
-                var articles = fs.readdirSync(path);
+                let articles = fs.readdirSync(path);
 
                 for (let index = 0; index < articles.length; index++) {
                     const article = articles[index].replace(".md", "");
-                    var result = renderer.renderPage(
+                    let result = renderer.renderPage(
                         `${game.id}/${category.id}/${topic.id}/${article}`
                     );
 
                     console.log(result.slug, result.meta);
 
-                    var meta = result.meta;
-                    var willBeAdded = true;
+                    let meta = result.meta;
+                    let willBeAdded = true;
 
                     if (meta.features != undefined && meta.features != []) {
                         for (let ind = 0; ind < meta.features.length; ind++) {
@@ -204,7 +204,7 @@ module.exports.buildIndex = () => {
  * @param {Object} article The article object
  */
 module.exports.savePage = (article) => {
-    var path = article.slug.split("/");
+    let path = article.slug.split("/");
     path.pop();
     path = path.join("/");
 
