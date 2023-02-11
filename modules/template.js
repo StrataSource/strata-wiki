@@ -47,8 +47,7 @@ module.exports.generateSidebar = (slug) => {
     }
 
     let res = ``;
-    for (let index = 0; index < data.length; index++) {
-        const entry = data[index];
+    for (const entry of data) {
         res += `<a href="/${entry.link}" class="${entry.type}">${entry.text}</a>`;
     }
 
@@ -60,12 +59,10 @@ module.exports.generateSidebar = (slug) => {
 module.exports.generateNav = () => {
     let games = pages.games();
 
-    for (let index = 0; index < games.length; index++) {
-        const game = games[index];
+    for (const game of games) {
         let res = ``;
 
-        for (let index = 0; index < game.categories.length; index++) {
-            const category = game.categories[index];
+        for (const category of game.categories) {
             res += `<a href="/${game.id}/${category.id}/${category.home}">${category.label}</a>`;
         }
 

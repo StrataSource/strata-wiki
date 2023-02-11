@@ -98,8 +98,7 @@ function regenerateSidebar(info) {
         return;
     }
 
-    for (let index = 0; index < data.length; index++) {
-        const entry = data[index];
+    for (const entry of data) {
         let el = document.createElement("a");
         el.id = `sb-${entry.id}`;
         el.innerText = entry.text;
@@ -123,8 +122,7 @@ function regenerateNav(info) {
     let data = games[info.game].categories;
     let container = document.querySelector(".categories");
     container.innerHTML = "";
-    for (let index = 0; index < data.length; index++) {
-        const cat = data[index];
+    for (const cat of data) {
         let el = document.createElement("a");
         el.innerText = cat.label;
         el.href = `/${info.game}/${cat.id}/${cat.home}`;
@@ -162,8 +160,7 @@ async function switchGame(game) {
 
 async function updateAllLinkListeners() {
     let links = document.querySelectorAll("a");
-    for (let index = 0; index < links.length; index++) {
-        const link = links[index];
+    for (const link of links) {
         if (link.href.startsWith("javascript:")) {
             link.onclick = () => {};
         } else {
