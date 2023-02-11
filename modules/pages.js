@@ -125,7 +125,10 @@ module.exports.buildIndex = () => {
                     const meta = result.meta;
                     let willBeAdded = true;
 
-                    if (meta.features != undefined && meta.features != []) {
+                    if (
+                        Array.isArray(meta.features) &&
+                        meta.features.length === 0
+                    ) {
                         for (const feature of meta.features) {
                             if (!meta.features.includes(feature)) {
                                 willBeAdded = false;
