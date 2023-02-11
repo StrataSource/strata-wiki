@@ -70,7 +70,7 @@ module.exports.menu = {};
 module.exports.all = [];
 
 module.exports.buildIndex = () => {
-    let res = {};
+    const res = {};
 
     const gameList = this.games();
 
@@ -90,11 +90,11 @@ module.exports.buildIndex = () => {
                 topics: {},
             };
 
-            let menu = [];
+            const menu = [];
 
             for (const topic of category.topics) {
                 //Check if index.md exists
-                let path = this.slugToPath(
+                const path = this.slugToPath(
                     `${game.id}/${category.id}/${topic.id}`
                 ).replace("index.md", "");
 

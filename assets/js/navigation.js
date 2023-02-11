@@ -6,9 +6,9 @@ let menu = {};
  */
 async function init() {
     updateAllLinkListeners();
-    let gameReq = await fetch("/ajax/games.json");
+    const gameReq = await fetch("/ajax/games.json");
     games = await gameReq.json();
-    let menuReq = await fetch("/ajax/menu.json");
+    const menuReq = await fetch("/ajax/menu.json");
     menu = await menuReq.json();
 
     //Regenerate UI
@@ -99,7 +99,7 @@ function regenerateSidebar(info) {
     }
 
     for (const entry of data) {
-        let el = document.createElement("a");
+        const el = document.createElement("a");
         el.id = `sb-${entry.id}`;
         el.innerText = entry.text;
         el.href = "/" + entry.link;
@@ -112,11 +112,11 @@ function regenerateSidebar(info) {
     }
 }
 function regenerateNav(info) {
-    let data = games[info.game].categories;
-    let container = document.querySelector(".categories");
+    const data = games[info.game].categories;
+    const container = document.querySelector(".categories");
     container.innerHTML = "";
     for (const cat of data) {
-        let el = document.createElement("a");
+        const el = document.createElement("a");
         el.innerText = cat.label;
         el.href = `/${info.game}/${cat.id}/${cat.home}`;
         if (cat.id === info.category) {
@@ -142,7 +142,7 @@ function linkClickHandler(e) {
 }
 
 async function switchGame(game) {
-    let split = location.pathname.slice(1).split("/");
+    const split = location.pathname.slice(1).split("/");
     split[0] = game;
     try {
         await navigate(split.join("/"));
@@ -152,7 +152,7 @@ async function switchGame(game) {
 }
 
 async function updateAllLinkListeners() {
-    let links = document.querySelectorAll("a");
+    const links = document.querySelectorAll("a");
     for (const link of links) {
         if (link.href.startsWith("javascript:")) {
             link.onclick = () => {};
