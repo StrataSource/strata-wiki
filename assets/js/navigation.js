@@ -12,7 +12,7 @@ async function init() {
     menu = await menuReq.json();
 
     //Regenerate UI
-    let info = parseSlug(location.pathname.substring(1));
+    const info = parseSlug(location.pathname.substring(1));
     regenerateNav(info);
     regenerateSidebar(info);
     generateGameSelector(info.game);
@@ -21,24 +21,24 @@ async function init() {
 window.addEventListener("load", init);
 
 function generateGameSelector(current) {
-    let container = document.querySelector(".games");
+    const container = document.querySelector(".games");
     container.innerHTML = "";
 
     for (const [key, value] of Object.entries(games)) {
-        let btn = document.createElement("button");
+        const btn = document.createElement("button");
         btn.classList.add("game-selector");
         btn.onclick = () => {
             switchGame(value.id);
         };
 
-        let icon = document.createElement("img");
+        const icon = document.createElement("img");
         icon.src = value.icon;
         icon.classList.add("icon");
         icon.style.background = value.color;
 
         btn.append(icon);
 
-        let name = document.createElement("span");
+        const name = document.createElement("span");
         name.innerText = value.name;
 
         btn.append(name);
@@ -48,7 +48,7 @@ function generateGameSelector(current) {
 }
 
 async function navigate(slug, replace = false) {
-    let info = parseSlug(slug);
+    const info = parseSlug(slug);
 
     if (info.category === "index") {
         info.category = "";
@@ -57,15 +57,15 @@ async function navigate(slug, replace = false) {
 
     let path = `/ajax/article/${info.game}/${info.category}/${info.topic}/${info.article}.json`;
 
-    path.replaceAll("//", "/");
+    path = path.replaceAll("///", "/").replaceAll("//", "/");
 
-    let req = await fetch(path);
+    const req = await fetch(path);
 
     if (req.status === 404) {
         throw new Error("Page not found");
     }
 
-    let data = await req.json();
+    const data = await req.json();
     console.log("NAV RESULT", data);
 
     document.querySelector(".content").innerHTML = data.content;
@@ -89,8 +89,8 @@ window.addEventListener("popstate", () => {
     navigate(location.pathname.substring(1), true);
 });
 function regenerateSidebar(info) {
-    let data = menu[info.game][info.category];
-    let container = document.querySelector(".sidebar");
+    const data = menu[info.game][info.category];
+    const container = document.querySelector(".sidebar");
     container.innerHTML = "";
 
     if (!data) {
@@ -112,7 +112,7 @@ function regenerateSidebar(info) {
                 el.classList.add("article");
                 break;
         }
-        let loc = location.pathname.substring(1).replace(/\/$/, "");
+        const loc = location.pathname.substring(1).replace(/\/$/, "");
         if (entry.link === loc || entry.link === loc + "/index") {
             el.classList.add("active");
         }
@@ -142,7 +142,7 @@ function regenerateNav(info) {
 function linkClickHandler(e) {
     e.preventDefault();
     console.log("GOING TO", e.target.href);
-    let url = new URL(e.target.href, location);
+    const url = new URL(e.target.href, location);
     if (url.host != location.host) {
         window.open(e.target.href, "_blank");
     } else {
@@ -178,8 +178,8 @@ async function updateAllLinkListeners() {
  * @returns {{game: string, topic: string, category: string, article: string}}
  */
 function parseSlug(slug) {
-    let slugParsed = slug.split("/");
-    let info = {
+    const slugParsed = slug.split("/");
+    const info = {
         game: slugParsed[0] || "index",
         category: slugParsed[1] || "index",
         topic: slugParsed[2] || "index",

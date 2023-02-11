@@ -9,7 +9,7 @@ const { applyTemplate } = require("./template");
 module.exports.games = () => {
     let res = [];
 
-    let games = fs.readdirSync("pages");
+    const games = fs.readdirSync("pages");
 
     for (let index = 0; index < games.length; index++) {
         const game = games[index];
@@ -30,10 +30,10 @@ module.exports.games = () => {
  * @returns {string} Path to a makrdown file
  */
 module.exports.slugToPath = (slug) => {
-    let info = this.parseSlug(slug);
+    const info = this.parseSlug(slug);
 
     let path = undefined;
-    let possiblePaths = [
+    const possiblePaths = [
         `${info.game}/${info.topic}/${info.article}.md`,
         `shared/${info.topic}/${info.article}.md`,
         `${info.game}/index.md`,
@@ -70,8 +70,8 @@ module.exports.parseSlug = (slug) => {
         );
     }
 
-    let slugParsed = slug.split("/");
-    let info = {
+    const slugParsed = slug.split("/");
+    const info = {
         game: slugParsed[0] || "index",
         category: slugParsed[1] || "index",
         topic: slugParsed[2] || "index",
@@ -87,7 +87,7 @@ module.exports.all = [];
 module.exports.buildIndex = () => {
     let res = {};
 
-    let gameList = this.games();
+    const gameList = this.games();
 
     for (let index = 0; index < gameList.length; index++) {
         const game = gameList[index];
@@ -131,17 +131,17 @@ module.exports.buildIndex = () => {
                     link: `${game.id}/${category.id}/${topic.id}`,
                 });
 
-                let articles = fs.readdirSync(path);
+                const articles = fs.readdirSync(path);
 
                 for (let index = 0; index < articles.length; index++) {
                     const article = articles[index].replace(".md", "");
-                    let result = renderer.renderPage(
+                    const result = renderer.renderPage(
                         `${game.id}/${category.id}/${topic.id}/${article}`
                     );
 
                     console.log(result.slug, result.meta);
 
-                    let meta = result.meta;
+                    const meta = result.meta;
                     let willBeAdded = true;
 
                     if (meta.features != undefined && meta.features != []) {
