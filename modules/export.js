@@ -4,34 +4,40 @@ const pages = require("./pages");
 const template = require("./template");
 
 module.exports.all = () => {
-    function step(i) {
-        console.log(`--------------`);
-        console.log(`    Step ${i}`);
-        console.log(`--------------`);
+    function* stepGenerator() {
+        let step = 1;
+        while (true) {
+            console.log(`--------------`);
+            console.log(`    Step ${step++}`);
+            console.log(`--------------`);
+            yield;
+        }
     }
 
-    step(1);
+    const step = stepGenerator();
+
+    step.next();
     this.clean();
 
-    step(2);
+    step.next();
     this.copyAssets();
 
-    step(3);
+    step.next();
     template.generateNav();
 
-    step(4);
+    step.next();
     pages.buildIndex();
 
-    step(5);
+    step.next();
     this.saveAllPages();
 
-    step(6);
+    step.next();
     this.generateSpecialPages();
 
-    step(7);
+    step.next();
     this.copyGameMeta();
 
-    step(8);
+    step.next();
     console.log("Done!");
 };
 
