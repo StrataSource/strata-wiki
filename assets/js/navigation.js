@@ -103,14 +103,7 @@ function regenerateSidebar(info) {
         el.id = `sb-${entry.id}`;
         el.innerText = entry.text;
         el.href = "/" + entry.link;
-        switch (entry.type) {
-            case "topic":
-                el.classList.add("topic");
-                break;
-            default:
-                el.classList.add("article");
-                break;
-        }
+        el.classList.add(entity.type === "topic" ? "topic" : "article")
         const loc = location.pathname.slice(1).replace(/\/$/, "");
         if (entry.link === loc || entry.link === loc + "/index") {
             el.classList.add("active");
