@@ -43,12 +43,12 @@ module.exports.slugToPath = (slug) => {
     for (let index = 0; index < possiblePaths.length; index++) {
         const p = possiblePaths[index];
         console.log("Checking file path", "pages/" + p);
-        if (path == undefined && fs.existsSync("pages/" + p)) {
+        if (path === undefined && fs.existsSync("pages/" + p)) {
             path = "pages/" + p;
         }
     }
 
-    if (path == undefined) {
+    if (path === undefined) {
         throw new Error("Could not locate Markdown file for slug: " + slug);
     }
 

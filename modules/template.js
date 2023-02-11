@@ -42,7 +42,7 @@ module.exports.generateSidebar = (slug) => {
 
     console.log("DATA", data, "INFO", info, "SLUG", slug);
 
-    if (data == undefined) {
+    if (!data) {
         return ``;
     }
 

@@ -50,7 +50,7 @@ function generateGameSelector(current) {
 async function navigate(slug, replace = false) {
     var info = parseSlug(slug);
 
-    if (info.category == "index") {
+    if (info.category === "index") {
         info.category = "";
         info.topic = "";
     }
@@ -61,7 +61,7 @@ async function navigate(slug, replace = false) {
 
     var req = await fetch(path);
 
-    if (req.status == 404) {
+    if (req.status === 404) {
         throw new Error("Page not found");
     }
 
@@ -93,7 +93,7 @@ function regenerateSidebar(info) {
     var container = document.querySelector(".sidebar");
     container.innerHTML = "";
 
-    if (data == undefined) {
+    if (!data) {
         container.innerHTML = "Nothing to show!";
         return;
     }
@@ -113,7 +113,7 @@ function regenerateSidebar(info) {
                 break;
         }
         var loc = location.pathname.substring(1).replace(/\/$/, "");
-        if (entry.link == loc || entry.link == loc + "/index") {
+        if (entry.link === loc || entry.link === loc + "/index") {
             el.classList.add("active");
         }
         container.append(el);
@@ -128,7 +128,7 @@ function regenerateNav(info) {
         var el = document.createElement("a");
         el.innerText = cat.label;
         el.href = `/${info.game}/${cat.id}/${cat.home}`;
-        if (cat.id == info.category) {
+        if (cat.id === info.category) {
             el.classList.add("active");
         }
         container.append(el);
