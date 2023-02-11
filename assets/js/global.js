@@ -11,15 +11,15 @@ function considerSize() {
 window.addEventListener("resize", considerSize);
 window.addEventListener("load", considerSize);
 
-var scrollSpy_targets = [];
-var scrollSpy_menu = [];
-var scrollSpy_index = 0;
-var scrollSpy_breakpoint_up = -2;
-var scrollSpy_breakpoint_down = -1;
+let scrollSpy_targets = [];
+let scrollSpy_menu = [];
+let scrollSpy_index = 0;
+let scrollSpy_breakpoint_up = -2;
+let scrollSpy_breakpoint_down = -1;
 function scrollSpy_calculate() {
     window.removeEventListener("scroll", scrollSpy_compare);
 
-    var headings = document.querySelectorAll("#content h1");
+    let headings = document.querySelectorAll("#content h1");
     scrollSpy_targets = [];
     scrollSpy_index = 0;
 
@@ -27,23 +27,23 @@ function scrollSpy_calculate() {
         document.querySelector(".scrollspy-container").remove();
     } catch {}
 
-    var menuContainer = document.createElement("div");
+    let menuContainer = document.createElement("div");
     menuContainer.classList.add("scrollspy-container");
     document.querySelector(".menu a.active").after(menuContainer);
 
     for (let index = 0; index < headings.length; index++) {
         const heading = headings[index];
 
-        var hash = heading.innerText.toLowerCase().replaceAll(" ", "-");
+        let hash = heading.innerText.toLowerCase().replaceAll(" ", "-");
         heading.id = hash;
 
-        var bbox = heading.getBoundingClientRect();
+        let bbox = heading.getBoundingClientRect();
 
-        var height = bbox.top + window.scrollY - 1 - window.innerHeight / 4;
+        let height = bbox.top + window.scrollY - 1 - window.innerHeight / 4;
 
         scrollSpy_targets.push(height);
 
-        var menuItem = document.createElement("a");
+        let menuItem = document.createElement("a");
         menuItem.classList.add("scrollspy");
         menuItem.innerText = heading.innerText;
         menuItem.href = "#" + hash;
@@ -51,7 +51,7 @@ function scrollSpy_calculate() {
         scrollSpy_menu.push(menuItem);
 
         //Debugging thingy
-        /*var debug = document.createElement("div");
+        /*let debug = document.createElement("div");
     debug.classList.add("debug-line");
     debug.style.top = `${height}px`;
     document.body.prepend(debug);
@@ -68,7 +68,7 @@ function scrollSpy_compare() {
         left: 0,
     });
 
-    var change = 0;
+    let change = 0;
     if (scrollSpy_breakpoint_up > window.scrollY) {
         change = -1;
     }
