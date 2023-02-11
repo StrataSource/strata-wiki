@@ -31,7 +31,7 @@ for (let index = 0; index < games.length; index++) {
 
     md.use(container_block, game.id, {
         validate: function (params) {
-            return params.trim() == game.id;
+            return params.trim() === game.id;
         },
         render: function (tokens, idx) {
             if (tokens[idx].nesting === 1) {
