@@ -43,10 +43,10 @@ module.exports.generateSidebar = (slug) => {
     console.log("DATA", data, "INFO", info, "SLUG", slug);
 
     if (!data) {
-        return ``;
+        return;
     }
 
-    let res = ``;
+    let res;
     for (const entry of data) {
         res += `<a href="/${entry.link}" class="${entry.type}">${entry.text}</a>`;
     }
@@ -57,10 +57,10 @@ module.exports.generateSidebar = (slug) => {
  * Generates the top nav links for all pages
  */
 module.exports.generateNav = () => {
-    let games = pages.games();
+    const games = pages.games();
 
     for (const game of games) {
-        let res = ``;
+        let res;
 
         for (const category of game.categories) {
             res += `<a href="/${game.id}/${category.id}/${category.home}">${category.label}</a>`;

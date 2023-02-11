@@ -62,7 +62,7 @@ module.exports.saveAllPages = () => {
 
 module.exports.copyGameMeta = () => {
     const gameList = pages.games();
-    let games = {};
+    const games = {};
 
     for (let index = 0; index < gameList.length; index++) {
         const game = gameList[index];
