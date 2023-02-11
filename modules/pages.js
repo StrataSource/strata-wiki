@@ -7,20 +7,13 @@ const { applyTemplate } = require("./template");
  * @returns {{id: string, logo: string, icon: string, name: string, nameShort: string, color: string, categories: {label: string, id: string, home: string, topics: {id: string, name: string}[]}[], features: string[]}[]} An array of game objects, metadata included
  */
 module.exports.games = () => {
-    let res = [];
-
     const games = fs.readdirSync("pages");
-
-    for (const game of games) {
-        if (fs.existsSync(`pages/${game}/meta.json`)) {
-            res.push({
-                ...require(`../pages/${game}/meta.json`),
-                id: game,
-            });
-        }
-    }
-
-    return res;
+    return games
+        .filter((game) => fs.existsSync(`pages/${game}/meta.json`))
+        .map((game) => ({
+            ...require(`../pages/${game}/meta.json`),
+            id: game,
+        }));
 };
 
 /**
