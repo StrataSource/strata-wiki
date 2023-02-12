@@ -51,7 +51,9 @@ module.exports.all = () => {
 
 module.exports.clean = () => {
     console.log("Clearing public folder...");
-    fs.rmSync("public", { recursive: true });
+    if (fs.existsSync("public")) {
+        fs.rmSync("public", { recursive: true });
+    }
     fs.mkdirSync("public");
 
     fs.mkdirSync("public/ajax");
