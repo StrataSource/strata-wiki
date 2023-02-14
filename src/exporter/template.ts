@@ -28,7 +28,7 @@ export class Templater {
         replacers.content = html;
 
         // Read template HTML
-        let res: HTMLString = fs.readFileSync('templates/main.html', 'utf-8');
+        let res: HTMLString = fs.readFileSync('templates/main.html', 'utf8');
         console.log('Templating', replacers);
 
         // Replacing values from opts in HTML

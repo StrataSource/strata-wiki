@@ -79,7 +79,7 @@ export class PageHandler {
                         const meta = result.meta;
                         if (
                             Array.isArray(meta.features) &&
-                            meta.features.length !== 0 &&
+                            meta.features.length > 0 &&
                             !meta.features.every((feature) => this.games[game.id]?.features.includes(feature))
                         )
                             continue;
