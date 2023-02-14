@@ -1,3 +1,3 @@
-const list = require("./modules/list");
+const list = require('./modules/list');
 
-console.log(list.rebuildPageIndex("p2ce"));
+console.log(list.rebuildPageIndex('p2ce'));

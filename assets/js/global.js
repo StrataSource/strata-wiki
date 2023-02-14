@@ -1,15 +1,15 @@
 function considerSize() {
     if (window.innerWidth < 700) {
-        document.body.classList.remove("sidebar-pinned");
+        document.body.classList.remove('sidebar-pinned');
     } else {
-        document.body.classList.add("sidebar-pinned");
+        document.body.classList.add('sidebar-pinned');
     }
 
     scrollSpy_calculate();
 }
 
-window.addEventListener("resize", considerSize);
-window.addEventListener("load", considerSize);
+window.addEventListener('resize', considerSize);
+window.addEventListener('load', considerSize);
 
 let scrollSpy_targets = [];
 let scrollSpy_menu = [];
@@ -17,24 +17,24 @@ let scrollSpy_index = 0;
 let scrollSpy_breakpoint_up = -2;
 let scrollSpy_breakpoint_down = -1;
 function scrollSpy_calculate() {
-    window.removeEventListener("scroll", scrollSpy_compare);
+    window.removeEventListener('scroll', scrollSpy_compare);
 
-    let headings = document.querySelectorAll("#content h1");
+    let headings = document.querySelectorAll('#content h1');
     scrollSpy_targets = [];
     scrollSpy_index = 0;
 
     try {
-        document.querySelector(".scrollspy-container").remove();
+        document.querySelector('.scrollspy-container').remove();
     } catch {}
 
-    let menuContainer = document.createElement("div");
-    menuContainer.classList.add("scrollspy-container");
-    document.querySelector(".menu a.active").after(menuContainer);
+    let menuContainer = document.createElement('div');
+    menuContainer.classList.add('scrollspy-container');
+    document.querySelector('.menu a.active').after(menuContainer);
 
     for (let index = 0; index < headings.length; index++) {
         const heading = headings[index];
 
-        let hash = heading.innerText.toLowerCase().replaceAll(" ", "-");
+        let hash = heading.innerText.toLowerCase().replaceAll(' ', '-');
         heading.id = hash;
 
         let bbox = heading.getBoundingClientRect();
@@ -43,10 +43,10 @@ function scrollSpy_calculate() {
 
         scrollSpy_targets.push(height);
 
-        let menuItem = document.createElement("a");
-        menuItem.classList.add("scrollspy");
+        let menuItem = document.createElement('a');
+        menuItem.classList.add('scrollspy');
         menuItem.innerText = heading.innerText;
-        menuItem.href = "#" + hash;
+        menuItem.href = '#' + hash;
         menuContainer.append(menuItem);
         scrollSpy_menu.push(menuItem);
 
@@ -61,11 +61,11 @@ function scrollSpy_calculate() {
     scrollSpy_breakpoint_up = -2;
     scrollSpy_breakpoint_down = scrollSpy_targets[0];
 
-    window.addEventListener("scroll", scrollSpy_compare);
+    window.addEventListener('scroll', scrollSpy_compare);
 }
 function scrollSpy_compare() {
     window.scroll({
-        left: 0,
+        left: 0
     });
 
     let change = 0;
@@ -77,19 +77,18 @@ function scrollSpy_compare() {
     }
 
     if (change != 0) {
-        console.log("Changed by", change);
+        console.log('Changed by', change);
         if (scrollSpy_index > -1) {
-            scrollSpy_menu[scrollSpy_index].classList.remove("active");
+            scrollSpy_menu[scrollSpy_index].classList.remove('active');
         }
         scrollSpy_index += change;
         if (scrollSpy_index > -1) {
-            scrollSpy_menu[scrollSpy_index].classList.add("active");
+            scrollSpy_menu[scrollSpy_index].classList.add('active');
         }
 
         scrollSpy_breakpoint_up = scrollSpy_targets[scrollSpy_index] - 1 || -1;
         scrollSpy_breakpoint_down =
-            scrollSpy_targets[scrollSpy_index + 1] ||
-            document.body.getBoundingClientRect().height;
+            scrollSpy_targets[scrollSpy_index + 1] || document.body.getBoundingClientRect().height;
 
         scrollSpy_compare();
     }
