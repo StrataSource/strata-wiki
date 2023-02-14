@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Exporter } from './src/exporter/export';
 
 const exporter = new Exporter();
