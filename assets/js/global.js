@@ -31,10 +31,8 @@ function scrollSpy_calculate() {
     menuContainer.classList.add('scrollspy-container');
     document.querySelector('.menu a.active').after(menuContainer);
 
-    for (let index = 0; index < headings.length; index++) {
-        const heading = headings[index];
-
-        let hash = heading.innerText.toLowerCase().replaceAll(' ', '-');
+    for (const heading of headings) {
+        let hash = heading.textContent.toLowerCase().replaceAll(' ', '-');
         heading.id = hash;
 
         let bbox = heading.getBoundingClientRect();
