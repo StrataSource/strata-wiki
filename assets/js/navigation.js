@@ -85,9 +85,7 @@ async function navigate(slug, replace = false) {
 
     updateAllLinkListeners();
 }
-window.addEventListener('popstate', () => {
-    navigate(location.pathname.slice(1), true);
-});
+window.addEventListener('popstate', () => navigate(location.pathname.slice(1), true));
 function regenerateSidebar(info) {
     const data = menu[info.game][info.category];
     const container = document.querySelector('.sidebar');
@@ -151,14 +149,10 @@ async function switchGame(game) {
     }
 }
 
-async function updateAllLinkListeners() {
+function updateAllLinkListeners() {
     const links = document.querySelectorAll('a');
     for (const link of links) {
-        if (link.href.startsWith('javascript:')) {
-            link.onclick = () => {};
-        } else {
-            link.onclick = linkClickHandler;
-        }
+        link.onclick = link.href.startsWith('javascript:') ? () => void 0 : linkClickHandler;
     }
 }
 
