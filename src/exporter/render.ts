@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import hljs from 'highlight.js';
 import yaml from 'yaml';
 import container_block from 'markdown-it-container';
@@ -24,7 +24,7 @@ export class Renderer {
                 if (lang && hljs.getLanguage(lang))
                     try {
                         return hljs.highlight(str, { language: lang }).value;
-                    } catch (_) {}
+                    } catch {}
 
                 return '';
             }
@@ -53,7 +53,7 @@ export class Renderer {
      * @param slug The slug of the current page, used for passthrough
      * @returns An object that includes the rendered HTML.
      */
-    render(str: MarkdownString, slug: Slug = undefined): RenderedPage {
+    render(str: MarkdownString, slug: Slug): RenderedPage {
         this.tempMetaValue = {};
         return {
             content: this.md.render(str),
@@ -72,7 +72,7 @@ export class Renderer {
 
         return this.render(
             fs.readFileSync(slug.path, {
-                encoding: 'utf-8'
+                encoding: 'utf8'
             }),
             slug
         );
