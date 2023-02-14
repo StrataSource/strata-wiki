@@ -134,10 +134,10 @@ function linkClickHandler(e) {
     e.preventDefault();
     console.log('GOING TO', e.target.href);
     const url = new URL(e.target.href, location);
-    if (url.host != location.host) {
-        window.open(e.target.href, '_blank');
-    } else {
+    if (url.host === location.host) {
         navigate(url.pathname.slice(1));
+    } else {
+        window.open(e.target.href, '_blank');
     }
 }
 
