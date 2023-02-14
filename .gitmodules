@@ -1,0 +1,4 @@
+[submodule "pages"]
+	path = pages
+	url = https://github.com/ChaosInitiative/Wiki
+	branch = system-migration
