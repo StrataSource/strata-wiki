@@ -157,7 +157,7 @@ function updateAllLinkListeners() {
 }
 
 /**
- * Seperates the slug into an easily digestable object
+ * Separates the slug into an easily digestible object
  * @param {string} slug The slug you are trying to parse
  * @returns {{game: string, topic: string, category: string, article: string}}
  */
