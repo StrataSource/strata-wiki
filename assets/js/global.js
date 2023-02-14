@@ -74,7 +74,7 @@ function scrollSpy_compare() {
         change = 1;
     }
 
-    if (change != 0) {
+    if (change !== 0) {
         console.log('Changed by', change);
         if (scrollSpy_index > -1) {
             scrollSpy_menu[scrollSpy_index].classList.remove('active');
