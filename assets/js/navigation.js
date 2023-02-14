@@ -20,11 +20,11 @@ async function init() {
 }
 window.addEventListener('load', init);
 
-function generateGameSelector(current) {
+function generateGameSelector(_current) {
     const container = document.querySelector('.games');
     container.innerHTML = '';
 
-    for (const [key, value] of Object.entries(games)) {
+    for (const game of Object.values(games)) {
         const btn = document.createElement('button');
         btn.classList.add('game-selector');
         btn.onclick = () => {
@@ -32,9 +32,9 @@ function generateGameSelector(current) {
         };
 
         const icon = document.createElement('img');
-        icon.src = value.icon;
+        icon.src = game.icon;
         icon.classList.add('icon');
-        icon.style.background = value.color;
+        icon.style.background = game.color;
 
         btn.append(icon);
 
