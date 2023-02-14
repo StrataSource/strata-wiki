@@ -46,6 +46,9 @@ module.exports = {
         // Better parity with other languages, we use `1 << 0` frequently next to other shifts when defining bitflags.
         'unicorn/prefer-math-trunc': ['off'],
         // Why???
-        'unicorn/switch-case-braces': ['off']
+        'unicorn/switch-case-braces': ['off'],
+        // Browsers don't provide a nice way to determine if an event listener exists or not. Worth using listeners
+        // when possible, but at times using an `on`-function results in simpler code.
+        'unicorn/prefer-add-event-listener': ['off']
     }
 };
