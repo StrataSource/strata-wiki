@@ -2,11 +2,11 @@
     "name": "chaos-wiki",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "node .",
-        "dev": "node . && wrangler pages dev public"
+        "build-ts": "tsc",
+        "build": "node build/index.js",
+        "dev": "npm run build-ts && npm run build && wrangler pages dev public",
     },
     "repository": {
         "type": "git",
@@ -19,14 +19,20 @@
     },
     "homepage": "https://github.com/ChaosInitiative/chaos-wiki#readme",
     "dependencies": {
+        "typescript": "^4.9.5",
         "fs-extra": "^11.1.0",
         "highlight.js": "^11.7.0",
         "markdown-it": "^13.0.1",
         "markdown-it-container": "^3.0.0",
         "markdown-it-front-matter": "^0.2.3",
-        "yaml": "^2.2.1",
+        "yaml": "^2.2.1"
     },
     "devDependencies": {
+        "@types/node": "^18.13.0",
+        "@types/fs-extra": "^11.0.1",
+        "@types/markdown-it": "^12.2.3",
+        "@typescript-eslint/eslint-plugin": "^5.52.0",
+        "@typescript-eslint/parser": "^5.52.0",
         "wrangler": "^2.9.1"
     }
 }

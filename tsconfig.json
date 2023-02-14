@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "declaration": true,
+        "removeComments": false,
+        "resolveJsonModule": true,
+        "target": "ES2022",
+        "sourceMap": true,
+        "outDir": "./build",
+        "incremental": true,
+        "skipLibCheck": true,
+        "baseUrl": "./",
+        "esModuleInterop": true
+    }
+}
