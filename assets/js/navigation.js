@@ -28,7 +28,7 @@ function generateGameSelector(_current) {
         const btn = document.createElement('button');
         btn.classList.add('game-selector');
         btn.onclick = () => {
-            switchGame(value.id);
+            switchGame(game.id);
         };
 
         const icon = document.createElement('img');
@@ -39,7 +39,7 @@ function generateGameSelector(_current) {
         btn.append(icon);
 
         const name = document.createElement('span');
-        name.innerText = value.name;
+        name.innerText = game.name;
 
         btn.append(name);
 
