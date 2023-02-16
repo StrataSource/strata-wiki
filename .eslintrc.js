@@ -5,7 +5,7 @@ module.exports = {
         sourceType: 'default'
     },
     plugins: ['@typescript-eslint/eslint-plugin', 'unicorn', 'unused-imports', 'prettier'],
-    extends: ['plugin:@typescript-eslint/recommended', 'plugin:unicorn/recommended', 'prettier'],
+    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:unicorn/recommended', 'prettier'],
     root: true,
     env: {
         node: true,
@@ -13,6 +13,8 @@ module.exports = {
     },
     ignorePatterns: ['.eslintrc.js', 'node_modules', '_*.ts', 'build', '**/*.d.ts'],
     rules: {
+        'no-var': ['error'],
+        'no-empty': ['error', { "allowEmptyCatch": true }],
         '@typescript-eslint/interface-name-prefix': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/explicit-module-boundary-types': 'off',
