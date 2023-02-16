@@ -7,6 +7,7 @@
         "build-ts": "tsc",
         "build": "node build/index.js",
         "dev": "npm run build-ts && npm run build && wrangler pages dev public",
+        "start": "npm run dev",
         "format:fix": "prettier --write {assets,src}/**/*.{ts,js,scss,css}",
         "format:check": "prettier --check {assets,src}/**/*.{ts,js,scss,css}",
         "lint:fix": "eslint \"{assets,src}/**/*.{ts,js}\" --fix",
