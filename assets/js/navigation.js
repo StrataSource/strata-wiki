@@ -145,7 +145,7 @@ async function switchGame(game) {
     try {
         await navigate(split.join('/'));
     } catch {
-        await navigate(`${game}`);
+        await navigate(game);
     }
 }
 
