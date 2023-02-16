@@ -49,6 +49,8 @@ module.exports = {
         'unicorn/switch-case-braces': ['off'],
         // Browsers don't provide a nice way to determine if an event listener exists or not. Worth using listeners
         // when possible, but at times using an `on`-function results in simpler code.
-        'unicorn/prefer-add-event-listener': ['off']
+        'unicorn/prefer-add-event-listener': ['off'],
+        // .innerText is useful for finding anchor nodes in the DOM
+        'unicorn/prefer-dom-node-text-content': ['warn']
     }
 };
