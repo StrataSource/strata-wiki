@@ -1,4 +1,4 @@
 [submodule "pages"]
 	path = pages
-	url = https://github.com/ChaosInitiative/Wiki
+	url = https://github.com/StrataSource/Wiki
 	branch = system-migration

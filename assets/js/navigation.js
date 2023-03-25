@@ -75,9 +75,7 @@ async function navigate(slug, replace = false) {
         history.pushState(slug, '', '/' + slug);
     }
     document.title = `${data.title} - ${games[info.game].name} Wiki`;
-    document.querySelector(
-        '.edit a'
-    ).href = `https://github.com/ChaosInitiative/Wiki/tree/system-migration/${data.file}`;
+    document.querySelector('.edit a').href = `https://github.com/StrataSource/Wiki/tree/system-migration/${data.file}`;
 
     regenerateSidebar(info);
     regenerateNav(info);
