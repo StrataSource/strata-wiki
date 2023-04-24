@@ -1,61 +1,61 @@
 {
-  "name": "strata-wiki",
-  "version": "1.0.0",
-  "description": "Hi! This is our wiki software. It uses Markdown files in order to compile static HTML files which can be deployed to the web.",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build-ts": "tsc",
-    "build": "node build/index.js",
-    "dev": "npm run build-ts && npm run build && wrangler pages dev public",
-    "start": "npm run dev",
-    "format:fix": "prettier --write {assets,src}/**/*.{ts,js,scss,css}",
-    "format:check": "prettier --check {assets,src}/**/*.{ts,js,scss,css}",
-    "lint:fix": "eslint \"{assets,src}/**/*.{ts,js}\" --fix",
-    "lint:check": "eslint \"{assets,src}/**/*.{ts,js}\"",
-    "prepare": "husky install"
-  },
-  "lint-staged": {
-    "{assets,src}/**/*.{ts,js,css,scss}": [
-      "eslint --quiet --fix",
-      "prettier --write"
-    ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/StrataSource/strata-wiki.git"
-  },
-  "author": "Strata Source",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/StrataSource/strata-wiki/issues"
-  },
-  "homepage": "https://github.com/StrataSource/strata-wiki#readme",
-  "dependencies": {
-    "typescript": "^4.9.5",
-    "fs-extra": "^11.1.0",
-    "highlight.js": "^11.7.0",
-    "markdown-it": "^13.0.1",
-    "markdown-it-container": "^3.0.0",
-    "markdown-it-front-matter": "^0.2.3",
-    "yaml": "^2.2.1"
-  },
-  "devDependencies": {
-    "@types/node": "^18.13.0",
-    "@types/fs-extra": "^11.0.1",
-    "@types/markdown-it": "^12.2.3",
-    "@typescript-eslint/eslint-plugin": "^5.52.0",
-    "@typescript-eslint/parser": "^5.52.0",
-    "eslint": "^8.34.0",
-    "eslint-config-prettier": "^8.6.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-unicorn": "^45.0.2",
-    "eslint-plugin-unused-imports": "^2.0.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^13.1.2",
-    "prettier": "^2.8.4",
-    "prettier-eslint": "^15.0.1",
-    "wrangler": "^2.9.1"
-  },
-  "main": ".eslintrc.js",
-  "keywords": []
+    "name": "strata-wiki",
+    "version": "1.0.0",
+    "description": "Hi! This is our wiki software. It uses Markdown files in order to compile static HTML files which can be deployed to the web.",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build-ts": "tsc",
+        "build": "node build/index.js",
+        "dev": "npm run build-ts && npm run build && wrangler pages dev public",
+        "start": "npm run dev",
+        "format:fix": "prettier --write {assets,src}/**/*.{ts,js,scss,css}",
+        "format:check": "prettier --check {assets,src}/**/*.{ts,js,scss,css}",
+        "lint:fix": "eslint \"{assets,src}/**/*.{ts,js}\" --fix",
+        "lint:check": "eslint \"{assets,src}/**/*.{ts,js}\"",
+        "prepare": "husky install"
+    },
+    "lint-staged": {
+        "{assets,src}/**/*.{ts,js,css,scss}": [
+            "prettier --write"
+        ],
+        "src/**/*.{ts,js}": [
+            "eslint --quiet --fix"
+        ]
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/StrataSource/strata-wiki.git"
+    },
+    "author": "Strata Source",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/StrataSource/strata-wiki/issues"
+    },
+    "homepage": "https://github.com/StrataSource/strata-wiki#readme",
+    "dependencies": {
+        "typescript": "^4.9.5",
+        "fs-extra": "^11.1.0",
+        "highlight.js": "^11.7.0",
+        "markdown-it": "^13.0.1",
+        "markdown-it-container": "^3.0.0",
+        "markdown-it-front-matter": "^0.2.3",
+        "yaml": "^2.2.1"
+    },
+    "devDependencies": {
+        "@types/node": "^18.13.0",
+        "@types/fs-extra": "^11.0.1",
+        "@types/markdown-it": "^12.2.3",
+        "@typescript-eslint/eslint-plugin": "^5.52.0",
+        "@typescript-eslint/parser": "^5.52.0",
+        "eslint": "^8.34.0",
+        "eslint-config-prettier": "^8.6.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "eslint-plugin-unicorn": "^45.0.2",
+        "eslint-plugin-unused-imports": "^2.0.0",
+        "husky": "^8.0.3",
+        "lint-staged": "^13.1.2",
+        "prettier": "^2.8.4",
+        "prettier-eslint": "^15.0.1",
+        "wrangler": "^2.9.1"
+    }
 }
