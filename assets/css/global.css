@@ -1,3 +1,7 @@
+body {
+    margin: 0;
+}
+
 .game-selector {
     display: flex;
     align-items: center;
@@ -13,4 +17,39 @@
 
 .active {
     font-weight: bold;
+}
+
+.edit {
+    float: right;
+}
+
+.content {
+    margin-left: 20rem;
+    background: darkred;
+    padding: 1rem;
+}
+.sidebar {
+    position: fixed;
+    top: 5rem;
+    left: 0;
+    width: 20rem;
+    height: calc(100vh - 5rem);
+    background: darkgreen;
+}
+.top-nav {
+    display: flex;
+    align-items: center;
+    height: 5rem;
+    width: 100%;
+    background: darkcyan;
+}
+
+.sidebar .article,
+.sidebar .topic {
+    display: block;
+    padding-left: 1rem;
+}
+
+.top-nav .games {
+    width: 20rem;
 }
