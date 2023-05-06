@@ -17,6 +17,8 @@ async function init() {
     regenerateSidebar(info);
     generateGameSelector(info.game);
     updateAllLinkListeners();
+
+    navigate(location.pathname.slice(1), true);
 }
 window.addEventListener('load', init);
 
@@ -75,7 +77,9 @@ async function navigate(slug, replace = false) {
         history.pushState(slug, '', '/' + slug);
     }
     document.title = `${data.title} - ${games[info.game].name} Wiki`;
-    document.querySelector('.edit a').href = `https://github.com/StrataSource/Wiki/tree/system-migration/${data.file}`;
+    document.querySelector(
+        '.edit a'
+    ).href = `https://github.com/StrataSource/Wiki/edit/system-migration/${data.file.slice(6)}`;
 
     regenerateSidebar(info);
     regenerateNav(info);
@@ -86,7 +90,7 @@ async function navigate(slug, replace = false) {
 window.addEventListener('popstate', () => navigate(location.pathname.slice(1), true));
 function regenerateSidebar(info) {
     const data = menu[info.game][info.category];
-    const container = document.querySelector('.sidebar');
+    const container = document.querySelector('.sidebar .inner');
     container.innerHTML = '';
 
     if (!data) {
@@ -108,13 +112,24 @@ function regenerateSidebar(info) {
     }
 }
 function regenerateNav(info) {
-    const data = games[info.game].categories;
+    const data = [
+        {
+            label: 'Home',
+            id: ''
+        },
+        ...games[info.game].categories
+    ];
     const container = document.querySelector('.categories');
     container.innerHTML = '';
+
     for (const cat of data) {
         const el = document.createElement('a');
         el.innerText = cat.label;
-        el.href = `/${info.game}/${cat.id}/${cat.home}`;
+        if (cat.id == '') {
+            el.href = `/${info.game}`;
+        } else {
+            el.href = `/${info.game}/${cat.id}/${cat.home}`;
+        }
         if (cat.id === info.category) {
             el.classList.add('active');
         }

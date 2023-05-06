@@ -1,5 +1,10 @@
 body {
     margin: 0;
+    font-family: 'Roboto', sans-serif;
+
+    --theme: #f0413c;
+    --themeTransparent: #f0423c30;
+    --themeHighlight: #ef8686;
 }
 
 .game-selector {
@@ -15,41 +20,99 @@ body {
     width: 2rem;
 }
 
-.active {
-    font-weight: bold;
-}
-
 .edit {
     float: right;
 }
 
 .content {
+    margin-top: 5rem;
     margin-left: 20rem;
-    background: darkred;
+    background: #222;
     padding: 1rem;
+    color: white;
 }
-.sidebar {
+.content a {
+    color: var(--theme);
+    text-decoration: none;
+    transition: 250ms;
+}
+.content a:hover {
+    color: var(--themeHighlight);
+}
+
+.top-nav {
+    display: flex;
+    align-items: center;
+    height: 4.9rem;
+    width: 100%;
+    background: #222222;
+    border-bottom: 0.1rem #555 solid;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.top-nav .games {
+    width: 20rem;
+}
+.top-nav .categories a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+    transition: 250ms;
+}
+.top-nav .categories a.active {
+    color: var(--theme);
+    background: var(--themeTransparent);
+    border-radius: 0.5rem;
+}
+.top-nav .categories a:hover {
+    color: var(--themeHighlight);
+}
+
+.sidebar,
+.sidebar.active {
     position: fixed;
     top: 5rem;
     left: 0;
     width: 20rem;
+    max-width: 100vw;
     height: calc(100vh - 5rem);
-    background: darkgreen;
+    background: #222222;
+    transition: 250ms;
+    border-right: 0.1rem #555 solid;
 }
-.top-nav {
-    display: flex;
-    align-items: center;
-    height: 5rem;
-    width: 100%;
-    background: darkcyan;
-}
-
 .sidebar .article,
 .sidebar .topic {
     display: block;
     padding-left: 1rem;
 }
+.sidebar .mobile {
+    text-align: right;
+}
+.sidebar .mobile button {
+    color: white;
+    font-size: 2rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+.sidebar .inner {
+    margin-top: 0.5rem;
+}
 
-.top-nav .games {
-    width: 20rem;
+.mobile {
+    display: none;
+}
+@media only screen and (max-width: 1000px) {
+    .mobile {
+        display: block;
+    }
+
+    .sidebar {
+        left: -20rem;
+    }
+    .content {
+        margin-left: 0;
+    }
 }
