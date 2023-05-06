@@ -11,6 +11,11 @@ async function init() {
     const menuReq = await fetch('/ajax/menu.json');
     menu = await menuReq.json();
 
+    let dialogCloseBtns = document.querySelectorAll('dialog .close');
+    for (const btn of dialogCloseBtns) {
+        btn.addEventListener('click', () => btn.parentElement.close());
+    }
+
     //Regenerate UI
     const info = parseSlug(location.pathname.slice(1));
     regenerateNav(info);
