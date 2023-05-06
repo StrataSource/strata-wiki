@@ -69,6 +69,9 @@ export class PageHandler {
                     console.log('Reading directory', directoryPath);
 
                     const articles = fs.readdirSync(directoryPath);
+
+                    const articleList: MenuCategoryItem[] = [];
+
                     for (let articleString of articles) {
                         articleString = articleString.replace('.md', '');
 
@@ -97,15 +100,25 @@ export class PageHandler {
                         index[game.id].categories[category.id].topics[topic.id].articles[articleString] = article;
 
                         // Add to menu
-                        menuCategory.push({
+                        const entry: MenuCategoryItem = {
                             type: 'article',
                             id: topic.id + '_' + articleString,
                             text: meta.title || articleString,
                             link: result.slug.toString()
-                        });
+                        };
+                        if (articleString == 'index') {
+                            articleList.unshift(entry);
+                        } else {
+                            articleList.push(entry);
+                        }
 
                         // Add to collection of all articles
                         this.allArticles.push(article);
+                    }
+
+                    //Add local article list to menu
+                    for (const article of articleList) {
+                        menuCategory.push(article);
                     }
                 }
 
