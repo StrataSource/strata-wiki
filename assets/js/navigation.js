@@ -107,7 +107,7 @@ function regenerateSidebar(info) {
     container.innerHTML = '';
 
     if (!data) {
-        container.innerHTML = 'Nothing to show!';
+        container.innerHTML = '';
         return;
     }
 
