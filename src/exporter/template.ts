@@ -27,9 +27,10 @@ export class Templater {
         replacers.title = title;
         replacers.content = html;
 
+        replacers.game = slug.game;
+
         // Read template HTML
         let res: HTMLString = fs.readFileSync('templates/main.html', 'utf8');
-        console.log('Templating', replacers);
 
         // Replacing values from opts in HTML
         for (const [key, value] of Object.entries(replacers)) {
@@ -46,8 +47,6 @@ export class Templater {
      */
     generateSidebar(slug: Slug): HTMLString {
         const data = this.exporter.pageHandler.menu[slug.game][slug.category];
-
-        console.log('DATA', data, 'INFO', slug, 'SLUG', slug.toString());
 
         if (!data) return;
 
