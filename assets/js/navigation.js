@@ -28,7 +28,7 @@ function generateGameSelector(_current) {
 
     for (const game of Object.values(games)) {
         const btn = document.createElement('button');
-        btn.classList.add('game-selector');
+        btn.classList.add('game-selector', 'btn');
         btn.onclick = () => {
             switchGame(game.id);
         };
@@ -71,6 +71,14 @@ async function navigate(slug, replace = false) {
     console.log('NAV RESULT', data);
 
     document.querySelector('.content').innerHTML = data.content;
+
+    let exclusives = document.querySelectorAll('.exclusive');
+    for (const exclusive of exclusives) {
+        if (!exclusive.className.includes(info.game)) {
+            exclusive.remove();
+        }
+    }
+
     if (replace) {
         history.replaceState(slug, '', '/' + slug);
     } else {
@@ -80,6 +88,8 @@ async function navigate(slug, replace = false) {
     document.querySelector('html').className = 'theme-' + info.game;
 
     document.title = `${data.title} - ${games[info.game].name} Wiki`;
+    document.querySelector('#current-game').innerText = games[info.game].name;
+
     document.querySelector(
         '.edit a'
     ).href = `https://github.com/StrataSource/Wiki/edit/system-migration/${data.file.slice(6)}`;
@@ -156,6 +166,8 @@ function linkClickHandler(e) {
 }
 
 async function switchGame(game) {
+    document.querySelector('#gameSelector').close();
+
     const split = location.pathname.slice(1).split('/');
     split[0] = game;
     try {

@@ -16,7 +16,19 @@
     </head>
     <body>
         <div class="top-nav">
-            <div class="games">Loading...</div>
+            <div class="game">
+                <div>
+                    <div id="current-game"></div>
+                    <h2>Documentation</h2>
+                </div>
+                <button
+                    title="Switch game"
+                    class="icon-button"
+                    onclick="document.querySelector('#gameSelector').showModal()"
+                >
+                    <span class="mdi mdi-controller"></span>
+                </button>
+            </div>
             <div class="categories">
                 <a href="/%GAME%">Home</a>
                 %CATEGORIES%
@@ -28,12 +40,17 @@
                     <span class="mdi mdi-close"></span>
                 </button>
             </div>
-            <div class="inner">%SIDEBAR%</div>
+            <div class="inner desktop">%SIDEBAR%</div>
         </div>
         <div class="edit">
             <a>Edit</a>
         </div>
         <div class="content">%CONTENT%</div>
+
+        <dialog id="gameSelector">
+            <h2>Select game</h2>
+            <div class="games">Loading games...</div>
+        </dialog>
 
         <script src="/assets/js/navigation.js"></script>
     </body>
