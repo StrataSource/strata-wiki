@@ -2,6 +2,7 @@ html {
     --theme: #f0413c;
     --themeTransparent: #f0423c30;
     --themeHighlight: #ef8686;
+    scrollbar-color: #f0413c #111;
 }
 
 body {
@@ -11,7 +12,6 @@ body {
 
 * {
     scrollbar-width: thin;
-    scrollbar-color: #f0413c #111;
 }
 
 .game-selector {
@@ -116,6 +116,7 @@ body {
     background: #222222;
     transition: 250ms;
     border-right: 0.1rem #555 solid;
+    overflow-y: auto;
 }
 .sidebar .article,
 .sidebar .topic {
@@ -153,6 +154,24 @@ body {
 }
 .sidebar .inner {
     margin-top: 0.5rem;
+}
+
+.scrollspy-container {
+    margin-left: 1rem;
+}
+.scrollspy {
+    display: block;
+    color: white;
+    padding: 0 0.5rem;
+    margin-left: 1.5rem;
+    text-decoration: none;
+    transition: 250ms;
+}
+.scrollspy.active {
+    color: var(--theme);
+}
+.scrollspy:hover {
+    color: var(--themeHighlight);
 }
 
 dialog {
