@@ -6,18 +6,27 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>%TITLE% - Strata Wiki</title>
         <link rel="stylesheet" href="/assets/css/global.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
     </head>
     <body>
         <div class="top-nav">
             <div class="games">Loading...</div>
             <div class="categories">%CATEGORIES%</div>
         </div>
-        <div class="sidebar">%SIDEBAR%</div>
+        <div class="sidebar">
+            <div class="mobile">
+                <button onclick="document.querySelector('.sidebar').classList.remove('active')" class="close">
+                    <span class="mdi mdi-close"></span>
+                </button>
+            </div>
+            <div class="inner">%SIDEBAR%</div>
+        </div>
         <div class="edit">
-            <a
-                href="https://github.com/StrataSource/Wiki/tree/system-migration%FILE%"
-                >Edit</a
-            >
+            <a>Edit</a>
         </div>
         <div class="content">%CONTENT%</div>
 
