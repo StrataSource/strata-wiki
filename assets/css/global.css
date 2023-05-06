@@ -156,24 +156,6 @@ body {
     margin-top: 0.5rem;
 }
 
-.scrollspy-container {
-    margin-left: 1rem;
-}
-.scrollspy {
-    display: block;
-    color: white;
-    padding: 0 0.5rem;
-    margin-left: 1.5rem;
-    text-decoration: none;
-    transition: 250ms;
-}
-.scrollspy.active {
-    color: var(--theme);
-}
-.scrollspy:hover {
-    color: var(--themeHighlight);
-}
-
 dialog {
     background: #222;
     color: white;
