@@ -1,15 +1,17 @@
-body {
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-
+html {
     --theme: #f0413c;
     --themeTransparent: #f0423c30;
     --themeHighlight: #ef8686;
-    scrollbar-color: #f0413c #111;
+}
+
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
 }
 
 * {
     scrollbar-width: thin;
+    scrollbar-color: #f0413c #111;
 }
 
 .game-selector {
@@ -140,4 +142,35 @@ body {
     .content {
         margin-left: 0;
     }
+}
+
+.content td,
+.content th {
+    border: 0.1rem solid #555;
+}
+.content td,
+.content th {
+    padding: 0.5rem;
+}
+.content table thead {
+    background: #333;
+}
+.content table {
+    border-collapse: collapse;
+    max-width: 100%;
+    overflow-x: auto;
+    display: block;
+}
+
+.content pre {
+    max-width: 100%;
+    padding: 1rem;
+    background: #111;
+    overflow-x: auto;
+}
+
+code {
+    background: #111;
+    padding: 0.1rem;
+    border-radius: 0.1rem;
 }

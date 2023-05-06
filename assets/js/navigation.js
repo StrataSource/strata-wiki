@@ -76,6 +76,9 @@ async function navigate(slug, replace = false) {
     } else {
         history.pushState(slug, '', '/' + slug);
     }
+
+    document.querySelector('html').className = 'theme-' + info.game;
+
     document.title = `${data.title} - ${games[info.game].name} Wiki`;
     document.querySelector(
         '.edit a'
