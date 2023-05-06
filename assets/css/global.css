@@ -16,13 +16,6 @@ body {
     scrollbar-width: thin;
 }
 
-.game-selector {
-    display: flex;
-    align-items: center;
-}
-.game-selector span {
-    padding-left: 0.4rem;
-}
 .icon {
     border-radius: 0.3rem;
     height: 2rem;
@@ -190,7 +183,21 @@ dialog h2 {
     border: none;
     cursor: pointer;
 }
+dialog .close {
+    float: right;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+}
 
+.game-selector {
+    display: flex;
+    align-items: center;
+}
+.game-selector span {
+    padding-left: 0.4rem;
+}
 #gameSelector .btn {
     width: 100%;
     margin-top: 0.5rem;
