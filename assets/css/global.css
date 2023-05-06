@@ -5,6 +5,11 @@ body {
     --theme: #f0413c;
     --themeTransparent: #f0423c30;
     --themeHighlight: #ef8686;
+    scrollbar-color: #f0413c #111;
+}
+
+* {
+    scrollbar-width: thin;
 }
 
 .game-selector {
@@ -85,8 +90,28 @@ body {
 .sidebar .article,
 .sidebar .topic {
     display: block;
-    padding-left: 1rem;
+    margin: 0rem 1rem;
 }
+.sidebar .topic {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: small;
+    margin-top: 1rem;
+}
+.sidebar .article {
+    padding: 0.75rem 1rem;
+    margin-top: 0.5rem;
+    border-radius: 0.5rem;
+    background: #ffffff30;
+    color: #fff;
+    text-decoration: none;
+}
+.sidebar .article.active {
+    color: var(--theme);
+    background: var(--themeTransparent);
+}
+
 .sidebar .mobile {
     text-align: right;
 }
