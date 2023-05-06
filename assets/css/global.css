@@ -58,8 +58,36 @@ body {
     top: 0;
     left: 0;
 }
-.top-nav .games {
+.top-nav .icon-button {
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1.5rem;
+    height: 3rem;
+    width: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.top-nav .game {
     width: 20rem;
+    display: flex;
+    justify-content: space-between;
+}
+.top-nav .game #current-game {
+    color: var(--theme);
+    font-weight: 700;
+    padding-left: 1rem;
+}
+.top-nav .game h2 {
+    color: white;
+    margin: 0;
+    padding-left: 1rem;
+}
+.top-nav .categories {
+    padding: 0 1rem;
 }
 .top-nav .categories a {
     color: white;
@@ -113,7 +141,6 @@ body {
     color: var(--theme);
     background: var(--themeTransparent);
 }
-
 .sidebar .mobile {
     text-align: right;
 }
@@ -128,12 +155,56 @@ body {
     margin-top: 0.5rem;
 }
 
+dialog {
+    background: #222;
+    color: white;
+    border: var(--theme) 0.1rem solid;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+dialog::backdrop {
+    background: black;
+    opacity: 0.5;
+}
+
+dialog h2 {
+    margin-top: 0;
+    margin-bottom: 0.3rem;
+}
+
+.edit {
+    margin: 1rem;
+}
+.btn {
+    background: #333;
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    display: block;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+}
+
+#gameSelector .btn {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
 .mobile {
     display: none;
+}
+.desktop {
+    display: block;
 }
 @media only screen and (max-width: 1000px) {
     .mobile {
         display: block;
+    }
+    .desktop {
+        display: none;
     }
 
     .sidebar {
@@ -142,6 +213,10 @@ body {
     .content {
         margin-left: 0;
     }
+}
+
+.content h1:first-child {
+    margin-top: 0;
 }
 
 .content td,
@@ -169,8 +244,28 @@ body {
     overflow-x: auto;
 }
 
-code {
+.content code {
     background: #111;
     padding: 0.1rem;
     border-radius: 0.1rem;
+}
+
+.content h1 {
+    margin-top: 0.5rem;
+}
+
+.content .exclusive .exclusive-header {
+    background: var(--theme);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    margin-top: -2rem;
+    width: fit-content;
+}
+.content .exclusive {
+    background: var(--themeTransparent);
+    padding: 1rem;
+    margin-top: 2rem;
+    border-radius: 0.5rem;
+    width: fit-content;
+    max-width: 100%;
 }
