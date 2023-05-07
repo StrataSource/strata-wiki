@@ -269,6 +269,11 @@ dialog .close {
     margin-top: 0.5rem;
 }
 
+.content img{
+    max-width: 100%;
+    max-height: 30rem;
+}
+
 .content .exclusive .exclusive-header {
     background: var(--theme);
     padding: 0.5rem;
