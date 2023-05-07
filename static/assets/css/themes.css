@@ -11,3 +11,10 @@
     --themeHighlight: #ef8686;
     scrollbar-color: #f0413c #111;
 }
+
+.theme-momentum {
+    --theme: #1896d3;
+    --themeTransparent: #1896d330;
+    --themeHighlight: #83cdf0;
+    scrollbar-color: #1896d3 #111;
+}
