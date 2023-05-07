@@ -185,6 +185,9 @@ async function switchGame(game) {
 function updateAllLinkListeners() {
     const links = document.querySelectorAll('a');
     for (const link of links) {
+        if (link.classList.contains('no-nav')) {
+            continue;
+        }
         link.onclick = link.href.startsWith('javascript:') ? () => void 0 : linkClickHandler;
     }
 }

@@ -46,12 +46,13 @@ body {
     display: flex;
     align-items: center;
     height: 4.9rem;
-    width: 100%;
+    width: calc(100% - 2rem);
     background: #222222;
     border-bottom: 0.1rem #555 solid;
     position: fixed;
     top: 0;
     left: 0;
+    padding: 0 1rem;
 }
 .top-nav .icon-button {
     background: #333;
@@ -66,20 +67,21 @@ body {
     justify-content: center;
     cursor: pointer;
 }
+.top-nav .icon-button img {
+    height: 1.5rem;
+}
 .top-nav .game {
-    width: 20rem;
+    width: 19rem;
     display: flex;
     justify-content: space-between;
 }
 .top-nav .game #current-game {
     color: var(--theme);
     font-weight: 700;
-    padding-left: 1rem;
 }
 .top-nav .game h2 {
     color: white;
     margin: 0;
-    padding-left: 1rem;
 }
 .top-nav .categories {
     padding: 0 1rem;
@@ -98,6 +100,9 @@ body {
 }
 .top-nav .categories a:hover {
     color: var(--themeHighlight);
+}
+.top-nav .extra {
+    margin-left: auto;
 }
 
 .sidebar,
