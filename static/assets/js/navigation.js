@@ -24,12 +24,12 @@ async function init() {
     generateGameSelector(info.game);
     updateAllLinkListeners();
 
-    if (params.get('force') == "gameselect") {
+    if (params.get('force') == 'gameselect') {
         document.querySelector('#gameSelector .close').style.display = 'none';
         document.querySelector('#gameSelector').showModal();
     }
 
-    navigate(location.pathname.slice(1), true);
+    navigate(location.pathname.slice(1), true, false);
 }
 window.addEventListener('load', init);
 
@@ -60,7 +60,7 @@ function generateGameSelector(_current) {
     }
 }
 
-async function navigate(slug, replace = false) {
+async function navigate(slug, replace = false, loadData = true) {
     const info = parseSlug(slug);
 
     if (info.category === 'index') {
@@ -72,16 +72,19 @@ async function navigate(slug, replace = false) {
 
     path = path.replaceAll('///', '/').replaceAll('//', '/');
 
+    let data = {};
+
     const req = await fetch(path);
 
-    if (req.status === 404) {
+    if (req.status === 404 && loadData) {
         throw new Error('Page not found');
     }
 
-    const data = await req.json();
+    try {
+        data = await req.json();
+        document.querySelector('.content').innerHTML = data.content;
+    } catch {}
     console.log('NAV RESULT', data);
-
-    document.querySelector('.content').innerHTML = data.content;
 
     let exclusives = document.querySelectorAll('.exclusive');
     for (const exclusive of exclusives) {
@@ -98,12 +101,14 @@ async function navigate(slug, replace = false) {
 
     document.querySelector('html').className = 'theme-' + info.game;
 
-    document.title = `${data.title} - ${games[info.game].name} Wiki`;
+    document.title = `${data.title || 'Page not found'} - ${games[info.game].name} Wiki`;
     document.querySelector('#current-game').innerText = games[info.game].name;
 
-    document.querySelector(
-        '.edit a'
-    ).href = `https://github.com/StrataSource/Wiki/edit/system-migration/${data.file.slice(6)}`;
+    if (loadData) {
+        document.querySelector('.edit a').href = `https://github.com/StrataSource/Wiki/edit/system-migration/${
+            data.file ? data.file.slice(6) : '404.md'
+        }`;
+    }
 
     regenerateSidebar(info);
     regenerateNav(info);

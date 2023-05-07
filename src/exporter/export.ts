@@ -88,11 +88,20 @@ export class Exporter {
             const content = this.renderer.renderPage(new Slug(`${game.id}/index`));
 
             this.pageHandler.savePage({
+                ...content,
                 slug: new Slug(game.id),
                 title: content.meta.title || 'Home',
                 file: `/pages/${game.id}/index.md`,
-                id: 'index',
-                ...content
+                id: 'index'
+            });
+
+            this.pageHandler.savePage({
+                ...content,
+                slug: new Slug(game.id),
+                title: 'Home',
+                file: ``,
+                id: '404',
+                content: fs.readFileSync('templates/404.html', 'utf8')
             });
         }
     }
