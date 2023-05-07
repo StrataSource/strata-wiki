@@ -154,7 +154,9 @@ function regenerateNav(info) {
     for (const cat of data) {
         const el = document.createElement('a');
         el.innerText = cat.label;
-        if (cat.id == '') {
+        if (cat.redirect) {
+            el.href = cat.redirect;
+        } else if (cat.id == '') {
             el.href = `/${info.game}`;
         } else {
             el.href = `/${info.game}/${cat.id}/${cat.home}`;
