@@ -1,6 +1,7 @@
 let games = {};
 let menu = {};
 
+let params = new URLSearchParams(location.search);
 /**
  * Downloads data needed for AJAX nav and initialize it
  */
@@ -22,6 +23,11 @@ async function init() {
     regenerateSidebar(info);
     generateGameSelector(info.game);
     updateAllLinkListeners();
+
+    if (params.get('force') == "gameselect") {
+        document.querySelector('#gameSelector .close').style.display = 'none';
+        document.querySelector('#gameSelector').showModal();
+    }
 
     navigate(location.pathname.slice(1), true);
 }
@@ -172,6 +178,7 @@ function linkClickHandler(e) {
 
 async function switchGame(game) {
     document.querySelector('#gameSelector').close();
+    document.querySelector('#gameSelector .close').style.display = '';
 
     const split = location.pathname.slice(1).split('/');
     split[0] = game;

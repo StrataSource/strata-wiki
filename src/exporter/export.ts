@@ -63,7 +63,7 @@ export class Exporter {
 
     copyAssets() {
         console.log('Copying assets...');
-        fs.copySync('assets', 'public/assets');
+        fs.copySync('static', 'public');
     }
 
     saveAllPages() {
