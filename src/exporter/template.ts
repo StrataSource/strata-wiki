@@ -60,8 +60,10 @@ export class Templater {
     generateNav() {
         for (const game of this.exporter.pageHandler.games) {
             let str = '';
-            for (const category of game.categories)
-                str += `<a href="/${game.id}/${category.id}/${category.home}">${category.label}</a>`;
+            for (const category of game.categories) {
+                const link = category.redirect || `/${game.id}/${category.id}/${category.home}`;
+                str += `<a href="${link}">${category.label}</a>`;
+            }
             this.navs[game.id] = str;
         }
     }

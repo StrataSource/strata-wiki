@@ -37,11 +37,20 @@ export class PageHandler {
             menu[game.id] = {};
 
             for (const category of game.categories) {
-                index[game.id].categories[category.id] = {
-                    id: category.id,
-                    meta: category,
-                    topics: {}
-                };
+                if (category.redirect) {
+                    index[game.id].categories[category.id] = {
+                        id: category.id,
+                        meta: category,
+                        redirect: category.redirect
+                    };
+                    continue;
+                } else {
+                    index[game.id].categories[category.id] = {
+                        id: category.id,
+                        meta: category,
+                        topics: {}
+                    };
+                }
 
                 const menuCategory: MenuCategoryItem[] = [];
 

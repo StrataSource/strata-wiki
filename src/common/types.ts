@@ -12,7 +12,8 @@ export interface Category {
     id: string;
     label: string;
     home: string;
-    topics: Topic[];
+    topics?: Topic[];
+    redirect?: string;
 }
 
 export interface Article {
