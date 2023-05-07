@@ -284,3 +284,31 @@ dialog .close {
     width: fit-content;
     max-width: 100%;
 }
+
+.error-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 20rem);
+    width: 100%;
+}
+.error-wrapper .inner {
+    max-width: 100%;
+    text-align: center;
+}
+.error-wrapper .code {
+    font-size: 30vw;
+    margin: 0;
+    line-height: 1;
+}
+.error-wrapper .message {
+    margin: 0;
+    padding: 0;
+    padding-top: 15vw;
+    margin-top: -25vw;
+    font-size: 5vw;
+    background: linear-gradient(0deg, #222 0%, transparent 100%);
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}

@@ -23,7 +23,6 @@ export class Templater {
         replacers.sidebar = this.generateSidebar(slug);
         replacers.categories = this.navs[slug.game];
 
-        // Generate title
         replacers.title = title;
         replacers.content = html;
 
@@ -34,7 +33,7 @@ export class Templater {
 
         // Replacing values from opts in HTML
         for (const [key, value] of Object.entries(replacers)) {
-            res = res.replaceAll(`%${key.toUpperCase()}%`, value);
+            res = res.replaceAll(`%${key.toUpperCase()}%`, value || '');
         }
 
         return res;
