@@ -164,8 +164,8 @@ dialog {
     padding: 1rem;
 }
 dialog::backdrop {
-    background: black;
-    opacity: 0.5;
+    background: #0000005f;
+    backdrop-filter: blur(5px);
 }
 
 dialog h2 {
