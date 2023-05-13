@@ -25,8 +25,7 @@ async function init() {
     updateAllLinkListeners();
 
     if (params.get('force') == 'gameselect') {
-        document.querySelector('#gameSelector .close').style.display = 'none';
-        document.querySelector('#gameSelector').showModal();
+        showGameSelector(false);
     }
 
     navigate(location.pathname.slice(1), true, false);
@@ -59,8 +58,14 @@ function generateGameSelector(_current) {
         container.append(btn);
     }
 }
+function showGameSelector(closeable = true) {
+    document.querySelector('#gameSelector .close').style.display = closeable ? 'block' : 'none';
+    document.querySelector('#gameSelector').showModal();
+}
 
 async function navigate(slug, replace = false, loadData = true) {
+    clearNotices();
+
     const info = parseSlug(slug);
 
     if (info.category === 'index') {
@@ -82,15 +87,32 @@ async function navigate(slug, replace = false, loadData = true) {
 
     try {
         data = await req.json();
-        document.querySelector('.content').innerHTML = data.content;
+        document.querySelector('#content').innerHTML = data.content;
     } catch {}
     console.log('NAV RESULT', data);
 
+    document.body.classList.remove('has-exclusives');
     let exclusives = document.querySelectorAll('.exclusive');
+    let showExclusiveNotice = false;
+
     for (const exclusive of exclusives) {
         if (!exclusive.className.includes(info.game)) {
             exclusive.remove();
+            showExclusiveNotice = true;
         }
+    }
+    if (showExclusiveNotice) {
+        notify(
+            `This page contains sections that are irrelevant to your selected game. If you're missing a section, consider <a href="javascript:showGameSelector()">changing your game</a>.`,
+            'eye-off'
+        );
+    }
+
+    if (data.meta.example) {
+        notify(
+            `There's a sample for this article. You can <a href="https://github.com/StrataSource/samples/tree/main${data.meta.example}">get it here</a>.`,
+            'cube-outline'
+        );
     }
 
     if (replace) {
@@ -123,9 +145,11 @@ function regenerateSidebar(info) {
     container.innerHTML = '';
 
     if (!data) {
-        container.innerHTML = '';
+        container.innerHTML = '<h2>Sections will appear here</h2><div>Select a category to get started</div>';
+        container.parentElement.classList.add('empty');
         return;
     }
+    container.parentElement.classList.remove('empty');
 
     for (const entry of data) {
         const el = document.createElement('a');
@@ -193,6 +217,10 @@ async function switchGame(game) {
         await navigate(split.join('/'));
     } catch {
         await navigate(game);
+        notify(
+            "We couldn't find the last page you were on in this Wiki, so we put you on the homepage.",
+            'file-document-remove'
+        );
     }
 }
 

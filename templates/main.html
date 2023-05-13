@@ -21,11 +21,7 @@
                     <div id="current-game"></div>
                     <h2>Documentation</h2>
                 </div>
-                <button
-                    title="Switch game"
-                    class="icon-button"
-                    onclick="document.querySelector('#gameSelector').showModal()"
-                >
+                <button title="Switch game" class="icon-button" onclick="showGameSelector()">
                     <span class="mdi mdi-controller"></span>
                 </button>
             </div>
@@ -50,7 +46,11 @@
         <div class="edit">
             <a class="btn">Edit</a>
         </div>
-        <div class="content">%CONTENT%</div>
+        <div class="content">
+            <div class="notices">
+            </div>
+            <div id="content">%CONTENT%</div>
+        </div>
 
         <dialog id="gameSelector">
             <button class="close">
@@ -61,5 +61,6 @@
         </dialog>
 
         <script src="/assets/js/navigation.js"></script>
+        <script src="/assets/js/notices.js"></script>
     </body>
 </html>
