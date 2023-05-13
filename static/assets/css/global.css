@@ -112,6 +112,16 @@ body {
     border-right: 0.1rem #555 solid;
     overflow-y: auto;
 }
+.sidebar.empty {
+    background-image: url(/assets/img/backgrounds/empty-sidebar.svg);
+    background-position: center;
+    background-size: 100% 50%;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
 .sidebar .article,
 .sidebar .topic {
     display: block;
@@ -201,7 +211,7 @@ dialog .close {
     width: 100%;
     margin-top: 0.5rem;
 }
-.icon {
+.game-selector .icon {
     border-radius: 0.3rem;
     padding: 0.3rem;
     height: 1.7rem;
@@ -277,8 +287,9 @@ dialog .close {
 .content .exclusive .exclusive-header {
     background: var(--theme);
     padding: 0.5rem;
-    border-radius: 0.5rem;
-    margin-top: -2rem;
+    border-radius: 0.5rem 0;
+    margin-top: -1rem;
+    margin-left: -1rem;
     width: fit-content;
 }
 .content .exclusive {
@@ -288,6 +299,28 @@ dialog .close {
     border-radius: 0.5rem;
     width: fit-content;
     max-width: 100%;
+}
+
+.notices {
+    display: flow-root;
+}
+.notices .notice {
+    border: var(--theme) solid 0.1rem;
+    border-radius: 0.5rem;
+    display: flex;
+    margin-bottom: 0.5rem;
+}
+.notices .notice .icon {
+    color: #222;
+    background-color: var(--theme);
+    padding: 0.4rem;
+    border-radius: 0.3rem 0 0 0.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.notices .notice .message {
+    padding: 0.4rem;
 }
 
 .error-wrapper {
