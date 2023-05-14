@@ -64,8 +64,6 @@ function showGameSelector(closeable = true) {
 }
 
 async function navigate(slug, replace = false, loadData = true) {
-    clearNotices();
-
     const info = parseSlug(slug);
 
     if (info.category === 'index') {
@@ -91,7 +89,8 @@ async function navigate(slug, replace = false, loadData = true) {
     } catch {}
     console.log('NAV RESULT', data);
 
-    document.body.classList.remove('has-exclusives');
+    clearNotices();
+
     let exclusives = document.querySelectorAll('.exclusive');
     let showExclusiveNotice = false;
 
