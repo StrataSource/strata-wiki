@@ -1,26 +1,11 @@
 module.exports = {
-    parser: '@typescript-eslint/parser',
-    parserOptions: {
-        project: 'tsconfig.json',
-        sourceType: 'default'
-    },
-    plugins: ['@typescript-eslint/eslint-plugin', 'unicorn', 'unused-imports', 'prettier'],
-    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:unicorn/recommended', 'prettier'],
-    root: true,
-    env: {
-        node: true,
-        es2022: true
-    },
-    ignorePatterns: ['.eslintrc.js', 'node_modules', '_*.ts', 'build', '**/*.d.ts'],
+    extends: ['eslint:recommended', 'plugin:unicorn/recommended', 'prettier'],
     rules: {
         'no-var': ['error'],
-        'no-empty': ['error', { "allowEmptyCatch": true }],
-        '@typescript-eslint/interface-name-prefix': 'off',
-        '@typescript-eslint/explicit-function-return-type': 'off',
-        '@typescript-eslint/explicit-module-boundary-types': 'off',
-        '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/no-unused-vars': 'off',
-        'unused-imports/no-unused-imports': 'error',
+        'no-empty': ['error', { allowEmptyCatch: true }],
+        'no-unused-vars': ['off'],
+        "prefer-const": ["error"],
+        eqeqeq: ['error'],
         'unused-imports/no-unused-vars': [
             'warn',
             {
@@ -30,7 +15,6 @@ module.exports = {
                 argsIgnorePattern: '^_'
             }
         ],
-        '@typescript-eslint/no-inferrable-types': ['warn', { ignoreParameters: true }],
         // Way too sensitive. Most cases it catches are silly, and bad naming is easy to flag in review.
         'unicorn/prevent-abbreviations': ['off'],
         // Not going to make devs use obscure JS syntax for something so minor.
@@ -54,5 +38,31 @@ module.exports = {
         'unicorn/prefer-add-event-listener': ['off'],
         // .innerText is useful for finding anchor nodes in the DOM
         'unicorn/prefer-dom-node-text-content': ['warn']
-    }
+    },
+    overrides: [
+        {
+            files: ['*.ts', '*.tsx'],
+            parserOptions: {
+                project: 'tsconfig.json',
+                sourceType: 'default'
+            },
+            plugins: ['@typescript-eslint/eslint-plugin', 'unicorn', 'unused-imports', 'prettier'],
+            extends: ['plugin:@typescript-eslint/recommended'],
+            rules: {
+                '@typescript-eslint/interface-name-prefix': 'off',
+                '@typescript-eslint/explicit-function-return-type': 'off',
+                '@typescript-eslint/explicit-module-boundary-types': 'off',
+                '@typescript-eslint/no-explicit-any': 'off',
+                '@typescript-eslint/no-unused-vars': 'off',
+                'unused-imports/no-unused-imports': 'error',
+                '@typescript-eslint/no-inferrable-types': ['warn', { ignoreParameters: true }]
+            }
+        }
+    ],
+    root: true,
+    env: {
+        node: true,
+        es2022: true
+    },
+    ignorePatterns: ['.eslintrc.js', 'node_modules', '_*.ts', 'build', '**/*.d.ts']
 };
