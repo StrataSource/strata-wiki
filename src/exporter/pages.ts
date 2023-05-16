@@ -115,7 +115,7 @@ export class PageHandler {
                             text: meta.title || articleString,
                             link: result.slug.toString()
                         };
-                        if (articleString == 'index') {
+                        if (articleString === 'index') {
                             articleList.unshift(entry);
                         } else {
                             articleList.push(entry);

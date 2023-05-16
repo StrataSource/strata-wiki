@@ -99,7 +99,7 @@ export class Exporter {
                 ...content,
                 slug: new Slug(game.id),
                 title: 'Home',
-                file: ``,
+                file: '',
                 id: '404',
                 content: fs.readFileSync('templates/404.html', 'utf8')
             });
