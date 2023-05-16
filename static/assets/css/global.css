@@ -134,6 +134,10 @@ body {
     font-weight: 700;
     font-size: small;
     margin-top: 1rem;
+    transition: 250ms;
+}
+.sidebar .topic:hover {
+    color: var(--theme);
 }
 .sidebar .article {
     padding: 0.75rem 1rem;
@@ -142,6 +146,10 @@ body {
     background: #ffffff30;
     color: #fff;
     text-decoration: none;
+    transition: 250ms;
+}
+.sidebar .article:hover {
+    color: var(--theme);
 }
 .sidebar .article.active {
     color: var(--theme);
