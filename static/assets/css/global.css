@@ -46,7 +46,6 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    padding: 0 1rem;
 }
 .top-nav .icon-button {
     background: #333;
@@ -65,9 +64,10 @@ body {
     height: 1.5rem;
 }
 .top-nav .game {
-    width: 19rem;
+    width: 18rem;
     display: flex;
     justify-content: space-between;
+    padding: 0 1rem;
 }
 .top-nav .game #current-game {
     color: var(--theme);
@@ -97,6 +97,7 @@ body {
 }
 .top-nav .extra {
     margin-left: auto;
+    padding: 0 1rem;
 }
 
 .sidebar,
