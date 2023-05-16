@@ -24,7 +24,7 @@ async function init() {
     generateGameSelector(info.game);
     updateAllLinkListeners();
 
-    if (params.get('force') == 'gameselect') {
+    if (params.get('force') === 'gameselect') {
         showGameSelector(false);
     }
 
@@ -75,23 +75,22 @@ async function navigate(slug, replace = false, loadData = true) {
 
     path = path.replaceAll('///', '/').replaceAll('//', '/');
 
-    let data = {};
-
     const req = await fetch(path);
 
     if (req.status === 404 && loadData) {
         throw new Error('Page not found');
     }
 
-    try {
-        data = await req.json();
-        document.querySelector('#content').innerHTML = data.content;
-    } catch {}
+    const data = await req.json().catch(() => {
+        throw new Error('Error parsing page data');
+    });
+    document.querySelector('#content').innerHTML = data.content;
+
     console.log('NAV RESULT', data);
 
     clearNotices();
 
-    let exclusives = document.querySelectorAll('.exclusive');
+    const exclusives = document.querySelectorAll('.exclusive');
     let showExclusiveNotice = false;
 
     for (const exclusive of exclusives) {
@@ -138,6 +137,7 @@ async function navigate(slug, replace = false, loadData = true) {
     updateAllLinkListeners();
 }
 window.addEventListener('popstate', () => navigate(location.pathname.slice(1), true));
+
 function regenerateSidebar(info) {
     const data = menu[info.game][info.category];
     const container = document.querySelector('.sidebar .inner');
@@ -163,6 +163,7 @@ function regenerateSidebar(info) {
         container.append(el);
     }
 }
+
 function regenerateNav(info) {
     const data = [
         {
@@ -179,7 +180,7 @@ function regenerateNav(info) {
         el.innerText = cat.label;
         if (cat.redirect) {
             el.href = cat.redirect;
-        } else if (cat.id == '') {
+        } else if (cat.id === '') {
             el.href = `/${info.game}`;
         } else {
             el.href = `/${info.game}/${cat.id}/${cat.home}`;
@@ -216,10 +217,7 @@ async function switchGame(game) {
         await navigate(split.join('/'));
     } catch {
         await navigate(game);
-        notify(
-            "We couldn't find the last page you were on in this Wiki, so we put you on the homepage.",
-            'file-document-remove'
-        );
+        notify('This page does not exist for this game, so we put you on the homepage.', 'file-document-remove');
     }
 }
 

@@ -1,12 +1,12 @@
 function notify(message, icon) {
-    let container = document.createElement('div');
+    const container = document.createElement('div');
     container.classList.add('notice');
 
-    let icn = document.createElement('span');
+    const icn = document.createElement('span');
     icn.classList.add('icon', 'mdi', 'mdi-' + icon);
     container.append(icn);
 
-    let msg = document.createElement('div');
+    const msg = document.createElement('div');
     msg.classList.add('message');
     msg.innerHTML = message;
     container.append(msg);
