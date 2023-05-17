@@ -1,7 +1,7 @@
 let games = {};
 let menu = {};
 
-let params = new URLSearchParams(location.search);
+const params = new URLSearchParams(location.search);
 /**
  * Downloads data needed for AJAX nav and initialize it
  */
