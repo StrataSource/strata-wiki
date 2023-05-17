@@ -18,12 +18,12 @@ class ScrollSpy {
 
         const headings = document.querySelectorAll('.content h1');
         for (const heading of headings) {
-            let hash = heading.textContent.toLowerCase().replaceAll(' ', '-');
+            const hash = heading.textContent.toLowerCase().replaceAll(' ', '-');
             heading.id = hash;
 
-            let bbox = heading.getBoundingClientRect();
+            const bbox = heading.getBoundingClientRect();
 
-            let height = bbox.top + window.scrollY - 1 - window.innerHeight / 4;
+            const height = bbox.top + window.scrollY - 1 - window.innerHeight / 4;
 
             this.targets.push(height);
 
