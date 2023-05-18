@@ -40,7 +40,7 @@ body {
     display: flex;
     align-items: center;
     height: 4.9rem;
-    width: calc(100% - 2rem);
+    width: 100%;
     background: #222222;
     border-bottom: 0.1rem #555 solid;
     position: fixed;
