@@ -33,22 +33,25 @@
                 <a href="https://github.com/StrataSource" class="icon-button no-nav" target="_blank">
                     <img src="/assets/img/logos/github.svg" alt="GitHub" />
                 </a>
-            </div>
-        </div>
-        <div class="sidebar">
-            <div class="mobile">
-                <button onclick="document.querySelector('.sidebar').classList.remove('active')" class="close">
-                    <span class="mdi mdi-close"></span>
+                <button class="icon-button mobile" onclick="document.body.classList.toggle('nav-show')">
+                    <span class="mdi mdi-menu"></span>
                 </button>
             </div>
-            <div class="inner desktop">%SIDEBAR%</div>
+        </div>
+        <div class="mobile mobile-nav">
+            <button id="mobile-categories" onclick="document.body.classList.remove('nav-showTopics')">
+                Categories
+            </button>
+            <button id="mobile-topics" onclick="document.body.classList.add('nav-showTopics')">Topics</button>
+        </div>
+        <div class="sidebar">
+            <div class="inner">%SIDEBAR%</div>
         </div>
         <div class="edit">
             <a class="btn">Edit</a>
         </div>
         <div class="content">
-            <div class="notices">
-            </div>
+            <div class="notices"></div>
             <div id="content">%CONTENT%</div>
         </div>
 
