@@ -201,7 +201,13 @@ function linkClickHandler(e) {
     console.log('GOING TO', e.target.href);
     const url = new URL(e.target.href, location);
     if (url.host === location.host) {
+        document.body.classList.remove('nav-show');
+
         navigate(url.pathname.slice(1));
+
+        if (e.currentTarget.parentNode.classList.contains('categories') && e.currentTarget.innerText != 'Home') {
+            document.body.classList.add('nav-showTopics', 'nav-show');
+        }
     } else {
         window.open(e.target.href, '_blank');
     }
