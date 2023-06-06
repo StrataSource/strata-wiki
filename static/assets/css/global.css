@@ -379,6 +379,14 @@ dialog .close {
     max-width: 100%;
 }
 
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content p {
+    overflow-wrap: break-word;
+}
+
 .notices {
     display: flow-root;
 }
