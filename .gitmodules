@@ -1,4 +1,0 @@
-[submodule "pages"]
-	path = pages
-	url = https://github.com/StrataSource/Wiki
-	branch = system-migration
