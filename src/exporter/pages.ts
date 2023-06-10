@@ -15,10 +15,10 @@ export class PageHandler {
         this.exporter = exporter;
 
         this.games = fs
-            .readdirSync('pages')
-            .filter((game) => fs.existsSync(`pages/${game}/meta.json`))
+            .readdirSync('../pages')
+            .filter((game) => fs.existsSync(`../pages/${game}/meta.json`))
             .map((game) => ({
-                ...fs.readJSONSync(`pages/${game}/meta.json`),
+                ...fs.readJSONSync(`../pages/${game}/meta.json`),
                 id: game
             }));
     }

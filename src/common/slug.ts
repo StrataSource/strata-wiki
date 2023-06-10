@@ -49,9 +49,9 @@ export class Slug {
 
         let found = false;
         for (const path of possiblePaths) {
-            console.log('Checking file path', 'pages/' + path);
-            if (fs.existsSync('pages/' + path)) {
-                this.path = 'pages/' + path;
+            console.log('Checking file path', '../pages/' + path);
+            if (fs.existsSync('../pages/' + path)) {
+                this.path = '../pages/' + path;
                 console.log('Found file at path', path);
                 found = true;
                 break;
