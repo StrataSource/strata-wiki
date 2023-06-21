@@ -126,7 +126,7 @@ async function navigate(slug, replace = false, loadData = true) {
 
     if (loadData || data.file) {
         document.querySelector('.edit a').href = `https://github.com/StrataSource/Wiki/edit/system-migration/${
-            data.file ? data.file.slice(6) : '404.md'
+            data.file ? data.file.slice(3) : '404.md'
         }`;
     }
 
