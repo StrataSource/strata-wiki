@@ -28,6 +28,9 @@ export class Templater {
 
         replacers.game = slug.game;
 
+        replacers.commit = process.env.CF_PAGES_COMMIT_SHA || 'UNAVAILABLE';
+        replacers.branch = process.env.CF_PAGES_BRANCH || 'UNAVAILABLE';
+
         // Read template HTML
         let res: HTMLString = fs.readFileSync('templates/main.html', 'utf8');
 
