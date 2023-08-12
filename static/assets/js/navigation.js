@@ -90,20 +90,33 @@ async function navigate(slug, replace = false, loadData = true) {
 
     clearNotices();
 
-    const exclusives = document.querySelectorAll('.exclusive');
-    let showExclusiveNotice = false;
 
-    for (const exclusive of exclusives) {
-        if (!exclusive.className.includes(info.game)) {
-            exclusive.remove();
-            showExclusiveNotice = true;
+    // Grab all of the exclusive blocks and filter 'em
+    const exclusives = document.querySelectorAll('.exclusive');
+
+    if ( info.game === "shared" ) {
+        // If this is the "shared" game, we want to always display all exclusive blocks
+        for (const exclusive of exclusives) {
+            exclusive.style.display = "block";
         }
-    }
-    if (showExclusiveNotice) {
-        notify(
-            `This page contains sections that are irrelevant to your selected game. If you're missing a section, consider <a href="javascript:showGameSelector()">changing your game</a>.`,
-            'eye-off'
-        );
+    } else {
+        // Hide any exclusive blocks that aren't related to the current game
+        let showExclusiveNotice = false;
+
+        for (const exclusive of exclusives) {
+            if (exclusive.className.includes(info.game)) {
+                exclusive.style.display = "block";
+            } else {
+                showExclusiveNotice = true;
+            }
+        }
+        
+        if (showExclusiveNotice) {
+            notify(
+                `This page contains sections that are irrelevant to your selected game. If you're missing a section, consider <a href="javascript:showGameSelector()">changing your game</a>.`,
+                'eye-off'
+            );
+        }
     }
 
     if (data.meta.example) {
