@@ -39,7 +39,7 @@ export class Renderer {
                 render: (tokens, idx) =>
                     tokens[idx].nesting === 1
                         ? // opening tag
-                          `<div class='${game.id}-only exclusive'><div class="exclusive-header">${
+                          `<div class='theme-${game.id} exclusive'><div class="exclusive-header">${
                               game.nameShort || game.name || game.id
                           } only!</div>\n`
                         : // closing tag

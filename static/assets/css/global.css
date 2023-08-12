@@ -377,6 +377,9 @@ dialog .close {
     border-radius: 0.5rem;
     width: fit-content;
     max-width: 100%;
+
+    /* These are hidden by default and will by enabled by the page */
+    display: none;
 }
 
 .content h1,
