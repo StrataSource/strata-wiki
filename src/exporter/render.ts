@@ -30,6 +30,7 @@ export class Renderer {
             }
         }).use(markdownItFrontMatter, (frontMatter) => (this.tempMetaValue = yaml.parse(frontMatter)));
 
+        // For each game, register up a handler for its game exclusive block
         for (const game of this.exporter.pageHandler.games) {
             console.log('Registered game', game.id);
 

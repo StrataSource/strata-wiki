@@ -14,6 +14,7 @@ export class PageHandler {
     constructor(exporter) {
         this.exporter = exporter;
 
+        // Read the pages folder, anything with a meta.json is a "game"
         this.games = fs
             .readdirSync('../pages')
             .filter((game) => fs.existsSync(`../pages/${game}/meta.json`))
@@ -27,6 +28,7 @@ export class PageHandler {
         const index = {};
         const menu = {};
 
+        // For each game, for each category, for each topic, render all articles
         for (const game of this.games) {
             index[game.id] = {
                 id: game.id,
@@ -37,6 +39,7 @@ export class PageHandler {
             menu[game.id] = {};
 
             for (const category of game.categories) {
+                // If this category is just a redirect,
                 if (category.redirect) {
                     index[game.id].categories[category.id] = {
                         id: category.id,
@@ -84,10 +87,12 @@ export class PageHandler {
                     for (let articleString of articles) {
                         articleString = articleString.replace('.md', '');
 
+                        // Render out the markdown
                         const result = this.exporter.renderer.renderPage(
                             new Slug(`${game.id}/${category.id}/${topic.id}/${articleString}`)
                         );
 
+                        // Make sure the current game's feature set allows this article
                         const meta = result.meta;
                         if (
                             Array.isArray(meta.features) &&
