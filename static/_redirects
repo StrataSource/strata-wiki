@@ -1,2 +1,2 @@
-/ /strata?force=gameselect 308
-/s/* /strata/:splat?force=gameselect&source=share
+/ /shared?force=gameselect 308
+/s/* /shared/:splat?force=gameselect&source=share
