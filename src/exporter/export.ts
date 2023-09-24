@@ -85,7 +85,7 @@ export class Exporter {
 
     generateSpecialPages() {
         for (const game of this.pageHandler.games) {
-            const content = this.renderer.renderPage(new Slug(`${game.id}/index`));
+            const content = this.renderer.renderPage(`../pages/${game.id}/index.md`, new Slug(game.id));
 
             this.pageHandler.savePage({
                 ...content,

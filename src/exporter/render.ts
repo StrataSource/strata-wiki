@@ -65,14 +65,15 @@ export class Renderer {
 
     /**
      * Renders Markdown into a page based on the slug
-     * @param {string} slug The slug to the page
+     * @param {string} path The path to the markdown file
+     * @param {Slug} slug The slug to the page
      * @returns Rendered HTML of the page
      */
-    renderPage(slug: Slug): RenderedPage {
-        console.log('Rendering file', slug.path, '->', slug.toString());
+    renderPage(path: string, slug: Slug): RenderedPage {
+        console.log('Rendering file', path, '->', slug.toString());
 
         return this.render(
-            fs.readFileSync(slug.path, {
+            fs.readFileSync(path, {
                 encoding: 'utf8'
             }),
             slug
