@@ -139,6 +139,9 @@ async function navigate(slug, replace = false, loadData = true) {
     document.title = `${data.title || 'Page not found'} - ${games[info.game].name} Wiki`;
     document.querySelector('#current-game').innerText = games[info.game].name;
 
+    document.querySelector("link[rel=icon]").href = games[info.game].icon;
+    document.querySelector("link[rel=shortcut]").href = games[info.game].icon;
+
     if (loadData || data.file) {
         document.querySelector('.edit a').href = `https://github.com/StrataSource/Wiki/edit/system-migration/${
             data.file ? data.file.slice(3) : '404.md'
