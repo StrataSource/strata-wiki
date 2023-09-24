@@ -26,6 +26,21 @@ export class Templater {
         replacers.title = title;
         replacers.content = html;
 
+        replacers.contentPreview = html.replaceAll(/<[^>]*>/g, '').slice(0, 200);
+        if (replacers.contentPreview.length === 200) {
+            replacers.contentPreview += '...';
+        }
+
+        replacers.icon = this.exporter.pageHandler.index[slug.game].meta.icon;
+        replacers.iconPNG =
+            this.exporter.pageHandler.index[slug.game].meta.iconPNG ||
+            this.exporter.pageHandler.index[slug.game].meta.icon;
+
+        replacers.gameName = this.exporter.pageHandler.index[slug.game].meta.name;
+        replacers.color = this.exporter.pageHandler.index[slug.game].meta.color;
+
+        console.log('INDEX', this.exporter.pageHandler.index[slug.game]);
+
         replacers.game = slug.game;
 
         replacers.commit = process.env.CF_PAGES_COMMIT_SHA || 'UNAVAILABLE';
