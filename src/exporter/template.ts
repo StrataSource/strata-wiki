@@ -39,8 +39,6 @@ export class Templater {
         replacers.gameName = this.exporter.pageHandler.index[slug.game].meta.name;
         replacers.color = this.exporter.pageHandler.index[slug.game].meta.color;
 
-        console.log('INDEX', this.exporter.pageHandler.index[slug.game]);
-
         replacers.game = slug.game;
 
         replacers.commit = process.env.CF_PAGES_COMMIT_SHA || 'UNAVAILABLE';
