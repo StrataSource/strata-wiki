@@ -58,11 +58,22 @@ export class PageHandler {
                 const menuCategory: MenuCategoryItem[] = [];
 
                 for (const topic of category.topics) {
+                    if (!topic.path) topic.path = topic.id;
+
                     // Check if index.md exists
-                    const directoryPath = new Slug(`${game.id}/${category.id}/${topic.id}`).path.replace(
-                        'index.md',
-                        ''
-                    );
+                    const possiblePaths = [`${game.id}/${topic.path}/`, `shared/${topic.path}/`];
+
+                    let directoryPath = null;
+                    for (const path of possiblePaths) {
+                        console.log('Checking file path', '../pages/' + path);
+                        if (fs.existsSync('../pages/' + path)) {
+                            directoryPath = '../pages/' + path;
+                            console.log('Found file at path', path);
+                            break;
+                        }
+                    }
+                    if (!directoryPath)
+                        throw new Error(`Could not locate directory: ../pages/${game.id}/${topic.path}/`);
 
                     index[game.id].categories[category.id].topics[topic.id] = {
                         id: topic.id,
@@ -80,16 +91,22 @@ export class PageHandler {
 
                     console.log('Reading directory', directoryPath);
 
-                    const articles = fs.readdirSync(directoryPath);
+                    const articles = fs.readdirSync(directoryPath, {
+                        withFileTypes: true
+                    });
 
                     const articleList: MenuCategoryItem[] = [];
 
-                    for (let articleString of articles) {
-                        articleString = articleString.replace('.md', '');
+                    for (const articleFile of articles) {
+                        // Exclude all directories
+                        if (articleFile.isDirectory()) continue;
+
+                        const articleString = articleFile.name.replace('.md', '');
 
                         // Render out the markdown
                         const result = this.exporter.renderer.renderPage(
-                            new Slug(`${game.id}/${category.id}/${topic.id}/${articleString}`)
+                            directoryPath + articleFile.name,
+                            new Slug(game.id, category.id, topic.id, articleString)
                         );
 
                         // Make sure the current game's feature set allows this article
