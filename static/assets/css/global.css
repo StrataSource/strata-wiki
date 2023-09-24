@@ -75,13 +75,18 @@ body {
     justify-content: space-between;
     padding: 0 1rem;
 }
+.top-nav .game a {
+    text-decoration: none;
+}
 .top-nav .game #current-game {
     color: var(--theme);
     font-weight: 700;
+    pointer-events: none;
 }
 .top-nav .game h2 {
     color: white;
     margin: 0;
+    pointer-events: none;
 }
 .top-nav .categories {
     padding: 0 1rem;
