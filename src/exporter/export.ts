@@ -32,6 +32,9 @@ export class Exporter {
         this.copyAssets();
 
         step();
+        this.copyResources();
+
+        step();
         this.templater.generateNav();
 
         step();
@@ -63,6 +66,12 @@ export class Exporter {
 
     copyAssets() {
         console.log('Copying assets...');
+        fs.mkdirSync('public/assets');
+        fs.copySync('../assets', 'public/assets');
+    }
+
+    copyResources() {
+        console.log('Copying resources...');
         fs.copySync('static', 'public');
     }
 
