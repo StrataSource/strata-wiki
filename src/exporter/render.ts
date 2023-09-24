@@ -7,6 +7,7 @@ import markdownItFrontMatter from 'markdown-it-front-matter';
 import { Slug } from '../common/slug';
 import { MarkdownString, RenderedPage } from '../common/types';
 import { Exporter } from './export';
+import { registerHightlights } from './highlights';
 
 export class Renderer {
     private md: MarkdownIt;
@@ -16,6 +17,8 @@ export class Renderer {
 
     constructor(exporter) {
         this.exporter = exporter;
+
+        registerHightlights(hljs);
 
         this.md = new MarkdownIt({
             linkify: true,
