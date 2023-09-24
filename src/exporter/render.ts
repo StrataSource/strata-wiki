@@ -1,9 +1,12 @@
 import fs from 'node:fs';
 import hljs from 'highlight.js';
 import yaml from 'yaml';
-import container_block from 'markdown-it-container';
 import MarkdownIt from 'markdown-it';
+import markdownItEmoji from 'markdown-it-emoji';
+import container_block from 'markdown-it-container';
 import markdownItFrontMatter from 'markdown-it-front-matter';
+import twemoji from 'twemoji';
+
 import { Slug } from '../common/slug';
 import { MarkdownString, RenderedPage } from '../common/types';
 import { Exporter } from './export';
@@ -31,7 +34,12 @@ export class Renderer {
 
                 return '';
             }
-        }).use(markdownItFrontMatter, (frontMatter) => (this.tempMetaValue = yaml.parse(frontMatter)));
+        })
+            .use(markdownItEmoji)
+            .use(markdownItFrontMatter, (frontMatter) => (this.tempMetaValue = yaml.parse(frontMatter)));
+
+        // Use Twemojis for emojis
+        this.md.renderer.rules.emoji = (token, idx) => twemoji.parse(token[idx].content);
 
         // For each game, register up a handler for its game exclusive block
         for (const game of this.exporter.pageHandler.games) {
