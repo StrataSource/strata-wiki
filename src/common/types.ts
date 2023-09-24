@@ -53,16 +53,18 @@ export type ObjectItemsToArray<T, K, V extends keyof T> = Omit<T, V> & { [V: str
 export type GamesCategoryArray = ObjectItemsToArray<Game, Category, 'categories'>;
 
 export interface Index {
-    id: string;
-    meta: Game;
-    categories: {
-        [categoryID: string]: {
-            meta: Category;
-            topics: {
-                [topicID: string]: {
-                    meta: Topic;
-                    articles: {
-                        [articleID: string]: Article;
+    [gameID: string]: {
+        id: string;
+        meta: Game;
+        categories: {
+            [categoryID: string]: {
+                meta: Category;
+                topics: {
+                    [topicID: string]: {
+                        meta: Topic;
+                        articles: {
+                            [articleID: string]: Article;
+                        };
                     };
                 };
             };
