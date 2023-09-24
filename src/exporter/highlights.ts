@@ -1,6 +1,6 @@
 import { HLJSApi } from 'highlight.js';
 
-export function registerHightlights(hljs: HLJSApi) {
+export function registerHightlights(hljs: HLJSApi): void {
     hljs.registerLanguage('kv', (hljs) => ({
         name: 'KeyValues',
         aliases: ['kv', 'vdf'],
