@@ -139,8 +139,10 @@ async function navigate(slug, replace = false, loadData = true) {
     document.title = `${data.title || 'Page not found'} - ${games[info.game].name} Wiki`;
     document.querySelector('#current-game').innerText = games[info.game].name;
 
-    document.querySelector("link[rel=icon]").href = games[info.game].icon;
-    document.querySelector("link[rel=shortcut]").href = games[info.game].icon;
+    document.querySelector('link[rel=icon]').href = games[info.game].icon;
+    document.querySelector('link[rel=shortcut]').href = games[info.game].icon;
+
+    document.querySelector('.top-nav .game a').href = `/${info.game}`;
 
     if (loadData || data.file) {
         document.querySelector('.edit a').href = `https://github.com/StrataSource/Wiki/edit/system-migration/${
@@ -216,7 +218,7 @@ function regenerateNav(info) {
  */
 function linkClickHandler(e) {
     e.preventDefault();
-    console.log('GOING TO', e.target.href);
+    console.log('GOING TO', e.target.href, 'EVENT:', e);
     const url = new URL(e.target.href, location);
     if (url.host === location.host) {
         document.body.classList.remove('nav-show');
