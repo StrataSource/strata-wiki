@@ -77,8 +77,11 @@ async function navigate(slug, replace = false, loadData = true) {
 
     const req = await fetch(path);
 
-    if (req.status === 404 && loadData) {
-        throw new Error('Page not found');
+    if (req.status === 404) {
+        if (loadData) {
+            throw new Error('Page not found');
+        }
+        return;
     }
 
     const data = await req.json().catch(() => {
@@ -90,14 +93,13 @@ async function navigate(slug, replace = false, loadData = true) {
 
     clearNotices();
 
-
     // Grab all of the exclusive blocks and filter 'em
     const exclusives = document.querySelectorAll('.exclusive');
 
-    if ( info.game === "shared" ) {
+    if (info.game === 'shared') {
         // If this is the "shared" game, we want to always display all exclusive blocks
         for (const exclusive of exclusives) {
-            exclusive.style.display = "block";
+            exclusive.style.display = 'block';
         }
     } else {
         // Hide any exclusive blocks that aren't related to the current game
@@ -105,12 +107,12 @@ async function navigate(slug, replace = false, loadData = true) {
 
         for (const exclusive of exclusives) {
             if (exclusive.className.includes(info.game)) {
-                exclusive.style.display = "block";
+                exclusive.style.display = 'block';
             } else {
                 showExclusiveNotice = true;
             }
         }
-        
+
         if (showExclusiveNotice) {
             notify(
                 `This page contains sections that are irrelevant to your selected game. If you're missing a section, consider <a href="javascript:showGameSelector()">changing your game</a>.`,
