@@ -41,6 +41,7 @@ export interface Game {
     id: string;
     logo: string;
     icon: string;
+    iconPNG?: string;
     name: string;
     nameShort?: string;
     color: string;

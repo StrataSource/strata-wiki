@@ -13,12 +13,28 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+
+        <link rel="shortcut" href="%ICON%" />
+        <link rel="icon" href="%ICON%" />
+
+        <meta name="theme-color" content="%COLOR%" />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content="%TITLE%" />
+        <meta property="og:site_name" content="%GAMENAME%" />
+        <meta property="og:image" content="%ICONPNG%" />
+        <meta property="og:description" content="%CONTENTPREVIEW%" />
+        <meta property="article:section" content="Technology" />
+
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="%TITLE%" />
+        <meta name="twitter:description" content="%CONTENTPREVIEW%" />
+        <meta name="twitter:image" content="%ICONPNG%" />
     </head>
     <body>
         <div class="top-nav">
             <div class="game">
                 <div>
-                    <div id="current-game"></div>
+                    <div id="current-game">%GAMENAME%</div>
                     <h2>Documentation</h2>
                 </div>
                 <button title="Switch game" class="icon-button" onclick="showGameSelector()">
