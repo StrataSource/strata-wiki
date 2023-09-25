@@ -42,12 +42,20 @@ body {
     color: var(--themeHighlight);
 }
 .content .anchor-copy {
-    opacity: 0.5;
+    opacity: 0;
     transition: 250ms;
     margin-left: 0.3rem;
 }
+.content h1:hover .anchor-copy,
+.content h2:hover .anchor-copy,
+.content h3:hover .anchor-copy,
+.content h4:hover .anchor-copy,
+.content h5:hover .anchor-copy,
+.content h6:hover .anchor-copy {
+    opacity: 0.5;
+}
 .content .anchor-copy:hover {
-    opacity: 1;
+    opacity: 1 !important;
 }
 
 .top-nav {
@@ -60,6 +68,7 @@ body {
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 10;
 }
 .top-nav .icon-button {
     background: #333;
