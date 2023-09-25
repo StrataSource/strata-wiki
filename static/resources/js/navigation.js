@@ -128,6 +128,10 @@ async function navigate(slug, replace = false, loadData = true) {
         );
     }
 
+    if (location.hash) {
+        anchorHeaderFix();
+    }
+
     if (replace) {
         history.replaceState(slug, '', '/' + slug);
     } else {
@@ -153,6 +157,7 @@ async function navigate(slug, replace = false, loadData = true) {
     regenerateSidebar(info);
     regenerateNav(info);
     generateGameSelector(info.game);
+    addAnchorLinks();
 
     updateAllLinkListeners();
 }

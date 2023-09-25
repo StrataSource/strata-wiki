@@ -5,6 +5,7 @@ import MarkdownIt from 'markdown-it';
 import markdownItEmoji from 'markdown-it-emoji';
 import container_block from 'markdown-it-container';
 import markdownItFrontMatter from 'markdown-it-front-matter';
+import markdownItAnchor from 'markdown-it-anchor';
 import twemoji from 'twemoji';
 
 import { Slug } from '../common/slug';
@@ -36,6 +37,7 @@ export class Renderer {
             }
         })
             .use(markdownItEmoji)
+            .use(markdownItAnchor)
             .use(markdownItFrontMatter, (frontMatter) => (this.tempMetaValue = yaml.parse(frontMatter)));
 
         // Use Twemojis for emojis

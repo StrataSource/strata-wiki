@@ -41,6 +41,14 @@ body {
 .content a:hover {
     color: var(--themeHighlight);
 }
+.content .anchor-copy {
+    opacity: 0.5;
+    transition: 250ms;
+    margin-left: 0.3rem;
+}
+.content .anchor-copy:hover {
+    opacity: 1;
+}
 
 .top-nav {
     display: flex;
