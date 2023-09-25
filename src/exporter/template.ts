@@ -31,7 +31,9 @@ export class Templater {
             replacers.contentPreview += '...';
         }
 
-        replacers.icon = this.exporter.pageHandler.index[slug.game].meta.icon;
+        replacers.icon =
+            this.exporter.pageHandler.index[slug.game].meta.favicon ||
+            this.exporter.pageHandler.index[slug.game].meta.icon;
         replacers.iconPNG =
             this.exporter.pageHandler.index[slug.game].meta.iconPNG ||
             this.exporter.pageHandler.index[slug.game].meta.icon;
