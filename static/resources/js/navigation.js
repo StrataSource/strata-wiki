@@ -149,7 +149,7 @@ async function navigate(slug, replace = false, loadData = true) {
     document.querySelector('.top-nav .game a').href = `/${info.game}`;
 
     if (loadData || data.file) {
-        document.querySelector('.edit a').href = `https://github.com/StrataSource/Wiki/edit/system-migration/${
+        document.querySelector('.edit a').href = `https://github.com/StrataSource/Wiki/edit/main/${
             data.file ? data.file.slice(3) : '404.md'
         }`;
     }
