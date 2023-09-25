@@ -143,8 +143,8 @@ async function navigate(slug, replace = false, loadData = true) {
     document.title = `${data.title || 'Page not found'} - ${games[info.game].name} Wiki`;
     document.querySelector('#current-game').innerText = games[info.game].name;
 
-    document.querySelector('link[rel=icon]').href = games[info.game].icon;
-    document.querySelector('link[rel=shortcut]').href = games[info.game].icon;
+    document.querySelector('link[rel=icon]').href = games[info.game].favicon || games[info.game].icon;
+    document.querySelector('link[rel=shortcut]').href = games[info.game].favicon || games[info.game].icon;
 
     document.querySelector('.top-nav .game a').href = `/${info.game}`;
 
