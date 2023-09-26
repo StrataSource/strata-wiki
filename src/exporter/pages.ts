@@ -170,6 +170,11 @@ export class PageHandler {
     savePage(article: Article): void {
         const path = article.slug.toString().split('/').slice(0, -1).join('/');
 
+        article.file = article.file.replaceAll('../', '');
+        if (article.file[0] === '/') {
+            article.file = article.file.slice(1);
+        }
+
         // Writing JSON meta to file
         console.log('public/ajax/article/' + path);
         fs.mkdirSync('public/ajax/article/' + path, { recursive: true });
