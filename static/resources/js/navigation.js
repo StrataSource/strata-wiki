@@ -151,7 +151,7 @@ async function navigate(slug, replace = false, loadData = true) {
     if (loadData || data.file) {
         document.querySelector('.edit a').href = `https://github.com/StrataSource/Wiki/edit/main/${
             data.file ? data.file.slice(3) : '404.md'
-        }`;
+        }`.replace('/ges/', '/pages/');
     }
 
     regenerateSidebar(info);
