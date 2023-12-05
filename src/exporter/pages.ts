@@ -28,6 +28,8 @@ export class PageHandler {
         const index = {};
         const menu = {};
 
+        const pageDir: string = '../pages/';
+
         // For each game, for each category, for each topic, render all articles
         for (const game of this.games) {
             index[game.id] = {
@@ -60,20 +62,30 @@ export class PageHandler {
                 for (const topic of category.topics) {
                     if (!topic.path) topic.path = topic.id;
 
-                    // Check if index.md exists
-                    const possiblePaths = [`${game.id}/${topic.path}/`, `shared/${topic.path}/`];
+                    // Array of tuples of [directory path, article]
+                    const articles: [string, string][] = [];
 
-                    let directoryPath = null;
-                    for (const path of possiblePaths) {
-                        console.log('Checking file path', '../pages/' + path);
-                        if (fs.existsSync('../pages/' + path)) {
-                            directoryPath = '../pages/' + path;
-                            console.log('Found file at path', path);
-                            break;
+                    // Search all possible paths for articles and build a list of every article we find
+                    const possiblePaths = [`${game.id}/${topic.path}/`, `shared/${topic.path}/`];
+                    for (const searchPath of possiblePaths) {
+                        const path: string = pageDir + searchPath;
+                        if (fs.existsSync(path)) {
+                            console.log(`Searching for articles in ${path}`);
+                            const dirArticles = fs.readdirSync(path, {
+                                withFileTypes: true
+                            });
+
+                            for (const articleFile of dirArticles) {
+                                // Exclude all directories
+                                if (articleFile.isDirectory()) continue;
+
+                                // Push the parent and the name
+                                articles.push([path, articleFile.name]);
+                            }
                         }
                     }
-                    if (!directoryPath)
-                        throw new Error(`Could not locate directory: ../pages/${game.id}/${topic.path}/`);
+
+                    if (articles.length === 0) throw new Error(`Could not locate articles: ${game.id}/${topic.path}/`);
 
                     index[game.id].categories[category.id].topics[topic.id] = {
                         id: topic.id,
@@ -89,23 +101,17 @@ export class PageHandler {
                         link: `${game.id}/${category.id}/${topic.id}`
                     });
 
-                    console.log('Reading directory', directoryPath);
-
-                    const articles = fs.readdirSync(directoryPath, {
-                        withFileTypes: true
-                    });
-
                     const articleList: MenuCategoryItem[] = [];
 
-                    for (const articleFile of articles) {
-                        // Exclude all directories
-                        if (articleFile.isDirectory()) continue;
-
-                        const articleString = articleFile.name.replace('.md', '');
+                    // Render article markdown
+                    for (const [articleDir, articleFile] of articles) {
+                        // Get a path to the article and a clean version for the slug
+                        const articlePath = articleDir + articleFile;
+                        const articleString = articleFile.replace('.md', '');
 
                         // Render out the markdown
                         const result = this.exporter.renderer.renderPage(
-                            directoryPath + articleFile.name,
+                            articlePath,
                             new Slug(game.id, category.id, topic.id, articleString)
                         );
 
@@ -123,7 +129,7 @@ export class PageHandler {
                             content: result.content,
                             title: meta.title || articleString,
                             slug: result.slug,
-                            file: directoryPath + articleString + '.md',
+                            file: articlePath,
                             meta: meta
                         };
 
