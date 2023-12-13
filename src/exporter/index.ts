@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { Exporter } from './src/exporter/export';
+import { Exporter } from './export';
 
 const exporter = new Exporter();
 exporter.export();
