@@ -77,6 +77,7 @@ export class Templater {
      */
     generateNav() {
         for (const game of this.exporter.pageHandler.games) {
+            // For each of the game's categories, shove a link into the nav bar to it
             let str = '';
             for (const category of game.categories) {
                 const link = category.redirect || `/${game.id}/${category.id}/${category.home}`;
