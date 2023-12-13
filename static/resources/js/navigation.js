@@ -123,7 +123,7 @@ async function navigate(slug, replace = false, loadData = true) {
 
     if (data.meta.example) {
         notify(
-            `There's a sample for this article. You can <a href="https://github.com/StrataSource/samples/tree/main${data.meta.example}">get it here</a>.`,
+            `There's a sample for this article. You can <a href="https://github.com/StrataSource/sample-content/tree/main${data.meta.example}">get it here</a>.`,
             'cube-outline'
         );
     }
