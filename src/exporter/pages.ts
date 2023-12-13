@@ -41,7 +41,7 @@ export class PageHandler {
             menu[game.id] = {};
 
             for (const category of game.categories) {
-                // If this category is just a redirect,
+                // If this category is just a redirect, we don't need to render any pages
                 if (category.redirect) {
                     index[game.id].categories[category.id] = {
                         id: category.id,
@@ -49,13 +49,14 @@ export class PageHandler {
                         redirect: category.redirect
                     };
                     continue;
-                } else {
-                    index[game.id].categories[category.id] = {
-                        id: category.id,
-                        meta: category,
-                        topics: {}
-                    };
                 }
+
+                // It's a normal category, so we'll need to fill in its topics
+                index[game.id].categories[category.id] = {
+                    id: category.id,
+                    meta: category,
+                    topics: {}
+                };
 
                 const menuCategory: MenuCategoryItem[] = [];
 
@@ -153,7 +154,7 @@ export class PageHandler {
                         this.allArticles.push(article);
                     }
 
-                    //Add local article list to menu
+                    // Add local article list to menu
                     for (const article of articleList) {
                         menuCategory.push(article);
                     }
