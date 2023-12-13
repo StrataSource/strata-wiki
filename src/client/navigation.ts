@@ -1,10 +1,10 @@
-import { Game } from '../common/types';
+import { Game, Menu } from '../common/types';
 import { Slug } from '../common/slug';
 import { clearNotices, notify } from './notices';
 import { anchorHeaderFix, addAnchorLinks } from './anchors';
 
 let games: { [game: string]: Game } = {};
-let menu = {};
+let menu: Menu = {};
 
 const params = new URLSearchParams(location.search);
 /**
@@ -187,17 +187,37 @@ function regenerateSidebar(info: Slug) {
     }
     container.parentElement.classList.remove('empty');
 
-    for (const entry of data) {
-        const el = document.createElement('a');
-        el.id = `sb-${entry.id}`;
-        el.innerText = entry.text;
-        el.href = '/' + entry.link;
-        el.classList.add(entry.type === 'topic' ? 'topic' : 'article');
-        const loc = location.pathname.slice(1).replace(/\/$/, '');
-        if (entry.link === loc || entry.link === loc + '/index') {
-            el.classList.add('active');
+    for (const topic of data) {
+        // Add the element for the topic
+        const elTopic = document.createElement('a');
+        elTopic.id = `sb-${topic.id}`;
+        elTopic.innerText = topic.text;
+        elTopic.href = '/' + topic.link;
+        elTopic.classList.add('topic');
+        const locTopic = location.pathname.slice(1).replace(/\/$/, '');
+        if (topic.link === locTopic || topic.link === locTopic + '/index') {
+            elTopic.classList.add('active');
         }
-        container.append(el);
+        container.append(elTopic);
+
+        // Create the container for the articles
+        const divTopic = document.createElement('div');
+        divTopic.classList.add('article-list');
+        container.append(divTopic);
+
+        for (const article of topic.articles) {
+            // Add the element for the article
+            const elArticle = document.createElement('a');
+            elArticle.id = `sb-${article.id}`;
+            elArticle.innerText = article.text;
+            elArticle.href = '/' + article.link;
+            elArticle.classList.add('article');
+            const loc = location.pathname.slice(1).replace(/\/$/, '');
+            if (article.link === loc || article.link === loc + '/index') {
+                elArticle.classList.add('active');
+            }
+            divTopic.append(elArticle);
+        }
     }
 }
 

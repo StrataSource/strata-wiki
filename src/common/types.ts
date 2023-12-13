@@ -70,15 +70,21 @@ export interface Index {
     };
 }
 
-export interface MenuCategoryItem {
-    type: 'topic' | 'article';
+export interface MenuArticle {
     id: string;
     text: string;
     link: string;
 }
 
+export interface MenuTopic {
+    id: string;
+    text: string;
+    link: string;
+    articles: MenuArticle[];
+}
+
 export interface Menu {
     [gameID: string]: {
-        [categoryID: string]: MenuCategoryItem[];
+        [categoryID: string]: MenuTopic[];
     };
 }
