@@ -68,7 +68,15 @@ export class Templater {
         if (!data) return;
 
         let str = '';
-        for (const entry of data) str += `<a href="/${entry.link}" class="${entry.type}">${entry.text}</a>`;
+        for (const topic of data) {
+            str += `<a href="/${topic.link}" class="topic">${topic.text}</a>`;
+
+            str += `<div class="article-list">`;
+            for (const article of data) {
+                str += `<a href="/${article.link}" class="article">${article.text}</a>`;
+            }
+            str += `</div>`;
+        }
         return str;
     }
 
