@@ -23,10 +23,11 @@ export class Slug {
                 `Page names starting with "ajax" or "assets" are not permitted! Trying to render page ${game}/${category}/${topic}/${article}.`
             );
 
-        if (game) this.game = game;
-        if (category) this.category = category;
-        if (topic) this.topic = topic;
-        this.article = article ?? 'index';
+        if (game && game.length > 0) this.game = game;
+        if (category && category.length > 0) this.category = category;
+        if (topic && topic.length > 0) this.topic = topic;
+
+        this.article = article && article.length > 0 ? article : 'index';
     }
 
     toString() {

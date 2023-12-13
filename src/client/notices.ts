@@ -1,4 +1,4 @@
-function notify(message, icon) {
+export function notify(message, icon) {
     const container = document.createElement('div');
     container.classList.add('notice');
 
@@ -14,7 +14,7 @@ function notify(message, icon) {
     document.querySelector('.notices').append(container);
 }
 
-function clearNotices() {
+export function clearNotices() {
     document.querySelector('.notices').innerHTML = '';
 }
 
