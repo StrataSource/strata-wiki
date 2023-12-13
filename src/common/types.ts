@@ -46,13 +46,9 @@ export interface Game {
     name: string;
     nameShort?: string;
     color: string;
-    categories: { [game: string]: Category };
+    categories: Category[];
     features: string[];
 }
-
-export type ObjectItemsToArray<T, K, V extends keyof T> = Omit<T, V> & { [V: string]: K[] };
-
-export type GamesCategoryArray = ObjectItemsToArray<Game, Category, 'categories'>;
 
 export interface Index {
     [gameID: string]: {
