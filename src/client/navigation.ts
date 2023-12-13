@@ -1,4 +1,9 @@
-let games = {};
+import { Game } from '../common/types';
+import { Slug } from '../common/slug';
+import { clearNotices, notify } from './notices';
+import { anchorHeaderFix, addAnchorLinks } from './anchors';
+
+let games: { [game: string]: Game } = {};
 let menu = {};
 
 const params = new URLSearchParams(location.search);
@@ -8,20 +13,27 @@ const params = new URLSearchParams(location.search);
 async function init() {
     updateAllLinkListeners();
     const gameReq = await fetch('/ajax/games.json');
-    games = await gameReq.json();
+    games = (await gameReq.json()) as { [game: string]: Game };
     const menuReq = await fetch('/ajax/menu.json');
     menu = await menuReq.json();
 
-    let dialogCloseBtns = document.querySelectorAll('dialog .close');
+    // Hook up the game selector's close button
+    const dialogCloseBtns = document.querySelectorAll<HTMLButtonElement>('dialog .close');
     for (const btn of dialogCloseBtns) {
-        btn.addEventListener('click', () => btn.parentElement.close());
+        btn.addEventListener('click', () => (btn.parentElement as HTMLDialogElement).close());
+    }
+
+    // Wire up the game selector button
+    const showBtns = document.querySelectorAll<HTMLButtonElement>('.show-game-selector');
+    for (const btn of showBtns) {
+        btn.addEventListener('click', () => showGameSelector());
     }
 
     //Regenerate UI
-    const info = parseSlug(location.pathname.slice(1));
+    const info: Slug = parseSlug(location.pathname.slice(1));
     regenerateNav(info);
     regenerateSidebar(info);
-    generateGameSelector(info.game);
+    generateGameSelector();
     updateAllLinkListeners();
 
     if (params.get('force') === 'gameselect') {
@@ -32,10 +44,12 @@ async function init() {
 }
 window.addEventListener('load', init);
 
-function generateGameSelector(_current) {
+function generateGameSelector() {
+    // Grab and clear the selector container
     const container = document.querySelector('.games');
     container.innerHTML = '';
 
+    // Generate a button for each game
     for (const game of Object.values(games)) {
         const btn = document.createElement('button');
         btn.classList.add('game-selector', 'btn');
@@ -59,22 +73,18 @@ function generateGameSelector(_current) {
     }
 }
 function showGameSelector(closeable = true) {
-    document.querySelector('#gameSelector .close').style.display = closeable ? 'block' : 'none';
-    document.querySelector('#gameSelector').showModal();
+    document.querySelector<HTMLButtonElement>('#gameSelector .close').style.display = closeable ? 'block' : 'none';
+    document.querySelector<HTMLDialogElement>('#gameSelector').showModal();
+}
+function hideGameSelector() {
+    document.querySelector<HTMLDialogElement>('#gameSelector').close();
+    document.querySelector<HTMLButtonElement>('#gameSelector .close').style.display = '';
 }
 
 async function navigate(slug, replace = false, loadData = true) {
-    const info = parseSlug(slug);
+    const info: Slug = parseSlug(slug);
 
-    if (info.category === 'index') {
-        info.category = '';
-        info.topic = '';
-    }
-
-    let path = `/ajax/article/${info.game}/${info.category}/${info.topic}/${info.article}.json`;
-
-    path = path.replaceAll('///', '/').replaceAll('//', '/');
-
+    const path = '/ajax/article/' + info.toString() + '.json';
     const req = await fetch(path);
 
     if (req.status === 404) {
@@ -94,7 +104,7 @@ async function navigate(slug, replace = false, loadData = true) {
     clearNotices();
 
     // Grab all of the exclusive blocks and filter 'em
-    const exclusives = document.querySelectorAll('.exclusive');
+    const exclusives = document.querySelectorAll<HTMLDivElement>('.exclusive');
 
     if (info.game === 'shared') {
         // If this is the "shared" game, we want to always display all exclusive blocks
@@ -141,29 +151,31 @@ async function navigate(slug, replace = false, loadData = true) {
     document.querySelector('html').className = 'theme-' + info.game;
 
     document.title = `${data.title || 'Page not found'} - ${games[info.game].name} Wiki`;
-    document.querySelector('#current-game').innerText = games[info.game].name;
+    document.querySelector<HTMLDivElement>('#current-game').innerText = games[info.game].name;
 
-    document.querySelector('link[rel=icon]').href = games[info.game].favicon || games[info.game].icon;
-    document.querySelector('link[rel=shortcut]').href = games[info.game].favicon || games[info.game].icon;
+    document.querySelector<HTMLLinkElement>('link[rel=icon]').href = games[info.game].favicon || games[info.game].icon;
+    document.querySelector<HTMLLinkElement>('link[rel=shortcut]').href =
+        games[info.game].favicon || games[info.game].icon;
 
-    document.querySelector('.top-nav .game a').href = `/${info.game}`;
+    document.querySelector<HTMLAnchorElement>('.top-nav .game a').href = `/${info.game}`;
 
     if (loadData || data.file) {
-        document.querySelector('.edit a').href = `https://github.com/StrataSource/Wiki/edit/main/${
+        // Update the edit button to reflect our current page
+        document.querySelector<HTMLAnchorElement>('.edit a').href = `https://github.com/StrataSource/Wiki/edit/main/${
             data.file || '404.md'
         }`;
     }
 
     regenerateSidebar(info);
     regenerateNav(info);
-    generateGameSelector(info.game);
+    generateGameSelector();
     addAnchorLinks();
 
     updateAllLinkListeners();
 }
 window.addEventListener('popstate', () => navigate(location.pathname.slice(1), true));
 
-function regenerateSidebar(info) {
+function regenerateSidebar(info: Slug) {
     const data = menu[info.game][info.category];
     const container = document.querySelector('.sidebar .inner');
     container.innerHTML = '';
@@ -189,27 +201,25 @@ function regenerateSidebar(info) {
     }
 }
 
-function regenerateNav(info) {
-    const data = [
-        {
-            label: 'Home',
-            id: ''
-        },
-        ...games[info.game].categories
-    ];
+function regenerateNav(info: Slug) {
+    // Grab the nav container. We'll fill it up with anchors for the given game
     const container = document.querySelector('.categories');
     container.innerHTML = '';
 
-    for (const cat of data) {
+    // Add the Home anchor separately, as it's not in our category list.
+    const homeAnchor = document.createElement('a');
+    homeAnchor.innerText = 'Home';
+    homeAnchor.href = `/${info.game}`;
+    container.append(homeAnchor);
+
+    // Add all game category anchors
+    for (const cat of games[info.game].categories) {
         const el = document.createElement('a');
         el.innerText = cat.label;
-        if (cat.redirect) {
-            el.href = cat.redirect;
-        } else if (cat.id === '') {
-            el.href = `/${info.game}`;
-        } else {
-            el.href = `/${info.game}/${cat.id}/${cat.home}`;
-        }
+
+        // Set it to use the redirect if possible, otherwise use the slug
+        el.href = cat.redirect ?? `/${info.game}/${cat.id}/${cat.home}`;
+
         if (cat.id === info.category) {
             el.classList.add('active');
         }
@@ -224,13 +234,13 @@ function regenerateNav(info) {
 function linkClickHandler(e) {
     e.preventDefault();
     console.log('GOING TO', e.target.href, 'EVENT:', e);
-    const url = new URL(e.target.href, location);
+    const url = new URL(e.target.href, location.toString());
     if (url.host === location.host) {
         document.body.classList.remove('nav-show');
 
         navigate(url.pathname.slice(1));
 
-        if (e.currentTarget.parentNode.classList.contains('categories') && e.currentTarget.innerText != 'Home') {
+        if (e.currentTarget.parentNode.classList.contains('categories') && e.currentTarget.innerText !== 'Home') {
             document.body.classList.add('nav-showTopics', 'nav-show');
         }
     } else {
@@ -239,8 +249,7 @@ function linkClickHandler(e) {
 }
 
 async function switchGame(game) {
-    document.querySelector('#gameSelector').close();
-    document.querySelector('#gameSelector .close').style.display = '';
+    hideGameSelector();
 
     const split = location.pathname.slice(1).split('/');
     split[0] = game;
@@ -253,11 +262,15 @@ async function switchGame(game) {
 }
 
 function updateAllLinkListeners() {
+    // Override the behavior of all anchors
     const links = document.querySelectorAll('a');
     for (const link of links) {
-        if (link.classList.contains('no-nav')) {
-            continue;
-        }
+        // Ignore any anchors with no-nav
+        if (link.classList.contains('no-nav')) continue;
+
+        // Don't override any existing on clicks
+        if (link.onclick !== null) continue;
+
         link.onclick = link.href.startsWith('javascript:') ? () => void 0 : linkClickHandler;
     }
 }
@@ -267,12 +280,7 @@ function updateAllLinkListeners() {
  * @param {string} slug The slug you are trying to parse
  * @returns {{game: string, topic: string, category: string, article: string}}
  */
-function parseSlug(slug) {
+function parseSlug(slug: string): Slug {
     const slugParsed = slug.split('/');
-    return {
-        game: slugParsed[0] || 'index',
-        category: slugParsed[1] || 'index',
-        topic: slugParsed[2] || 'index',
-        article: slugParsed[3] || 'index'
-    };
+    return new Slug(slugParsed[0], slugParsed[1], slugParsed[2], slugParsed[3]);
 }
