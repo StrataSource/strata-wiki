@@ -1,5 +1,5 @@
 import { Slug } from '../common/slug';
-import { Article, GamesCategoryArray, Index, Menu, MenuCategoryItem } from '../common/types';
+import { Article, Game, Index, Menu, MenuCategoryItem } from '../common/types';
 import fs from 'fs-extra';
 import { Exporter } from './export';
 
@@ -9,7 +9,7 @@ export class PageHandler {
     menu: Menu;
     index: Index;
     allArticles: Article[] = [];
-    games: GamesCategoryArray[];
+    games: Game[];
 
     constructor(exporter) {
         this.exporter = exporter;
@@ -18,15 +18,18 @@ export class PageHandler {
         this.games = fs
             .readdirSync('../pages')
             .filter((game) => fs.existsSync(`../pages/${game}/meta.json`))
-            .map((game) => ({
-                ...fs.readJSONSync(`../pages/${game}/meta.json`),
-                id: game
-            }));
+            .map(
+                (game) =>
+                    ({
+                        ...fs.readJSONSync(`../pages/${game}/meta.json`),
+                        id: game
+                    } as Game)
+            );
     }
 
-    buildIndex() {
-        const index = {};
-        const menu = {};
+    buildIndex(): void {
+        const index: Index = {};
+        const menu: Menu = {};
 
         const pageDir: string = '../pages/';
 
@@ -34,32 +37,24 @@ export class PageHandler {
         for (const game of this.games) {
             index[game.id] = {
                 id: game.id,
-                meta: game,
+                meta: game as Game,
                 categories: {}
             };
 
             menu[game.id] = {};
 
             for (const category of game.categories) {
-                // If this category is just a redirect, we don't need to render any pages
-                if (category.redirect) {
-                    index[game.id].categories[category.id] = {
-                        id: category.id,
-                        meta: category,
-                        redirect: category.redirect
-                    };
-                    continue;
-                }
-
-                // It's a normal category, so we'll need to fill in its topics
+                // Insert the category into the index
                 index[game.id].categories[category.id] = {
-                    id: category.id,
                     meta: category,
                     topics: {}
                 };
 
-                const menuCategory: MenuCategoryItem[] = [];
+                // If this category is just a redirect, we don't need to render any pages
+                if (category.redirect) continue;
 
+                // It's a normal category, so we'll need to fill in its topics
+                const menuCategory: MenuCategoryItem[] = [];
                 for (const topic of category.topics) {
                     if (!topic.path) topic.path = topic.id;
 
@@ -89,7 +84,6 @@ export class PageHandler {
                     if (articles.length === 0) throw new Error(`Could not locate articles: ${game.id}/${topic.path}/`);
 
                     index[game.id].categories[category.id].topics[topic.id] = {
-                        id: topic.id,
                         meta: topic,
                         articles: {}
                     };
@@ -152,6 +146,7 @@ export class PageHandler {
 
                         // Add to collection of all articles
                         this.allArticles.push(article);
+                        console.log(`Pushed article ${article.id}`);
                     }
 
                     // Add local article list to menu
@@ -166,8 +161,8 @@ export class PageHandler {
 
         fs.writeFileSync('public/ajax/menu.json', JSON.stringify(menu));
 
-        this.menu = menu as Menu;
-        this.index = index as Index;
+        this.menu = menu;
+        this.index = index;
     }
 
     /**
