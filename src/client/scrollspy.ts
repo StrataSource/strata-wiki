@@ -1,5 +1,10 @@
 class ScrollSpy {
-    init() {
+    breakpoints: { up: number; down: number };
+    targets: number[] = [];
+    menu: HTMLAnchorElement[] = [];
+    index: number = 0;
+
+    constructor() {
         this.breakpoints = { up: -2, down: -1 };
         this.reset();
     }
