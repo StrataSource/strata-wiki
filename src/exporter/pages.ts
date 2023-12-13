@@ -1,5 +1,5 @@
 import { Slug } from '../common/slug';
-import { Article, Game, Index, Menu, MenuCategoryItem } from '../common/types';
+import { Article, Game, Index, Menu, MenuArticle, MenuTopic } from '../common/types';
 import fs from 'fs-extra';
 import { Exporter } from './export';
 
@@ -54,7 +54,8 @@ export class PageHandler {
                 if (category.redirect) continue;
 
                 // It's a normal category, so we'll need to fill in its topics
-                const menuCategory: MenuCategoryItem[] = [];
+                const menuTopics: MenuTopic[] = [];
+                menu[game.id][category.id] = menuTopics;
                 for (const topic of category.topics) {
                     if (!topic.path) topic.path = topic.id;
 
@@ -89,14 +90,14 @@ export class PageHandler {
                     };
 
                     // Add topic to menu
-                    menuCategory.push({
-                        type: 'topic',
+                    const articleList: MenuArticle[] = [];
+                    const menuTopic: MenuTopic = {
                         id: topic.id,
                         text: topic.name,
-                        link: `${game.id}/${category.id}/${topic.id}`
-                    });
-
-                    const articleList: MenuCategoryItem[] = [];
+                        link: `${game.id}/${category.id}/${topic.id}`,
+                        articles: articleList
+                    };
+                    menuTopics.push(menuTopic);
 
                     // Render article markdown
                     for (const [articleDir, articleFile] of articles) {
@@ -131,14 +132,14 @@ export class PageHandler {
                         // Add article to index
                         index[game.id].categories[category.id].topics[topic.id].articles[articleString] = article;
 
-                        // Add to menu
-                        const entry: MenuCategoryItem = {
-                            type: 'article',
+                        // Add the article to menu
+                        const entry: MenuArticle = {
                             id: topic.id + '_' + articleString,
                             text: meta.title || articleString,
                             link: result.slug.toString()
                         };
                         if (articleString === 'index') {
+                            // Index articles are always at the top
                             articleList.unshift(entry);
                         } else {
                             articleList.push(entry);
@@ -148,14 +149,7 @@ export class PageHandler {
                         this.allArticles.push(article);
                         console.log(`Pushed article ${article.id}`);
                     }
-
-                    // Add local article list to menu
-                    for (const article of articleList) {
-                        menuCategory.push(article);
-                    }
                 }
-
-                menu[game.id][category.id] = menuCategory;
             }
         }
 
