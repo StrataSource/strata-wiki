@@ -93,11 +93,10 @@ export class Exporter {
      * @param article The article
      */
     savePage(templater: Templater, metaGame: MetaGame, article: Article): void {
-        const path = article.slug.toString().split('/').slice(0, -1).join('/');
+        const slug = article.slug.toString();
 
         // Write article JSON meta to file
-        fs.mkdirSync('public/ajax/article/' + path, { recursive: true });
-        fs.writeFileSync('public/ajax/article/' + path + '/' + article.id + '.json', JSON.stringify(article.page));
+        fs.writeFileSync('public/ajax/article/' + slug + '.json', JSON.stringify(article.page));
 
         // Generate HTML content
         const content = templater.applyTemplate({
@@ -108,12 +107,22 @@ export class Exporter {
         });
 
         // Writing HTML to file
-        // console.log('public/' + path);
-        fs.mkdirSync('public/' + path, { recursive: true });
-        fs.writeFileSync('public/' + path + '/' + article.id + '.html', content);
+        fs.writeFileSync('public/' + slug + '.html', content);
     }
 
     saveAllPages() {
+        // Create the file tree ahead of time
+        for (const game of this.games) {
+            for (const category of game.categories) {
+                if (category.redirect) continue;
+                for (const topic of category.topics) {
+                    const path = game.id + '/' + category.id + '/' + topic.id;
+                    fs.mkdirSync('public/' + path, { recursive: true });
+                    fs.mkdirSync('public/ajax/article/' + path, { recursive: true });
+                }
+            }
+        }
+
         // Read template HTML
         const templateMain: HTMLString = fs.readFileSync('templates/main.html', 'utf8');
         const template404: HTMLString = fs.readFileSync('templates/404.html', 'utf8');
@@ -131,14 +140,14 @@ export class Exporter {
             content.meta.title = 'Home';
             this.savePage(templater, game, {
                 id: 'index',
-                slug: new Slug(game.id),
+                slug: new Slug(game.id, null, null, 'index'),
                 page: content
             });
 
             // Save the 404 page
             this.savePage(templater, game, {
                 id: '404',
-                slug: new Slug(game.id),
+                slug: new Slug(game.id, null, null, '404'),
                 page: { content: template404, meta: { title: '404' }, path: '' }
             });
 
