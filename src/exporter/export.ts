@@ -32,6 +32,12 @@ export class Exporter {
         for (const game of this.games) {
             this.renderer.registerGame(game.id, game.nameShort || game.name || game.id);
         }
+
+        // For each game, cache all articles
+        console.log('Caching articles...');
+        for (const game of this.games) {
+            this.pageHandler.cacheArticles(game.id);
+        }
     }
 
     export() {
