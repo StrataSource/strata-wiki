@@ -1,5 +1,5 @@
 import { Slug } from '../common/slug';
-import { Article, MetaGame, Index, Menu, MenuArticle, MenuTopic } from '../common/types';
+import { Article, MetaGame, Index, Menu, MenuArticle, MenuTopic, RenderedPage } from '../common/types';
 import fs from 'fs-extra';
 import { Exporter } from './export';
 
@@ -8,16 +8,49 @@ export class PageHandler {
 
     menu: Menu;
     index: Index;
+    articleCache: { [path: string]: { [article: string]: RenderedPage } };
 
     constructor(exporter) {
         this.exporter = exporter;
+
+        this.articleCache = {};
+    }
+
+    /**
+     * Finds all markdown files recursively and renders them
+     */
+    cacheArticles(topicDir: string): void {
+        const basePath: string = '../pages/';
+        console.log(`Searching for articles in "${topicDir}"`);
+
+        this.articleCache[topicDir] = {};
+
+        const topicPath = basePath + topicDir;
+        const dirArticles = fs.readdirSync(topicPath, { withFileTypes: true });
+        for (const dent of dirArticles) {
+            if (dent.isDirectory()) {
+                // Call recursively for directories
+                this.cacheArticles(topicDir + '/' + dent.name);
+                continue;
+            }
+
+            // Get the file extension, ignore non-markdown files, split off the extension
+            const articleName = dent.name;
+            const ext = articleName.lastIndexOf('.md');
+            if (ext < articleName.length - 3) {
+                continue;
+            }
+            const articleID = articleName.slice(0, ext);
+
+            // Render and cache it!
+            const result = this.exporter.renderer.renderPage(topicPath + '/' + articleName);
+            this.articleCache[topicDir][articleID] = result;
+        }
     }
 
     buildIndex(games: MetaGame[]): void {
         const index: Index = {};
         const menu: Menu = {};
-
-        const pageDir: string = '../pages/';
 
         // For each game, for each category, for each topic, render all articles
         for (const game of games) {
@@ -43,26 +76,33 @@ export class PageHandler {
                 for (const topic of category.topics) {
                     if (!topic.path) topic.path = topic.id;
 
-                    // Array of tuples of [directory path, article]
-                    const articles: [string, string][] = [];
+                    // Array of tuples of [article, page]
+                    const articles: [string, RenderedPage][] = [];
 
-                    // Search all possible paths for articles and build a list of every article we find
-                    const possiblePaths = [`${game.id}/${topic.path}/`, `shared/${topic.path}/`];
-                    for (const searchPath of possiblePaths) {
-                        const path: string = pageDir + searchPath;
-                        if (fs.existsSync(path)) {
-                            console.log(`Searching for articles in ${path}`);
-                            const dirArticles = fs.readdirSync(path, {
-                                withFileTypes: true
-                            });
+                    // Search all possible paths for articles and build a list of every article we want
+                    const possiblePaths = [`${game.id}/${topic.path}`, `shared/${topic.path}`];
+                    for (const path of possiblePaths) {
+                        // Skip topics not in the cache
+                        if (!(path in this.articleCache)) {
+                            continue;
+                        }
 
-                            for (const articleFile of dirArticles) {
-                                // Exclude all directories
-                                if (articleFile.isDirectory()) continue;
+                        // Pull in the articles we want from the topic
+                        const topic = this.articleCache[path];
+                        for (const articleFile of Object.keys(topic)) {
+                            const page = topic[articleFile];
 
-                                // Push the parent and the name
-                                articles.push([path, articleFile.name]);
-                            }
+                            // Make sure the current game's feature set allows this article
+                            const meta = page.meta;
+                            if (
+                                Array.isArray(meta.features) &&
+                                meta.features.length > 0 &&
+                                !meta.features.every((feature) => game.features.includes(feature))
+                            )
+                                continue;
+
+                            // Push the parent and the name
+                            articles.push([articleFile, page]);
                         }
                     }
 
@@ -82,32 +122,17 @@ export class PageHandler {
                     };
                     menuTopics.push(menuTopic);
 
-                    // Render article markdown
-                    for (const [articleDir, articleFile] of articles) {
-                        // Get a path to the article and a clean version for the slug
-                        const articlePath = articleDir + articleFile;
-                        const articleID = articleFile.replace('.md', '');
+                    // Push the article into the menu
+                    for (const [articleID, page] of articles) {
+                        const meta = page.meta;
 
                         const slug = new Slug(game.id, category.id, topic.id, articleID);
 
-                        // Render out the markdown
-                        const result = this.exporter.renderer.renderPage(articlePath);
-
-                        // Make sure the current game's feature set allows this article
-                        const meta = result.meta;
-                        if (
-                            Array.isArray(meta.features) &&
-                            meta.features.length > 0 &&
-                            !meta.features.every((feature) => game.features.includes(feature))
-                        )
-                            continue;
-
                         const article: Article = {
                             id: articleID,
-                            content: result.content,
+                            content: page.content,
                             name: meta.title || articleID,
                             slug: slug,
-                            file: articlePath,
                             meta: meta
                         };
 
@@ -146,11 +171,6 @@ export class PageHandler {
      */
     savePage(metaGame: MetaGame, article: Article): void {
         const path = article.slug.toString().split('/').slice(0, -1).join('/');
-
-        article.file = article.file.replaceAll('../', '');
-        if (article.file[0] === '/') {
-            article.file = article.file.slice(1);
-        }
 
         // Writing JSON meta to file
         console.log('public/ajax/article/' + path);
