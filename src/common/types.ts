@@ -37,7 +37,7 @@ export interface MetaGame {
 export interface Article {
     id: string;
     content: HTMLString;
-    title: string;
+    name: string;
     slug: Slug;
     file: string;
     meta: PageMeta;
@@ -51,7 +51,6 @@ export interface PageMeta {
 export interface RenderedPage {
     content: HTMLString;
     meta: PageMeta;
-    slug: Slug;
 }
 
 export interface Index {

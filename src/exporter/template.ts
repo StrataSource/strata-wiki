@@ -1,27 +1,20 @@
 import fs from 'fs-extra';
-import { Slug } from '../common/slug';
-import { HTMLString, MetaGame } from '../common/types';
-import { Exporter } from './export';
+import { HTMLString, MenuTopic, MetaGame } from '../common/types';
 
 export interface TemplaterArgs {
+    metaGame: MetaGame;
     html: HTMLString;
-    slug?: Slug;
     title?: string;
-    file?: string;
+    menuTopics?: MenuTopic[];
 }
 
 export class Templater {
-    exporter: Exporter;
     navs: Record<string, string> = {};
 
-    constructor(exporter: Exporter) {
-        this.exporter = exporter;
-    }
-
-    applyTemplate(metaGame: MetaGame, { html, slug, title }: TemplaterArgs): HTMLString {
+    applyTemplate({ metaGame, html, title, menuTopics }: TemplaterArgs): HTMLString {
         const replacers: Record<string, string> = {};
-        replacers.sidebar = this.generateSidebar(slug);
-        replacers.categories = this.navs[slug.game];
+        replacers.sidebar = this.generateSidebar(menuTopics);
+        replacers.categories = this.navs[metaGame.id];
 
         replacers.title = title;
         replacers.content = html;
@@ -37,7 +30,7 @@ export class Templater {
         replacers.gameName = metaGame.name;
         replacers.color = metaGame.color;
 
-        replacers.game = slug.game;
+        replacers.game = metaGame.id;
 
         replacers.commit = process.env.CF_PAGES_COMMIT_SHA || 'UNAVAILABLE';
         replacers.branch = process.env.CF_PAGES_BRANCH || 'UNAVAILABLE';
@@ -58,17 +51,15 @@ export class Templater {
      * @param slug Slug to the page next to the sidebar
      * @returns HTML generated for the sidebar
      */
-    generateSidebar(slug: Slug): HTMLString {
-        const data = this.exporter.pageHandler.menu[slug.game][slug.category];
-
-        if (!data) return;
+    generateSidebar(menuTopics: MenuTopic[]): HTMLString {
+        if (!menuTopics) return;
 
         let str = '';
-        for (const topic of data) {
+        for (const topic of menuTopics) {
             str += `<a href="/${topic.link}" class="topic">${topic.name}</a>`;
 
             str += `<div class="article-list">`;
-            for (const article of data) {
+            for (const article of topic.articles) {
                 str += `<a href="/${article.link}" class="article">${article.name}</a>`;
             }
             str += `</div>`;
@@ -78,9 +69,10 @@ export class Templater {
 
     /**
      * Generates the top nav links for all pages
+     * @param games Array of all game meta data
      */
-    generateNav() {
-        for (const game of this.exporter.pageHandler.games) {
+    generateNav(games: MetaGame[]) {
+        for (const game of games) {
             // For each of the game's categories, shove a link into the nav bar to it
             let str = '';
             for (const category of game.categories) {

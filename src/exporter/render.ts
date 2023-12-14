@@ -8,20 +8,16 @@ import markdownItFrontMatter from 'markdown-it-front-matter';
 import markdownItAnchor from 'markdown-it-anchor';
 import twemoji from 'twemoji';
 
-import { Slug } from '../common/slug';
 import { MarkdownString, RenderedPage } from '../common/types';
-import { Exporter } from './export';
 import { registerHightlights } from './highlights';
 
 export class Renderer {
     private md: MarkdownIt;
-    private exporter: Exporter;
 
+    // This is a temporary value used to hold the output of FrontMatter. Doesn't look like we can get rid of it...
     private tempMetaValue;
 
-    constructor(exporter) {
-        this.exporter = exporter;
-
+    constructor() {
         registerHightlights(hljs);
 
         this.md = new MarkdownIt({
@@ -42,23 +38,23 @@ export class Renderer {
 
         // Use Twemojis for emojis
         this.md.renderer.rules.emoji = (token, idx) => twemoji.parse(token[idx].content);
+    }
 
-        // For each game, register up a handler for its game exclusive block
-        for (const game of this.exporter.pageHandler.games) {
-            console.log('Registered game', game.id);
-
-            this.md.use(container_block, game.id, {
-                validate: (params) => params.trim() === game.id,
-                render: (tokens, idx) =>
-                    tokens[idx].nesting === 1
-                        ? // opening tag
-                          `<div class='theme-${game.id} exclusive'><div class="exclusive-header">${
-                              game.nameShort || game.name || game.id
-                          } only!</div>\n`
-                        : // closing tag
-                          '</div>\n'
-            });
-        }
+    /**
+     * Registers a given game up for its exclusive block handler
+     * @param id The game's ID
+     * @param nameShort The game's short name
+     */
+    registerGame(id: string, nameShort: string): void {
+        this.md.use(container_block, id, {
+            validate: (params) => params.trim() === id,
+            render: (tokens, idx) =>
+                tokens[idx].nesting === 1
+                    ? // opening tag
+                      `<div class='theme-${id} exclusive'><div class="exclusive-header">${nameShort} only!</div>\n`
+                    : // closing tag
+                      '</div>\n'
+        });
     }
 
     /**
@@ -67,29 +63,26 @@ export class Renderer {
      * @param slug The slug of the current page, used for passthrough
      * @returns An object that includes the rendered HTML.
      */
-    render(str: MarkdownString, slug: Slug): RenderedPage {
+    render(str: MarkdownString): RenderedPage {
         this.tempMetaValue = {};
         return {
             content: this.md.render(str),
-            meta: this.tempMetaValue,
-            slug: slug
+            meta: this.tempMetaValue
         };
     }
 
     /**
      * Renders Markdown into a page based on the slug
      * @param {string} path The path to the markdown file
-     * @param {Slug} slug The slug to the page
      * @returns Rendered HTML of the page
      */
-    renderPage(path: string, slug: Slug): RenderedPage {
-        console.log('Rendering file', path, '->', slug.toString());
+    renderPage(path: string): RenderedPage {
+        console.log(`Rendering file ${path}`);
 
         return this.render(
             fs.readFileSync(path, {
                 encoding: 'utf8'
-            }),
-            slug
+            })
         );
     }
 }
