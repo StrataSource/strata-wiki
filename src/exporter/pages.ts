@@ -8,32 +8,19 @@ export class PageHandler {
 
     menu: Menu;
     index: Index;
-    games: MetaGame[];
 
     constructor(exporter) {
         this.exporter = exporter;
-
-        // Read the pages folder, anything with a meta.json is a "game"
-        this.games = fs
-            .readdirSync('../pages')
-            .filter((game) => fs.existsSync(`../pages/${game}/meta.json`))
-            .map(
-                (game) =>
-                    ({
-                        ...fs.readJSONSync(`../pages/${game}/meta.json`),
-                        id: game
-                    } as MetaGame)
-            );
     }
 
-    buildIndex(): void {
+    buildIndex(games: MetaGame[]): void {
         const index: Index = {};
         const menu: Menu = {};
 
         const pageDir: string = '../pages/';
 
         // For each game, for each category, for each topic, render all articles
-        for (const game of this.games) {
+        for (const game of games) {
             index[game.id] = {
                 id: game.id,
                 categories: {}
@@ -99,13 +86,12 @@ export class PageHandler {
                     for (const [articleDir, articleFile] of articles) {
                         // Get a path to the article and a clean version for the slug
                         const articlePath = articleDir + articleFile;
-                        const articleString = articleFile.replace('.md', '');
+                        const articleID = articleFile.replace('.md', '');
+
+                        const slug = new Slug(game.id, category.id, topic.id, articleID);
 
                         // Render out the markdown
-                        const result = this.exporter.renderer.renderPage(
-                            articlePath,
-                            new Slug(game.id, category.id, topic.id, articleString)
-                        );
+                        const result = this.exporter.renderer.renderPage(articlePath);
 
                         // Make sure the current game's feature set allows this article
                         const meta = result.meta;
@@ -117,24 +103,24 @@ export class PageHandler {
                             continue;
 
                         const article: Article = {
-                            id: articleString,
+                            id: articleID,
                             content: result.content,
-                            title: meta.title || articleString,
-                            slug: result.slug,
+                            name: meta.title || articleID,
+                            slug: slug,
                             file: articlePath,
                             meta: meta
                         };
 
                         // Add article to index
-                        index[game.id].categories[category.id].topics[topic.id].articles[articleString] = article;
+                        index[game.id].categories[category.id].topics[topic.id].articles[articleID] = article;
 
                         // Add the article to menu
                         const entry: MenuArticle = {
-                            id: topic.id + '_' + articleString,
-                            name: meta.title || articleString,
-                            link: result.slug.toString()
+                            id: articleID,
+                            name: meta.title || articleID,
+                            link: slug.toString()
                         };
-                        if (articleString === 'index') {
+                        if (articleID === 'index') {
                             // Index articles are always at the top
                             articleList.unshift(entry);
                         } else {
@@ -176,11 +162,11 @@ export class PageHandler {
         fs.mkdirSync('public/' + path, { recursive: true });
         fs.writeFileSync(
             'public/' + path + '/' + article.id + '.html',
-            this.exporter.templater.applyTemplate(metaGame, {
+            this.exporter.templater.applyTemplate({
+                metaGame: metaGame,
                 html: article.content,
-                slug: article.slug,
-                title: article.title,
-                file: article.file.slice(5)
+                title: article.name,
+                menuTopics: this.menu[metaGame.id][article.slug.category]
             })
         );
     }
