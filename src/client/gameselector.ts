@@ -1,5 +1,5 @@
 import { Slug } from '../common/slug';
-import { MetaGame } from '../common/types';
+import { MenuGame } from '../common/types';
 import { navigate, getLocationSlug } from './navigation';
 import { notify } from './notices';
 
@@ -40,17 +40,17 @@ export class GameSelector {
      * Populates the Game Selector with buttons
      * @param games List of available games
      */
-    regenerate(games: { [game: string]: MetaGame }) {
+    regenerate(games: { [game: string]: MenuGame }) {
         // Grab and clear the selector container
         const container = document.querySelector('#gameSelector .games');
         container.innerHTML = '';
 
         // Generate a button for each game
-        for (const game of Object.values(games)) {
+        for (const [gameID, game] of Object.entries(games)) {
             const btn = document.createElement('button');
             btn.classList.add('game-selector', 'btn');
             btn.onclick = () => {
-                this.switchGame(game.id);
+                this.switchGame(gameID);
             };
 
             const icon = document.createElement('img');

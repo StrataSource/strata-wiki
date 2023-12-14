@@ -1,11 +1,10 @@
-import { MetaGame, Menu, RenderedPage } from '../common/types';
+import { Menu, RenderedPage } from '../common/types';
 import { Slug } from '../common/slug';
 import { clearNotices, notify } from './notices';
 import { anchorHeaderFix, addAnchorLinks } from './anchors';
 import { GameSelector } from './gameselector';
 
-let games: { [game: string]: MetaGame } = {};
-let menu: Menu = {};
+let menu: Menu = { games: {} };
 let gameSelector: GameSelector;
 
 const params = new URLSearchParams(location.search);
@@ -14,8 +13,6 @@ const params = new URLSearchParams(location.search);
  */
 async function init() {
     updateAllLinkListeners();
-    const gameReq = await fetch('/ajax/games.json');
-    games = (await gameReq.json()) as { [game: string]: MetaGame };
     const menuReq = await fetch('/ajax/menu.json');
     menu = await menuReq.json();
 
@@ -25,7 +22,7 @@ async function init() {
     const slug: Slug = getLocationSlug();
     regenerateNav(slug);
     regenerateSidebar(slug);
-    gameSelector.regenerate(games);
+    gameSelector.regenerate(menu.games);
     updateAllLinkListeners();
 
     if (params.get('force') === 'gameselect') {
@@ -108,12 +105,12 @@ export async function navigate(slug: Slug, replace = false, loadData = true) {
 
     document.querySelector('html').className = 'theme-' + slug.game;
 
-    document.title = `${data.meta.title || 'Page not found'} - ${games[slug.game].name} Wiki`;
-    document.querySelector<HTMLDivElement>('#current-game').innerText = games[slug.game].name;
+    const menuGame = menu.games[slug.game];
+    document.title = `${data.meta.title || 'Page not found'} - ${menuGame.name} Wiki`;
+    document.querySelector<HTMLDivElement>('#current-game').innerText = menuGame.name;
 
-    document.querySelector<HTMLLinkElement>('link[rel=icon]').href = games[slug.game].favicon || games[slug.game].icon;
-    document.querySelector<HTMLLinkElement>('link[rel=shortcut]').href =
-        games[slug.game].favicon || games[slug.game].icon;
+    document.querySelector<HTMLLinkElement>('link[rel=icon]').href = menuGame.icon;
+    document.querySelector<HTMLLinkElement>('link[rel=shortcut]').href = menuGame.icon;
 
     document.querySelector<HTMLAnchorElement>('.top-nav .game a').href = `/${slug.game}`;
 
@@ -133,7 +130,7 @@ export async function navigate(slug: Slug, replace = false, loadData = true) {
 window.addEventListener('popstate', () => navigate(getLocationSlug(), true));
 
 function regenerateSidebar(info: Slug) {
-    const data = menu[info.game][info.category];
+    const data = menu.games[info.game].categories[info.category];
     const container = document.querySelector('.sidebar .inner');
     container.innerHTML = '';
 
@@ -144,15 +141,18 @@ function regenerateSidebar(info: Slug) {
     }
     container.parentElement.classList.remove('empty');
 
-    for (const topic of data) {
+    for (const [topicID, topic] of Object.entries(data.topics)) {
+        const topicSlug = new Slug(info.game, info.category, topicID);
+        const topicLink = topicSlug.toString(true);
+
         // Add the element for the topic
         const elTopic = document.createElement('a');
-        elTopic.id = `sb-${topic.id}`;
+        elTopic.id = `sb-${topicID}`;
         elTopic.innerText = topic.name;
-        elTopic.href = '/' + topic.link;
+        elTopic.href = '/' + topicLink;
         elTopic.classList.add('topic');
         const locTopic = location.pathname.slice(1).replace(/\/$/, '');
-        if (topic.link === locTopic || topic.link === locTopic + '/index') {
+        if (topicLink === locTopic) {
             elTopic.classList.add('active');
         }
         container.append(elTopic);
@@ -162,15 +162,19 @@ function regenerateSidebar(info: Slug) {
         divTopic.classList.add('article-list');
         container.append(divTopic);
 
-        for (const article of topic.articles) {
+        // Add each article in the topic
+        for (const [articleID, article] of Object.entries(topic.articles)) {
+            const articleSlug = new Slug(info.game, info.category, topicID, articleID);
+            const articleLink = articleSlug.toString(true);
+
             // Add the element for the article
             const elArticle = document.createElement('a');
-            elArticle.id = `sb-${article.id}`;
+            elArticle.id = `sb-${articleID}`;
             elArticle.innerText = article.name;
-            elArticle.href = '/' + article.link;
+            elArticle.href = '/' + articleLink;
             elArticle.classList.add('article');
             const loc = location.pathname.slice(1).replace(/\/$/, '');
-            if (article.link === loc || article.link === loc + '/index') {
+            if (articleLink === loc) {
                 elArticle.classList.add('active');
             }
             divTopic.append(elArticle);
@@ -190,14 +194,14 @@ function regenerateNav(info: Slug) {
     container.append(homeAnchor);
 
     // Add all game category anchors
-    for (const cat of games[info.game].categories) {
+    for (const [categoryID, category] of Object.entries(menu.games[info.game].categories)) {
         const el = document.createElement('a');
-        el.innerText = cat.label;
+        el.innerText = category.name;
 
         // Set it to use the redirect if possible, otherwise use the slug
-        el.href = cat.redirect ?? `/${info.game}/${cat.id}/${cat.home}`;
+        el.href = category.redirect ?? `/${info.game}/${categoryID}/${category.home}`;
 
-        if (cat.id === info.category) {
+        if (categoryID === info.category) {
             el.classList.add('active');
         }
         container.append(el);

@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 
 import { Slug } from '../common/slug';
-import { Article, MetaGame, Menu, MenuArticle, MenuTopic, RenderedPage } from '../common/types';
+import { Article, MetaGame, Menu, MenuGame, MenuCategory, MenuTopic, MenuArticle, RenderedPage } from '../common/types';
 import { Renderer } from './render';
 
 export class PageHandler {
@@ -14,7 +14,7 @@ export class PageHandler {
     constructor() {
         this.renderer = new Renderer();
 
-        this.menu = {};
+        this.menu = { games: {} };
         this.articleCache = {};
         this.gameArticles = {};
     }
@@ -67,15 +67,34 @@ export class PageHandler {
         console.log('Building article index...');
         for (const game of games) {
             this.gameArticles[game.id] = [];
-            this.menu[game.id] = {};
+
+            const menuGame: MenuGame = {
+                name: game.name,
+                icon: game.icon,
+                color: game.color,
+                categories: {}
+            };
+            this.menu.games[game.id] = menuGame;
 
             for (const category of game.categories) {
                 // If this category is just a redirect, we don't need to render any pages
-                if (category.redirect) continue;
+                if (category.redirect) {
+                    const menuCategory: MenuCategory = {
+                        name: category.label,
+                        redirect: category.redirect
+                    };
+                    this.menu.games[game.id].categories[category.id] = menuCategory;
+                    continue;
+                }
+
+                const menuCategory: MenuCategory = {
+                    name: category.label,
+                    home: category.home,
+                    topics: {}
+                };
+                this.menu.games[game.id].categories[category.id] = menuCategory;
 
                 // It's a normal category, so we'll need to fill in its topics
-                const menuTopics: MenuTopic[] = [];
-                this.menu[game.id][category.id] = menuTopics;
                 for (const topic of category.topics) {
                     // If the topic lacks a specific path, we'll use its id
                     if (!topic.path) topic.path = topic.id;
@@ -115,14 +134,14 @@ export class PageHandler {
                     if (articles.length === 0) throw new Error(`Could not locate articles: ${game.id}/${topic.path}/`);
 
                     // Add topic to menu
-                    const articleList: MenuArticle[] = [];
                     const menuTopic: MenuTopic = {
-                        id: topic.id,
                         name: topic.name,
-                        link: `${game.id}/${category.id}/${topic.id}`,
-                        articles: articleList
+                        articles: {}
                     };
-                    menuTopics.push(menuTopic);
+                    menuCategory.topics[topic.id] = menuTopic;
+
+                    // Every topic will have an index, so we'll preemptively add it now to keep it at the top of our list
+                    menuTopic.articles['index'] = null;
 
                     // Push the article into the menu
                     for (const [articleID, page] of articles) {
@@ -138,17 +157,10 @@ export class PageHandler {
                         });
 
                         // Add the article to menu
-                        const entry: MenuArticle = {
-                            id: articleID,
-                            name: meta.title || articleID,
-                            link: slug.toString()
+                        const menuArticle: MenuArticle = {
+                            name: meta.title || articleID
                         };
-                        if (articleID === 'index') {
-                            // Index articles are always at the top
-                            articleList.unshift(entry);
-                        } else {
-                            articleList.push(entry);
-                        }
+                        menuTopic.articles[articleID] = menuArticle;
 
                         // Add to collection of all articles
                         // console.log(`Pushed article ${articleID}`);
