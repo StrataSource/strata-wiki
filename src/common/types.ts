@@ -53,20 +53,28 @@ export interface Article {
 }
 
 export interface MenuArticle {
-    id: string;
     name: string;
-    link: string;
 }
 
 export interface MenuTopic {
-    id: string;
     name: string;
-    link: string;
-    articles: MenuArticle[];
+    articles: { [articleID: string]: MenuArticle };
+}
+
+export interface MenuCategory {
+    name: string;
+    home?: string;
+    redirect?: string;
+    topics?: { [topicID: string]: MenuTopic };
+}
+
+export interface MenuGame {
+    name: string;
+    icon: string;
+    color: string;
+    categories: { [categoryID: string]: MenuCategory };
 }
 
 export interface Menu {
-    [gameID: string]: {
-        [categoryID: string]: MenuTopic[];
-    };
+    games: { [gameID: string]: MenuGame };
 }
