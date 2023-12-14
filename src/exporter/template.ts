@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import { Slug } from '../common/slug';
-import { HTMLString } from '../common/types';
+import { HTMLString, MetaGame } from '../common/types';
 import { Exporter } from './export';
 
 export interface TemplaterArgs {
@@ -18,7 +18,7 @@ export class Templater {
         this.exporter = exporter;
     }
 
-    applyTemplate({ html, slug, title }: TemplaterArgs): HTMLString {
+    applyTemplate(metaGame: MetaGame, { html, slug, title }: TemplaterArgs): HTMLString {
         const replacers: Record<string, string> = {};
         replacers.sidebar = this.generateSidebar(slug);
         replacers.categories = this.navs[slug.game];
@@ -31,15 +31,11 @@ export class Templater {
             replacers.contentPreview += '...';
         }
 
-        replacers.icon =
-            this.exporter.pageHandler.index[slug.game].meta.favicon ||
-            this.exporter.pageHandler.index[slug.game].meta.icon;
-        replacers.iconPNG =
-            this.exporter.pageHandler.index[slug.game].meta.iconPNG ||
-            this.exporter.pageHandler.index[slug.game].meta.icon;
+        replacers.icon = metaGame.favicon || metaGame.icon;
+        replacers.iconPNG = metaGame.iconPNG || metaGame.icon;
 
-        replacers.gameName = this.exporter.pageHandler.index[slug.game].meta.name;
-        replacers.color = this.exporter.pageHandler.index[slug.game].meta.color;
+        replacers.gameName = metaGame.name;
+        replacers.color = metaGame.color;
 
         replacers.game = slug.game;
 
