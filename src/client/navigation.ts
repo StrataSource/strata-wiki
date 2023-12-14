@@ -141,44 +141,53 @@ function regenerateSidebar(info: Slug) {
     }
     container.parentElement.classList.remove('empty');
 
+    // Add elements each topic and their articles
     for (const [topicID, topic] of Object.entries(data.topics)) {
-        const topicSlug = new Slug(info.game, info.category, topicID);
-        const topicLink = topicSlug.toString(true);
+        // Top level 'details'
+        const elTopicDetails = document.createElement('details');
 
-        // Add the element for the topic
-        const elTopic = document.createElement('a');
-        elTopic.id = `sb-${topicID}`;
-        elTopic.innerText = topic.name;
-        elTopic.href = '/' + topicLink;
-        elTopic.classList.add('topic');
-        const locTopic = location.pathname.slice(1).replace(/\/$/, '');
-        if (topicLink === locTopic) {
-            elTopic.classList.add('active');
+        // Topic Title Text
+        const elTopicSummary = document.createElement('summary');
+        elTopicSummary.id = `sb-${topicID}`;
+        elTopicSummary.innerText = topic.name;
+        elTopicSummary.classList.add('topic');
+        elTopicDetails.append(elTopicSummary);
+
+        // If this is the currently active topic, open the section and highlight the text
+        const isActiveTopic = info.topic === topicID;
+        if (isActiveTopic) {
+            elTopicDetails.setAttribute('open', '');
+            elTopicSummary.classList.add('active');
         }
-        container.append(elTopic);
 
         // Create the container for the articles
-        const divTopic = document.createElement('div');
-        divTopic.classList.add('article-list');
-        container.append(divTopic);
+        const elArticleList = document.createElement('ul');
+        elArticleList.classList.add('article-list');
+        elTopicDetails.append(elArticleList);
 
-        // Add each article in the topic
         for (const [articleID, article] of Object.entries(topic.articles)) {
             const articleSlug = new Slug(info.game, info.category, topicID, articleID);
             const articleLink = articleSlug.toString(true);
 
+            const elArticleElement = document.createElement('li');
+            elArticleList.append(elArticleElement);
+
             // Add the element for the article
-            const elArticle = document.createElement('a');
-            elArticle.id = `sb-${articleID}`;
-            elArticle.innerText = article.name;
-            elArticle.href = '/' + articleLink;
-            elArticle.classList.add('article');
-            const loc = location.pathname.slice(1).replace(/\/$/, '');
-            if (articleLink === loc) {
-                elArticle.classList.add('active');
+            const elArticleAnchor = document.createElement('a');
+            elArticleAnchor.id = `sb-${articleID}`;
+            elArticleAnchor.innerText = article.name;
+            elArticleAnchor.href = '/' + articleLink;
+            elArticleAnchor.classList.add('article');
+            elArticleElement.append(elArticleAnchor);
+
+            // If this is the currently active article, mark it as active
+            if (isActiveTopic && info.article === articleID) {
+                elArticleAnchor.classList.add('active');
             }
-            divTopic.append(elArticle);
         }
+
+        // Add the new topic to the DOM
+        container.append(elTopicDetails);
     }
 }
 

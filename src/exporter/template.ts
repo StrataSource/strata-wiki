@@ -69,14 +69,17 @@ export class Templater {
             slug.topic = topicID;
             slug.article = 'index';
 
-            str += `<a href="/${slug.toString(true)}" class="topic">${topic.name}</a>`;
+            str += `<details>`;
+            str += `<summary class="topic" id="sb-${topicID}">${topic.name}</summary>`;
 
-            str += `<div class="article-list">`;
+            str += `<ul class="article-list">`;
             for (const [articleID, article] of Object.entries(topic.articles)) {
                 slug.article = articleID;
-                str += `<a href="/${slug.toString()}" class="article">${article.name}</a>`;
+                str += `<li><a href="/${slug.toString()}" class="article">${article.name}</a></li>`;
             }
-            str += `</div>`;
+            str += `</ul>`;
+
+            str += `</details>`;
         }
         return str;
     }
