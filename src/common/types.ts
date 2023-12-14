@@ -3,18 +3,35 @@ import { Slug } from './slug';
 export type HTMLString = string;
 export type MarkdownString = string;
 
-export interface Topic {
+// Imported from meta.json
+export interface MetaTopic {
     id: string;
     path: string;
     name: string;
 }
 
-export interface Category {
+// Imported from meta.json
+export interface MetaCategory {
     id: string;
     label: string;
     home: string;
-    topics?: Topic[];
+    topics?: MetaTopic[];
     redirect?: string;
+}
+
+// Imported from meta.json
+// Top level structure
+export interface MetaGame {
+    id: string;
+    logo: string;
+    icon: string;
+    iconPNG?: string;
+    favicon?: string;
+    name: string;
+    nameShort?: string;
+    color: string;
+    categories: MetaCategory[];
+    features: string[];
 }
 
 export interface Article {
@@ -37,29 +54,16 @@ export interface RenderedPage {
     slug: Slug;
 }
 
-export interface Game {
-    id: string;
-    logo: string;
-    icon: string;
-    iconPNG?: string;
-    favicon?: string;
-    name: string;
-    nameShort?: string;
-    color: string;
-    categories: Category[];
-    features: string[];
-}
-
 export interface Index {
     [gameID: string]: {
         id: string;
-        meta: Game;
+        meta: MetaGame;
         categories: {
             [categoryID: string]: {
-                meta: Category;
+                meta: MetaCategory;
                 topics: {
                     [topicID: string]: {
-                        meta: Topic;
+                        meta: MetaTopic;
                         articles: {
                             [articleID: string]: Article;
                         };
@@ -72,13 +76,13 @@ export interface Index {
 
 export interface MenuArticle {
     id: string;
-    text: string;
+    name: string;
     link: string;
 }
 
 export interface MenuTopic {
     id: string;
-    text: string;
+    name: string;
     link: string;
     articles: MenuArticle[];
 }
