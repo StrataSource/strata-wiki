@@ -1,43 +1,16 @@
 import fs from 'fs-extra';
+
 import { PageHandler } from './pages';
 import { Templater } from './template';
-import { Renderer } from './render';
 import { Slug } from '../common/slug';
-import { MetaGame } from '../common/types';
+import { MetaGame, Article, HTMLString } from '../common/types';
 
 export class Exporter {
     pageHandler: PageHandler;
-    templater: Templater;
-    renderer: Renderer;
     games: MetaGame[];
 
     constructor() {
-        this.pageHandler = new PageHandler(this);
-        this.templater = new Templater();
-        this.renderer = new Renderer();
-
-        // Read the pages folder, anything with a meta.json is a "game"
-        this.games = fs
-            .readdirSync('../pages')
-            .filter((game) => fs.existsSync(`../pages/${game}/meta.json`))
-            .map(
-                (game) =>
-                    ({
-                        ...fs.readJSONSync(`../pages/${game}/meta.json`),
-                        id: game
-                    } as MetaGame)
-            );
-
-        // For each game, register up a handler for its game exclusive block
-        for (const game of this.games) {
-            this.renderer.registerGame(game.id, game.nameShort || game.name || game.id);
-        }
-
-        // For each game, cache all articles
-        console.log('Caching articles...');
-        for (const game of this.games) {
-            this.pageHandler.cacheArticles(game.id);
-        }
+        this.pageHandler = new PageHandler();
     }
 
     export() {
@@ -52,27 +25,19 @@ export class Exporter {
 
         step();
         this.clean();
-
-        step();
         this.copyAssets();
-
-        step();
         this.copyResources();
 
         step();
-        this.templater.generateNav(this.games);
+        this.findGameMeta();
+        this.copyGameMeta();
 
         step();
         this.pageHandler.buildIndex(this.games);
+        fs.writeFileSync('public/ajax/menu.json', JSON.stringify(this.pageHandler.menu));
 
         step();
         this.saveAllPages();
-
-        step();
-        this.generateSpecialPages();
-
-        step();
-        this.copyGameMeta();
 
         const endTime = performance.now();
 
@@ -100,44 +65,87 @@ export class Exporter {
         fs.copySync('static', 'public');
     }
 
-    saveAllPages() {
-        for (const gameMeta of this.games)
-            for (const category of Object.values(this.pageHandler.index[gameMeta.id].categories))
-                for (const topic of Object.values(category.topics))
-                    for (const article of Object.values(topic.articles)) {
-                        this.pageHandler.savePage(gameMeta, article);
-                    }
+    findGameMeta() {
+        // Read the pages folder, anything with a meta.json is a "game"
+        this.games = fs
+            .readdirSync('../pages')
+            .filter((game) => fs.existsSync(`../pages/${game}/meta.json`))
+            .map(
+                (game) =>
+                    ({
+                        ...fs.readJSONSync(`../pages/${game}/meta.json`),
+                        id: game
+                    } as MetaGame)
+            );
     }
 
     copyGameMeta() {
+        // Copy over the game meta data
         const games = {};
-        for (const game of this.games) {
-            games[game.id] = game;
-        }
-
+        for (const game of this.games) games[game.id] = game;
         fs.writeFileSync('public/ajax/games.json', JSON.stringify(games));
     }
 
-    generateSpecialPages() {
+    /**
+     * Saves an article to the right directories
+     * @param templater The target template
+     * @param metaGame The game meta data
+     * @param article The article
+     */
+    savePage(templater: Templater, metaGame: MetaGame, article: Article): void {
+        const path = article.slug.toString().split('/').slice(0, -1).join('/');
+
+        // Write article JSON meta to file
+        fs.mkdirSync('public/ajax/article/' + path, { recursive: true });
+        fs.writeFileSync('public/ajax/article/' + path + '/' + article.id + '.json', JSON.stringify(article.page));
+
+        // Generate HTML content
+        const content = templater.applyTemplate({
+            metaGame: metaGame,
+            html: article.page.content,
+            title: article.page.meta.title || article.id,
+            menuTopics: this.pageHandler.menu[metaGame.id][article.slug.category]
+        });
+
+        // Writing HTML to file
+        // console.log('public/' + path);
+        fs.mkdirSync('public/' + path, { recursive: true });
+        fs.writeFileSync('public/' + path + '/' + article.id + '.html', content);
+    }
+
+    saveAllPages() {
+        // Read template HTML
+        const templateMain: HTMLString = fs.readFileSync('templates/main.html', 'utf8');
+        const template404: HTMLString = fs.readFileSync('templates/404.html', 'utf8');
+
+        // Create the templater for articles
+        const templater = new Templater(templateMain);
+
+        // Apply templates for all pages
         for (const game of this.games) {
-            const content = this.renderer.renderPage(`../pages/${game.id}/index.md`);
+            // Generate the nav bar links
+            templater.generateNav(game);
 
-            this.pageHandler.savePage(game, {
-                ...content,
+            // Save the Home page
+            const content = this.pageHandler.articleCache[game.id]['index'];
+            content.meta.title = 'Home';
+            this.savePage(templater, game, {
+                id: 'index',
                 slug: new Slug(game.id),
-                name: content.meta.title || 'Home',
-                file: `/pages/${game.id}/index.md`,
-                id: 'index'
+                page: content
             });
 
-            this.pageHandler.savePage(game, {
-                ...content,
-                slug: new Slug(game.id),
-                name: 'Home',
-                file: '',
+            // Save the 404 page
+            this.savePage(templater, game, {
                 id: '404',
-                content: fs.readFileSync('templates/404.html', 'utf8')
+                slug: new Slug(game.id),
+                page: { content: template404, meta: { title: '404' }, path: '' }
             });
+
+            // Save all articles
+            for (const article of this.pageHandler.gameArticles[game.id]) {
+                this.savePage(templater, game, article);
+            }
         }
     }
 }
