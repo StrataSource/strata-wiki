@@ -34,40 +34,22 @@ export interface MetaGame {
     features: string[];
 }
 
-export interface Article {
-    id: string;
-    content: HTMLString;
-    name: string;
-    slug: Slug;
-    file: string;
-    meta: PageMeta;
-}
-
 export interface PageMeta {
     title?: string;
     features?: string[];
+    example?: string;
 }
 
 export interface RenderedPage {
+    path: string;
     content: HTMLString;
     meta: PageMeta;
 }
 
-export interface Index {
-    [gameID: string]: {
-        id: string;
-        categories: {
-            [categoryID: string]: {
-                topics: {
-                    [topicID: string]: {
-                        articles: {
-                            [articleID: string]: Article;
-                        };
-                    };
-                };
-            };
-        };
-    };
+export interface Article {
+    id: string;
+    slug: Slug;
+    page: RenderedPage;
 }
 
 export interface MenuArticle {

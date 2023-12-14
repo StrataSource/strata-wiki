@@ -66,6 +66,7 @@ export class Renderer {
     render(str: MarkdownString): RenderedPage {
         this.tempMetaValue = {};
         return {
+            path: '',
             content: this.md.render(str),
             meta: this.tempMetaValue
         };
@@ -78,11 +79,16 @@ export class Renderer {
      */
     renderPage(path: string): RenderedPage {
         console.log(`Rendering file ${path}`);
-
-        return this.render(
+        const page = this.render(
             fs.readFileSync(path, {
                 encoding: 'utf8'
             })
         );
+
+        // Store paths relative to root directory
+        if (path.startsWith('../')) path = path.slice(3);
+        page.path = path;
+
+        return page;
     }
 }
