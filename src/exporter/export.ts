@@ -76,9 +76,10 @@ export class Exporter {
     }
 
     saveAllPages() {
-        for (const entry of this.pageHandler.allArticles) {
-            this.pageHandler.savePage(entry);
-        }
+        for (const gameMeta of this.pageHandler.games)
+            for (const category of Object.values(this.pageHandler.index[gameMeta.id].categories))
+                for (const topic of Object.values(category.topics))
+                    for (const article of Object.values(topic.articles)) this.pageHandler.savePage(gameMeta, article);
     }
 
     copyGameMeta() {
@@ -96,7 +97,7 @@ export class Exporter {
         for (const game of this.pageHandler.games) {
             const content = this.renderer.renderPage(`../pages/${game.id}/index.md`, new Slug(game.id));
 
-            this.pageHandler.savePage({
+            this.pageHandler.savePage(game, {
                 ...content,
                 slug: new Slug(game.id),
                 title: content.meta.title || 'Home',
@@ -104,7 +105,7 @@ export class Exporter {
                 id: 'index'
             });
 
-            this.pageHandler.savePage({
+            this.pageHandler.savePage(game, {
                 ...content,
                 slug: new Slug(game.id),
                 title: 'Home',

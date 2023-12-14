@@ -57,13 +57,10 @@ export interface RenderedPage {
 export interface Index {
     [gameID: string]: {
         id: string;
-        meta: MetaGame;
         categories: {
             [categoryID: string]: {
-                meta: MetaCategory;
                 topics: {
                     [topicID: string]: {
-                        meta: MetaTopic;
                         articles: {
                             [articleID: string]: Article;
                         };

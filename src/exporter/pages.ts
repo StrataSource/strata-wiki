@@ -8,7 +8,6 @@ export class PageHandler {
 
     menu: Menu;
     index: Index;
-    allArticles: Article[] = [];
     games: MetaGame[];
 
     constructor(exporter) {
@@ -37,7 +36,6 @@ export class PageHandler {
         for (const game of this.games) {
             index[game.id] = {
                 id: game.id,
-                meta: game,
                 categories: {}
             };
 
@@ -46,7 +44,6 @@ export class PageHandler {
             for (const category of game.categories) {
                 // Insert the category into the index
                 index[game.id].categories[category.id] = {
-                    meta: category,
                     topics: {}
                 };
 
@@ -85,7 +82,6 @@ export class PageHandler {
                     if (articles.length === 0) throw new Error(`Could not locate articles: ${game.id}/${topic.path}/`);
 
                     index[game.id].categories[category.id].topics[topic.id] = {
-                        meta: topic,
                         articles: {}
                     };
 
@@ -116,7 +112,7 @@ export class PageHandler {
                         if (
                             Array.isArray(meta.features) &&
                             meta.features.length > 0 &&
-                            !meta.features.every((feature) => index[game.id]?.meta.features.includes(feature))
+                            !meta.features.every((feature) => game.features.includes(feature))
                         )
                             continue;
 
@@ -146,7 +142,6 @@ export class PageHandler {
                         }
 
                         // Add to collection of all articles
-                        this.allArticles.push(article);
                         console.log(`Pushed article ${article.id}`);
                     }
                 }
@@ -163,7 +158,7 @@ export class PageHandler {
      * Saves an article to the right directories
      * @param {Object} article The article object
      */
-    savePage(article: Article): void {
+    savePage(metaGame: MetaGame, article: Article): void {
         const path = article.slug.toString().split('/').slice(0, -1).join('/');
 
         article.file = article.file.replaceAll('../', '');
@@ -181,7 +176,7 @@ export class PageHandler {
         fs.mkdirSync('public/' + path, { recursive: true });
         fs.writeFileSync(
             'public/' + path + '/' + article.id + '.html',
-            this.exporter.templater.applyTemplate({
+            this.exporter.templater.applyTemplate(metaGame, {
                 html: article.content,
                 slug: article.slug,
                 title: article.title,
