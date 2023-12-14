@@ -1,5 +1,5 @@
 import { Slug } from '../common/slug';
-import { Article, Game, Index, Menu, MenuArticle, MenuTopic } from '../common/types';
+import { Article, MetaGame, Index, Menu, MenuArticle, MenuTopic } from '../common/types';
 import fs from 'fs-extra';
 import { Exporter } from './export';
 
@@ -9,7 +9,7 @@ export class PageHandler {
     menu: Menu;
     index: Index;
     allArticles: Article[] = [];
-    games: Game[];
+    games: MetaGame[];
 
     constructor(exporter) {
         this.exporter = exporter;
@@ -23,7 +23,7 @@ export class PageHandler {
                     ({
                         ...fs.readJSONSync(`../pages/${game}/meta.json`),
                         id: game
-                    } as Game)
+                    } as MetaGame)
             );
     }
 
@@ -37,7 +37,7 @@ export class PageHandler {
         for (const game of this.games) {
             index[game.id] = {
                 id: game.id,
-                meta: game as Game,
+                meta: game,
                 categories: {}
             };
 
@@ -93,7 +93,7 @@ export class PageHandler {
                     const articleList: MenuArticle[] = [];
                     const menuTopic: MenuTopic = {
                         id: topic.id,
-                        text: topic.name,
+                        name: topic.name,
                         link: `${game.id}/${category.id}/${topic.id}`,
                         articles: articleList
                     };
@@ -135,7 +135,7 @@ export class PageHandler {
                         // Add the article to menu
                         const entry: MenuArticle = {
                             id: topic.id + '_' + articleString,
-                            text: meta.title || articleString,
+                            name: meta.title || articleString,
                             link: result.slug.toString()
                         };
                         if (articleString === 'index') {
