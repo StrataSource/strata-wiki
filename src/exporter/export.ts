@@ -2,8 +2,9 @@ import fs from 'fs-extra';
 
 import { PageHandler } from './pages';
 import { Templater } from './template';
+import { Article, MetaGame } from './types';
 import { Slug } from '../common/slug';
-import { MetaGame, Article, HTMLString } from '../common/types';
+import { HTMLString } from '../common/types';
 
 export class Exporter {
     pageHandler: PageHandler;

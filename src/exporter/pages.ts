@@ -1,7 +1,8 @@
 import fs from 'fs-extra';
 
+import { Article, MetaGame } from './types';
 import { Slug } from '../common/slug';
-import { Article, MetaGame, Menu, MenuGame, MenuCategory, MenuTopic, MenuArticle, RenderedPage } from '../common/types';
+import { Menu, MenuGame, MenuCategory, MenuTopic, MenuArticle, RenderedPage } from '../common/types';
 import { Renderer } from './render';
 
 export class PageHandler {

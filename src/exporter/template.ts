@@ -1,4 +1,5 @@
-import { HTMLString, MenuCategory, MetaGame } from '../common/types';
+import { MetaGame } from './types';
+import { HTMLString, MenuCategory } from '../common/types';
 import { Slug } from '../common/slug';
 
 export interface TemplaterArgs {
