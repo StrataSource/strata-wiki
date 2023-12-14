@@ -1,9 +1,9 @@
-import { Game, Menu } from '../common/types';
+import { MetaGame, Menu } from '../common/types';
 import { Slug } from '../common/slug';
 import { clearNotices, notify } from './notices';
 import { anchorHeaderFix, addAnchorLinks } from './anchors';
 
-let games: { [game: string]: Game } = {};
+let games: { [game: string]: MetaGame } = {};
 let menu: Menu = {};
 
 const params = new URLSearchParams(location.search);
@@ -13,7 +13,7 @@ const params = new URLSearchParams(location.search);
 async function init() {
     updateAllLinkListeners();
     const gameReq = await fetch('/ajax/games.json');
-    games = (await gameReq.json()) as { [game: string]: Game };
+    games = (await gameReq.json()) as { [game: string]: MetaGame };
     const menuReq = await fetch('/ajax/menu.json');
     menu = await menuReq.json();
 
@@ -191,7 +191,7 @@ function regenerateSidebar(info: Slug) {
         // Add the element for the topic
         const elTopic = document.createElement('a');
         elTopic.id = `sb-${topic.id}`;
-        elTopic.innerText = topic.text;
+        elTopic.innerText = topic.name;
         elTopic.href = '/' + topic.link;
         elTopic.classList.add('topic');
         const locTopic = location.pathname.slice(1).replace(/\/$/, '');
@@ -209,7 +209,7 @@ function regenerateSidebar(info: Slug) {
             // Add the element for the article
             const elArticle = document.createElement('a');
             elArticle.id = `sb-${article.id}`;
-            elArticle.innerText = article.text;
+            elArticle.innerText = article.name;
             elArticle.href = '/' + article.link;
             elArticle.classList.add('article');
             const loc = location.pathname.slice(1).replace(/\/$/, '');
