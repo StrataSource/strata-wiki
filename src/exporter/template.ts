@@ -1,10 +1,12 @@
-import { HTMLString, MenuTopic, MetaGame } from '../common/types';
+import { HTMLString, MenuCategory, MetaGame } from '../common/types';
+import { Slug } from '../common/slug';
 
 export interface TemplaterArgs {
+    slug: Slug;
     metaGame: MetaGame;
     html: HTMLString;
     title?: string;
-    menuTopics?: MenuTopic[];
+    menuCategory?: MenuCategory;
 }
 
 export class Templater {
@@ -15,9 +17,9 @@ export class Templater {
         this.templateContent = templateContent;
     }
 
-    applyTemplate({ metaGame, html, title, menuTopics }: TemplaterArgs): HTMLString {
+    applyTemplate({ slug, metaGame, html, title, menuCategory }: TemplaterArgs): HTMLString {
         const replacers: Record<string, string> = {};
-        replacers.sidebar = this.generateSidebar(menuTopics);
+        replacers.sidebar = this.generateSidebar(slug, menuCategory);
         replacers.categories = this.navs[metaGame.id];
 
         replacers.title = title;
@@ -52,19 +54,26 @@ export class Templater {
 
     /**
      * Generates the sidebar HTML for a specific page
-     * @param slug Slug to the page next to the sidebar
+     * @param basePath Slug to game/category/
      * @returns HTML generated for the sidebar
      */
-    generateSidebar(menuTopics: MenuTopic[]): HTMLString {
-        if (!menuTopics) return;
+    generateSidebar(basePath: Slug, menuCategory: MenuCategory): HTMLString {
+        if (!menuCategory) return;
+
+        const slug = basePath.clone();
 
         let str = '';
-        for (const topic of menuTopics) {
-            str += `<a href="/${topic.link}" class="topic">${topic.name}</a>`;
+        for (const [topicID, topic] of Object.entries(menuCategory.topics)) {
+            // Top level page is just the index
+            slug.topic = topicID;
+            slug.article = 'index';
+
+            str += `<a href="/${slug.toString(true)}" class="topic">${topic.name}</a>`;
 
             str += `<div class="article-list">`;
-            for (const article of topic.articles) {
-                str += `<a href="/${article.link}" class="article">${article.name}</a>`;
+            for (const [articleID, article] of Object.entries(topic.articles)) {
+                slug.article = articleID;
+                str += `<a href="/${slug.toString()}" class="article">${article.name}</a>`;
             }
             str += `</div>`;
         }

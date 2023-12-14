@@ -30,7 +30,6 @@ export class Exporter {
 
         step();
         this.findGameMeta();
-        this.copyGameMeta();
 
         step();
         this.pageHandler.buildIndex(this.games);
@@ -79,13 +78,6 @@ export class Exporter {
             );
     }
 
-    copyGameMeta() {
-        // Copy over the game meta data
-        const games = {};
-        for (const game of this.games) games[game.id] = game;
-        fs.writeFileSync('public/ajax/games.json', JSON.stringify(games));
-    }
-
     /**
      * Saves an article to the right directories
      * @param templater The target template
@@ -100,10 +92,11 @@ export class Exporter {
 
         // Generate HTML content
         const content = templater.applyTemplate({
+            slug: article.slug,
             metaGame: metaGame,
             html: article.page.content,
             title: article.page.meta.title || article.id,
-            menuTopics: this.pageHandler.menu[metaGame.id][article.slug.category]
+            menuCategory: this.pageHandler.menu.games[metaGame.id].categories[article.slug.category]
         });
 
         // Writing HTML to file

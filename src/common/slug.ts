@@ -75,4 +75,8 @@ export class Slug {
         // Return this for ease of use
         return this;
     }
+
+    clone(): Slug {
+        return new Slug(this.game, this.category, this.topic, this.article);
+    }
 }
