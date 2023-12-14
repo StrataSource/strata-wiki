@@ -2,9 +2,11 @@ import { MetaGame, Menu, RenderedPage } from '../common/types';
 import { Slug } from '../common/slug';
 import { clearNotices, notify } from './notices';
 import { anchorHeaderFix, addAnchorLinks } from './anchors';
+import { GameSelector } from './gameselector';
 
 let games: { [game: string]: MetaGame } = {};
 let menu: Menu = {};
+let gameSelector: GameSelector;
 
 const params = new URLSearchParams(location.search);
 /**
@@ -17,77 +19,30 @@ async function init() {
     const menuReq = await fetch('/ajax/menu.json');
     menu = await menuReq.json();
 
-    // Hook up the game selector's close button
-    const dialogCloseBtns = document.querySelectorAll<HTMLButtonElement>('dialog .close');
-    for (const btn of dialogCloseBtns) {
-        btn.addEventListener('click', () => (btn.parentElement as HTMLDialogElement).close());
-    }
-
-    // Wire up the game selector button
-    const showBtns = document.querySelectorAll<HTMLButtonElement>('.show-game-selector');
-    for (const btn of showBtns) {
-        btn.addEventListener('click', () => showGameSelector());
-    }
+    gameSelector = new GameSelector();
 
     //Regenerate UI
-    const info: Slug = parseSlug(location.pathname.slice(1));
-    regenerateNav(info);
-    regenerateSidebar(info);
-    generateGameSelector();
+    const slug: Slug = getLocationSlug();
+    regenerateNav(slug);
+    regenerateSidebar(slug);
+    gameSelector.regenerate(games);
     updateAllLinkListeners();
 
     if (params.get('force') === 'gameselect') {
-        showGameSelector(false);
+        gameSelector.show(false);
     }
 
-    navigate(location.pathname.slice(1), true, false);
+    navigate(slug, true, false);
 }
 window.addEventListener('load', init);
 
-function generateGameSelector() {
-    // Grab and clear the selector container
-    const container = document.querySelector('.games');
-    container.innerHTML = '';
+export async function navigate(slug: Slug, replace = false, loadData = true) {
+    console.log(`Navigating to "${slug.toString()}"`);
 
-    // Generate a button for each game
-    for (const game of Object.values(games)) {
-        const btn = document.createElement('button');
-        btn.classList.add('game-selector', 'btn');
-        btn.onclick = () => {
-            switchGame(game.id);
-        };
-
-        const icon = document.createElement('img');
-        icon.src = game.icon;
-        icon.classList.add('icon');
-        icon.style.background = game.color;
-
-        btn.append(icon);
-
-        const name = document.createElement('span');
-        name.innerText = game.name;
-
-        btn.append(name);
-
-        container.append(btn);
-    }
-}
-function showGameSelector(closeable = true) {
-    document.querySelector<HTMLButtonElement>('#gameSelector .close').style.display = closeable ? 'block' : 'none';
-    document.querySelector<HTMLDialogElement>('#gameSelector').showModal();
-}
-function hideGameSelector() {
-    document.querySelector<HTMLDialogElement>('#gameSelector').close();
-    document.querySelector<HTMLButtonElement>('#gameSelector .close').style.display = '';
-}
-
-async function navigate(slug, replace = false, loadData = true) {
-    const info: Slug = parseSlug(slug);
-
-    const path = '/ajax/article/' + info.toString() + '.json';
-    const req = await fetch(path);
-
+    const ajaxPath = '/ajax/article/' + slug.toString() + '.json';
+    const req = await fetch(ajaxPath);
     if (req.status === 404) {
+        console.log(`Could not request AJAX for "${ajaxPath}"!`);
         if (loadData) {
             throw new Error('Page not found');
         }
@@ -99,14 +54,14 @@ async function navigate(slug, replace = false, loadData = true) {
     })) as RenderedPage;
     document.querySelector('#content').innerHTML = data.content;
 
-    console.log('NAV RESULT', data);
+    //console.log('NAV RESULT', data);
 
     clearNotices();
 
     // Grab all of the exclusive blocks and filter 'em
     const exclusives = document.querySelectorAll<HTMLDivElement>('.exclusive');
 
-    if (info.game === 'shared') {
+    if (slug.game === 'shared') {
         // If this is the "shared" game, we want to always display all exclusive blocks
         for (const exclusive of exclusives) {
             exclusive.style.display = 'block';
@@ -116,7 +71,7 @@ async function navigate(slug, replace = false, loadData = true) {
         let showExclusiveNotice = false;
 
         for (const exclusive of exclusives) {
-            if (exclusive.className.includes(info.game)) {
+            if (exclusive.className.includes(slug.game)) {
                 exclusive.style.display = 'block';
             } else {
                 showExclusiveNotice = true;
@@ -142,22 +97,25 @@ async function navigate(slug, replace = false, loadData = true) {
         anchorHeaderFix();
     }
 
+    // Change the page's URL to our new slug
+    // If we're on an index page, we need to snip off the "index" bit
+    const cleanSlug = '/' + slug.toString(true);
     if (replace) {
-        history.replaceState(slug, '', '/' + slug);
+        history.replaceState(slug, '', cleanSlug);
     } else {
-        history.pushState(slug, '', '/' + slug);
+        history.pushState(slug, '', cleanSlug);
     }
 
-    document.querySelector('html').className = 'theme-' + info.game;
+    document.querySelector('html').className = 'theme-' + slug.game;
 
-    document.title = `${data.meta.title || 'Page not found'} - ${games[info.game].name} Wiki`;
-    document.querySelector<HTMLDivElement>('#current-game').innerText = games[info.game].name;
+    document.title = `${data.meta.title || 'Page not found'} - ${games[slug.game].name} Wiki`;
+    document.querySelector<HTMLDivElement>('#current-game').innerText = games[slug.game].name;
 
-    document.querySelector<HTMLLinkElement>('link[rel=icon]').href = games[info.game].favicon || games[info.game].icon;
+    document.querySelector<HTMLLinkElement>('link[rel=icon]').href = games[slug.game].favicon || games[slug.game].icon;
     document.querySelector<HTMLLinkElement>('link[rel=shortcut]').href =
-        games[info.game].favicon || games[info.game].icon;
+        games[slug.game].favicon || games[slug.game].icon;
 
-    document.querySelector<HTMLAnchorElement>('.top-nav .game a').href = `/${info.game}`;
+    document.querySelector<HTMLAnchorElement>('.top-nav .game a').href = `/${slug.game}`;
 
     if (loadData || data.path) {
         // Update the edit button to reflect our current page
@@ -166,14 +124,13 @@ async function navigate(slug, replace = false, loadData = true) {
         }`;
     }
 
-    regenerateSidebar(info);
-    regenerateNav(info);
-    generateGameSelector();
+    regenerateSidebar(slug);
+    regenerateNav(slug);
     addAnchorLinks();
 
     updateAllLinkListeners();
 }
-window.addEventListener('popstate', () => navigate(location.pathname.slice(1), true));
+window.addEventListener('popstate', () => navigate(getLocationSlug(), true));
 
 function regenerateSidebar(info: Slug) {
     const data = menu[info.game][info.category];
@@ -253,31 +210,17 @@ function regenerateNav(info: Slug) {
  */
 function linkClickHandler(e) {
     e.preventDefault();
-    console.log('GOING TO', e.target.href, 'EVENT:', e);
     const url = new URL(e.target.href, location.toString());
     if (url.host === location.host) {
         document.body.classList.remove('nav-show');
 
-        navigate(url.pathname.slice(1));
+        navigate(new Slug().fromString(url.pathname.slice(1)));
 
         if (e.currentTarget.parentNode.classList.contains('categories') && e.currentTarget.innerText !== 'Home') {
             document.body.classList.add('nav-showTopics', 'nav-show');
         }
     } else {
         window.open(e.target.href, '_blank');
-    }
-}
-
-async function switchGame(game) {
-    hideGameSelector();
-
-    const split = location.pathname.slice(1).split('/');
-    split[0] = game;
-    try {
-        await navigate(split.join('/'));
-    } catch {
-        await navigate(game);
-        notify('This page does not exist for this game, so we put you on the homepage.', 'file-document-remove');
     }
 }
 
@@ -296,11 +239,8 @@ function updateAllLinkListeners() {
 }
 
 /**
- * Separates the slug into an easily digestible object
- * @param {string} slug The slug you are trying to parse
- * @returns {{game: string, topic: string, category: string, article: string}}
+ * Returns the current location as a slug
  */
-function parseSlug(slug: string): Slug {
-    const slugParsed = slug.split('/');
-    return new Slug(slugParsed[0], slugParsed[1], slugParsed[2], slugParsed[3]);
+export function getLocationSlug(): Slug {
+    return new Slug().fromString(location.pathname.slice(1));
 }
