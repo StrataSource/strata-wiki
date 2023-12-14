@@ -1,19 +1,22 @@
-import { Slug } from '../common/slug';
-import { Article, MetaGame, Index, Menu, MenuArticle, MenuTopic, RenderedPage } from '../common/types';
 import fs from 'fs-extra';
-import { Exporter } from './export';
+
+import { Slug } from '../common/slug';
+import { Article, MetaGame, Menu, MenuArticle, MenuTopic, RenderedPage } from '../common/types';
+import { Renderer } from './render';
 
 export class PageHandler {
-    private exporter: Exporter;
+    renderer: Renderer;
 
     menu: Menu;
-    index: Index;
     articleCache: { [path: string]: { [article: string]: RenderedPage } };
+    gameArticles: { [game: string]: Article[] };
 
-    constructor(exporter) {
-        this.exporter = exporter;
+    constructor() {
+        this.renderer = new Renderer();
 
+        this.menu = {};
         this.articleCache = {};
+        this.gameArticles = {};
     }
 
     /**
@@ -43,39 +46,41 @@ export class PageHandler {
             const articleID = articleName.slice(0, ext);
 
             // Render and cache it!
-            const result = this.exporter.renderer.renderPage(topicPath + '/' + articleName);
+            const result = this.renderer.renderPage(topicPath + '/' + articleName);
             this.articleCache[topicDir][articleID] = result;
         }
     }
 
     buildIndex(games: MetaGame[]): void {
-        const index: Index = {};
-        const menu: Menu = {};
-
-        // For each game, for each category, for each topic, render all articles
+        // For each game, register up a handler for its game exclusive block
         for (const game of games) {
-            index[game.id] = {
-                id: game.id,
-                categories: {}
-            };
+            this.renderer.registerGame(game.id, game.nameShort || game.name || game.id);
+        }
 
-            menu[game.id] = {};
+        // For each game, cache all articles
+        console.log('Caching articles...');
+        for (const game of games) {
+            this.cacheArticles(game.id);
+        }
+
+        // For each game, for each category, for each topic, build a list of articles
+        console.log('Building article index...');
+        for (const game of games) {
+            this.gameArticles[game.id] = [];
+            this.menu[game.id] = {};
 
             for (const category of game.categories) {
-                // Insert the category into the index
-                index[game.id].categories[category.id] = {
-                    topics: {}
-                };
-
                 // If this category is just a redirect, we don't need to render any pages
                 if (category.redirect) continue;
 
                 // It's a normal category, so we'll need to fill in its topics
                 const menuTopics: MenuTopic[] = [];
-                menu[game.id][category.id] = menuTopics;
+                this.menu[game.id][category.id] = menuTopics;
                 for (const topic of category.topics) {
+                    // If the topic lacks a specific path, we'll use its id
                     if (!topic.path) topic.path = topic.id;
 
+                    // All articles on the topic
                     // Array of tuples of [article, page]
                     const articles: [string, RenderedPage][] = [];
 
@@ -87,7 +92,7 @@ export class PageHandler {
                             continue;
                         }
 
-                        // Pull in the articles we want from the topic
+                        // Pull in only the articles we want from the topic
                         const topic = this.articleCache[path];
                         for (const articleFile of Object.keys(topic)) {
                             const page = topic[articleFile];
@@ -101,16 +106,13 @@ export class PageHandler {
                             )
                                 continue;
 
-                            // Push the parent and the name
+                            // Push the article
                             articles.push([articleFile, page]);
                         }
                     }
 
+                    // At this point, the topic should have articles
                     if (articles.length === 0) throw new Error(`Could not locate articles: ${game.id}/${topic.path}/`);
-
-                    index[game.id].categories[category.id].topics[topic.id] = {
-                        articles: {}
-                    };
 
                     // Add topic to menu
                     const articleList: MenuArticle[] = [];
@@ -128,16 +130,12 @@ export class PageHandler {
 
                         const slug = new Slug(game.id, category.id, topic.id, articleID);
 
-                        const article: Article = {
-                            id: articleID,
-                            content: page.content,
-                            name: meta.title || articleID,
-                            slug: slug,
-                            meta: meta
-                        };
-
                         // Add article to index
-                        index[game.id].categories[category.id].topics[topic.id].articles[articleID] = article;
+                        this.gameArticles[game.id].push({
+                            id: articleID,
+                            slug: slug,
+                            page: page
+                        });
 
                         // Add the article to menu
                         const entry: MenuArticle = {
@@ -153,41 +151,10 @@ export class PageHandler {
                         }
 
                         // Add to collection of all articles
-                        console.log(`Pushed article ${article.id}`);
+                        // console.log(`Pushed article ${articleID}`);
                     }
                 }
             }
         }
-
-        fs.writeFileSync('public/ajax/menu.json', JSON.stringify(menu));
-
-        this.menu = menu;
-        this.index = index;
-    }
-
-    /**
-     * Saves an article to the right directories
-     * @param {Object} article The article object
-     */
-    savePage(metaGame: MetaGame, article: Article): void {
-        const path = article.slug.toString().split('/').slice(0, -1).join('/');
-
-        // Writing JSON meta to file
-        console.log('public/ajax/article/' + path);
-        fs.mkdirSync('public/ajax/article/' + path, { recursive: true });
-        fs.writeFileSync('public/ajax/article/' + path + '/' + article.id + '.json', JSON.stringify(article));
-
-        // Writing HTML to file
-        console.log('public/' + path);
-        fs.mkdirSync('public/' + path, { recursive: true });
-        fs.writeFileSync(
-            'public/' + path + '/' + article.id + '.html',
-            this.exporter.templater.applyTemplate({
-                metaGame: metaGame,
-                html: article.content,
-                title: article.name,
-                menuTopics: this.menu[metaGame.id][article.slug.category]
-            })
-        );
     }
 }

@@ -1,4 +1,3 @@
-import fs from 'fs-extra';
 import { HTMLString, MenuTopic, MetaGame } from '../common/types';
 
 export interface TemplaterArgs {
@@ -10,6 +9,11 @@ export interface TemplaterArgs {
 
 export class Templater {
     navs: Record<string, string> = {};
+    templateContent: HTMLString;
+
+    constructor(templateContent: HTMLString) {
+        this.templateContent = templateContent;
+    }
 
     applyTemplate({ metaGame, html, title, menuTopics }: TemplaterArgs): HTMLString {
         const replacers: Record<string, string> = {};
@@ -36,7 +40,7 @@ export class Templater {
         replacers.branch = process.env.CF_PAGES_BRANCH || 'UNAVAILABLE';
 
         // Read template HTML
-        let res: HTMLString = fs.readFileSync('templates/main.html', 'utf8');
+        let res: HTMLString = this.templateContent;
 
         // Replacing values from opts in HTML
         for (const [key, value] of Object.entries(replacers)) {
@@ -69,17 +73,15 @@ export class Templater {
 
     /**
      * Generates the top nav links for all pages
-     * @param games Array of all game meta data
+     * @param game Game metadata
      */
-    generateNav(games: MetaGame[]) {
-        for (const game of games) {
-            // For each of the game's categories, shove a link into the nav bar to it
-            let str = '';
-            for (const category of game.categories) {
-                const link = category.redirect || `/${game.id}/${category.id}/${category.home}`;
-                str += `<a href="${link}">${category.label}</a>`;
-            }
-            this.navs[game.id] = str;
+    generateNav(game: MetaGame) {
+        // For each of the game's categories, shove a link into the nav bar to it
+        let str = '';
+        for (const category of game.categories) {
+            const link = category.redirect || `/${game.id}/${category.id}/${category.home}`;
+            str += `<a href="${link}">${category.label}</a>`;
         }
+        this.navs[game.id] = str;
     }
 }

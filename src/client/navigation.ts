@@ -1,4 +1,4 @@
-import { MetaGame, Menu } from '../common/types';
+import { MetaGame, Menu, RenderedPage } from '../common/types';
 import { Slug } from '../common/slug';
 import { clearNotices, notify } from './notices';
 import { anchorHeaderFix, addAnchorLinks } from './anchors';
@@ -94,9 +94,9 @@ async function navigate(slug, replace = false, loadData = true) {
         return;
     }
 
-    const data = await req.json().catch(() => {
+    const data: RenderedPage = (await req.json().catch(() => {
         throw new Error('Error parsing page data');
-    });
+    })) as RenderedPage;
     document.querySelector('#content').innerHTML = data.content;
 
     console.log('NAV RESULT', data);
@@ -125,7 +125,7 @@ async function navigate(slug, replace = false, loadData = true) {
 
         if (showExclusiveNotice) {
             notify(
-                `This page contains sections that are irrelevant to your selected game. If you're missing a section, consider <a href="javascript:showGameSelector()">changing your game</a>.`,
+                `This page contains sections that are irrelevant to your selected game. If you're missing a section, consider <a href="?force=gameselect">changing your game</a>.`,
                 'eye-off'
             );
         }
@@ -150,7 +150,7 @@ async function navigate(slug, replace = false, loadData = true) {
 
     document.querySelector('html').className = 'theme-' + info.game;
 
-    document.title = `${data.title || 'Page not found'} - ${games[info.game].name} Wiki`;
+    document.title = `${data.meta.title || 'Page not found'} - ${games[info.game].name} Wiki`;
     document.querySelector<HTMLDivElement>('#current-game').innerText = games[info.game].name;
 
     document.querySelector<HTMLLinkElement>('link[rel=icon]').href = games[info.game].favicon || games[info.game].icon;
@@ -159,10 +159,10 @@ async function navigate(slug, replace = false, loadData = true) {
 
     document.querySelector<HTMLAnchorElement>('.top-nav .game a').href = `/${info.game}`;
 
-    if (loadData || data.file) {
+    if (loadData || data.path) {
         // Update the edit button to reflect our current page
         document.querySelector<HTMLAnchorElement>('.edit a').href = `https://github.com/StrataSource/Wiki/edit/main/${
-            data.file || '404.md'
+            data.path || '404.md'
         }`;
     }
 
