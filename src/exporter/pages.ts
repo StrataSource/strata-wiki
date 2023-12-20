@@ -9,7 +9,7 @@ export class PageHandler {
     renderer: Renderer;
 
     menu: Menu;
-    articleCache: { [path: string]: { [article: string]: RenderedPage } };
+    articleCache: { [topicPath: string]: { [article: string]: RenderedPage } };
     gameArticles: { [game: string]: Article[] };
 
     constructor() {
@@ -104,8 +104,10 @@ export class PageHandler {
                     // Array of tuples of [article, page]
                     const articles: [string, RenderedPage][] = [];
 
-                    // Search all possible paths for articles and build a list of every article we want
-                    const possiblePaths = [`${game.id}/${topic.path}`, `shared/${topic.path}`];
+                    // Search the game's topics and shared's topics for articles
+                    // Build a list of every article we want
+                    const possiblePaths = [`${game.id}/${topic.path}`];
+                    if (game.id !== 'shared') possiblePaths.push(`shared/${topic.path}`);
                     for (const path of possiblePaths) {
                         // Skip topics not in the cache
                         if (!(path in this.articleCache)) {
