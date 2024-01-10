@@ -64,19 +64,26 @@ export class Slug {
     }
 
     /**
-     * Separates the slug into an easily digestible object
-     * @param slug The slug you are trying to parse
+     * Clones the slug into a new object
+     * @returns A new slug with the same data
      */
-    fromString(slug: string): Slug {
-        // Split the string and use it as our value
-        const split = slug.split('/');
-        this.set(split[0], split[1], split[2], split[3]);
-
-        // Return this for ease of use
-        return this;
-    }
-
     clone(): Slug {
         return new Slug(this.game, this.category, this.topic, this.article);
+    }
+
+    /**
+     * Separates the slug into an easily digestible object
+     * @param str The slug you are trying to parse
+     * @returns A representation of the path as a slug
+     */
+    static fromString(str: string): Slug {
+        const slug = new Slug();
+
+        // Split the string and use it as our value
+        const split = str.split('/');
+        slug.set(split[0], split[1], split[2], split[3]);
+
+        // Return this for ease of use
+        return slug;
     }
 }
