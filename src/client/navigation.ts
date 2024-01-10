@@ -218,7 +218,7 @@ function linkClickHandler(e) {
     if (url.host === location.host) {
         document.body.classList.remove('nav-show');
 
-        navigate(new Slug().fromString(url.pathname.slice(1)));
+        navigate(Slug.fromString(url.pathname.slice(1)));
 
         if (e.currentTarget.parentNode.classList.contains('categories') && e.currentTarget.innerText !== 'Home') {
             document.body.classList.add('nav-showTopics', 'nav-show');
@@ -246,5 +246,5 @@ function updateAllLinkListeners() {
  * Returns the current location as a slug
  */
 export function getLocationSlug(): Slug {
-    return new Slug().fromString(location.pathname.slice(1));
+    return Slug.fromString(location.pathname.slice(1));
 }
