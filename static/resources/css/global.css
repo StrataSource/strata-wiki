@@ -166,16 +166,19 @@ body {
     color: var(--theme);
 }
 .sidebar .article {
-    padding: 0.75rem 1rem;
-    margin-top: 0.5rem;
-    border-radius: 0.5rem;
-    background: #ffffff30;
-    color: #fff;
+	padding: 0.25rem 1rem;
+    margin-top: 0.25rem;
+    border-radius: 0.3rem;
+    color: #aaa;
     text-decoration: none;
-    transition: 250ms;
+	font-size: 0.9rem;
 }
 .sidebar .article:hover {
-    color: var(--theme);
+    color: #fff;
+	background-color: #fff1;
+}
+.sidebar .active:active {
+	background-color: #fff2;
 }
 .sidebar .article.active {
     color: var(--theme);
