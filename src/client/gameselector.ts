@@ -4,36 +4,46 @@ import { navigate, getLocationSlug } from './navigation';
 import { notify } from './notices';
 
 export class GameSelector {
-    dialogBox: HTMLDialogElement;
-    closeButton: HTMLButtonElement;
-    openButton: HTMLButtonElement;
+    element: HTMLButtonElement;
+    gameListElement: HTMLDivElement;
 
     constructor() {
         // Grab the elements we'll be using
-        this.dialogBox = document.querySelector<HTMLDialogElement>('#gameSelector');
-        this.closeButton = document.querySelector<HTMLButtonElement>('#gameSelector .close');
-        this.openButton = document.querySelector<HTMLButtonElement>('.show-game-selector');
+        this.element = document.querySelector<HTMLButtonElement>('#game-selector');
+        this.gameListElement = this.element.querySelector('.game-list');
 
-        // Hook up the button events
-        this.closeButton.addEventListener('click', () => this.hide());
-        this.openButton.addEventListener('click', () => this.show());
+        // Bind relevant events
+        window.addEventListener('click', event => {
+            if (!(event.target instanceof HTMLElement)) return;
+            if (event.target === this.element || event.target === this.element.firstElementChild) return this.toggle();
+            if (this.element.contains(event.target)) return;
+            this.hide();
+        });
+
+        window.addEventListener('keydown', event => {
+            if (event.key === 'Escape') this.hide();
+        });
     }
 
     /**
      * Opens the Game Selector
-     * @param closeable Whether or not to display the close button
      */
-    show(closeable = true) {
-        this.closeButton.style.display = closeable ? 'block' : 'none';
-        this.dialogBox.showModal();
+    show() {
+        this.gameListElement.classList.add('active');
     }
 
     /**
      * Closes the Game Selector
      */
     hide() {
-        this.dialogBox.close();
-        this.closeButton.style.display = '';
+        this.gameListElement.classList.remove('active');
+    }
+
+    /**
+     * Toggles the Game Selector
+     */
+    toggle() {
+        this.gameListElement.classList.toggle('active');
     }
 
     /**
@@ -41,31 +51,39 @@ export class GameSelector {
      * @param games List of available games
      */
     regenerate(games: { [game: string]: MenuGame }) {
-        // Grab and clear the selector container
-        const container = document.querySelector('#gameSelector .games');
-        container.innerHTML = '';
+        // Clear the current list
+        this.gameListElement.replaceChildren();
 
         // Generate a button for each game
         for (const [gameID, game] of Object.entries(games)) {
             const btn = document.createElement('button');
-            btn.classList.add('game-selector', 'btn');
-            btn.onclick = () => {
-                this.switchGame(gameID);
-            };
+            btn.setAttribute('game', gameID);
+            btn.onclick = () => this.switchGame(gameID);
+            btn.classList.add('game-entry', 'btn');
 
             const icon = document.createElement('img');
-            icon.src = game.icon;
             icon.classList.add('icon');
+            icon.src = game.icon;
             icon.style.background = game.color;
-
             btn.append(icon);
 
             const name = document.createElement('span');
             name.innerText = game.name;
-
             btn.append(name);
 
-            container.append(btn);
+            this.gameListElement.appendChild(btn);
+        }
+
+        this.updateSelected();
+    }
+
+    updateSelected() {
+        // Get currently-selected game
+        const currentGame = getLocationSlug().game;
+
+        // Update elements' classes
+        for (const entry of this.gameListElement.children) {
+            entry.classList.toggle('current-game', entry.getAttribute('game') === currentGame);
         }
     }
 
@@ -77,6 +95,7 @@ export class GameSelector {
             const l: Slug = getLocationSlug();
             l.game = game;
             await navigate(l);
+            this.updateSelected();
         } catch {
             // Failed to navigate! Let's just head back to the game's home page then
             await navigate(new Slug(game));
