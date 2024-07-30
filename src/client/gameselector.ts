@@ -13,14 +13,14 @@ export class GameSelector {
         this.gameListElement = this.element.querySelector('.game-list');
 
         // Bind relevant events
-        window.addEventListener('click', event => {
+        window.addEventListener('click', (event) => {
             if (!(event.target instanceof HTMLElement)) return;
             if (event.target === this.element || event.target === this.element.firstElementChild) return this.toggle();
             if (this.element.contains(event.target)) return;
             this.hide();
         });
 
-        window.addEventListener('keydown', event => {
+        window.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') this.hide();
         });
     }
