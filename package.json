@@ -5,10 +5,12 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build-ts": "tsc",
+		"build-tsdoc": "cd ../js-types/ && typedoc --options ./typedoc.wiki.json",
         "build": "node build/exporter/index.js",
+        "build-autodocs": "node build/autodoc/index.js",
         "package": "webpack --config webpack.config.js --mode=production",
         "package-dev": "webpack --config webpack.config.js --mode=development",
-        "dev": "npm run build-ts && npm run build && npm run package-dev && wrangler pages dev public",
+        "dev": "npm run build-ts && npm run build-tsdoc && npm run build-autodocs  && npm run build && npm run package-dev && wrangler pages dev public",
         "start": "npm run dev",
         "format:fix": "prettier --write {assets,src}/**/*.{ts,js,scss,css}",
         "format:check": "prettier --check {assets,src}/**/*.{ts,js,scss,css}",
