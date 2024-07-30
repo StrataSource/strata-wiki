@@ -68,10 +68,10 @@ export class GameSelector {
             btn.append(icon);
 
             const name = document.createElement('span');
-            name.innerText = game.name;
+            name.textContent = game.name;
             btn.append(name);
 
-            this.gameListElement.appendChild(btn);
+            this.gameListElement.append(btn);
         }
 
         this.updateSelected();
