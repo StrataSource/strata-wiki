@@ -177,7 +177,7 @@ body {
     color: #fff;
     background-color: #fff1;
 }
-.sidebar .active:active {
+.sidebar .article:active {
     background-color: #fff2;
 }
 .sidebar .article.active {
