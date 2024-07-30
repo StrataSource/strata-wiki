@@ -219,26 +219,10 @@ body:not(.nav-showTopics) .mobile-nav button#mobile-categories,
     border-bottom-color: var(--theme);
 }
 
-dialog {
-    background: #222;
-    color: white;
-    border: var(--theme) 0.1rem solid;
-    border-radius: 0.5rem;
-    padding: 1rem;
-}
-dialog::backdrop {
-    background: #0000005f;
-    backdrop-filter: blur(5px);
-}
-
-dialog h2 {
-    margin-top: 0;
-    margin-bottom: 0.3rem;
-}
-
 .edit {
     margin: 1rem;
 }
+
 .btn {
     background: #333;
     color: white;
@@ -251,30 +235,61 @@ dialog h2 {
     border: none;
     cursor: pointer;
 }
-dialog .close {
-    float: right;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: white;
+
+#game-selector {
+    position: relative;
 }
 
-.game-selector {
+#game-selector .game-list {
+    display: none;
+    flex-direction: column;
+    gap: 0.2rem;
+
+    position: absolute;
+    top: 3.5rem;
+    left: 0;
+
+    padding: 0.3rem;
+    border-radius: 0.5rem;
+    background: #333;
+    box-shadow: 2px 4px 10px #0005;
+}
+
+#game-selector .game-list.active {
     display: flex;
-    align-items: center;
+    animation: 0.1s cubic-bezier(.25,.46,.45,.94) dropdown-slide;
 }
-.game-selector span {
-    padding-left: 0.4rem;
+
+@keyframes dropdown-slide {
+    0%   { transform: translateY(-10px); opacity: 0.0 }
+    100% { transform: translateY(0px);   opacity: 1.0 }
 }
-#gameSelector .btn {
+
+#game-selector .game-entry {
     width: 100%;
-    margin-top: 0.5rem;
+    padding: 0.3rem;
+    border-radius: 0.4rem;
 }
-.game-selector .icon {
+
+#game-selector .game-entry:hover {
+    background-color: #444;
+}
+
+#game-selector .game-entry.current-game {
+    background-color: #282828;
+    cursor: default;
+}
+
+#game-selector .game-entry .icon {
     border-radius: 0.3rem;
     padding: 0.3rem;
-    height: 1.7rem;
-    width: 1.7rem;
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+#game-selector .game-entry span {
+    padding: 0 0.5rem;
+    white-space: nowrap;
 }
 
 @media only screen and (min-width: 1000px) {
@@ -350,6 +365,10 @@ dialog .close {
         display: flex;
         gap: 0.5rem;
         padding-left: 0.5rem;
+    }
+    #game-selector .game-list {
+        left: initial;
+        right: 0;
     }
 }
 

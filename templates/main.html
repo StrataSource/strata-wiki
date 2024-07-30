@@ -37,8 +37,9 @@
                     <div id="current-game">%GAMENAME%</div>
                     <h2>Documentation</h2>
                 </a>
-                <button title="Switch game" class="icon-button show-game-selector">
-                    <span class="mdi mdi-controller"></span>
+                <button title="Switch game" class="icon-button show-game-selector" id="game-selector">
+					<span class="mdi mdi-controller"></span>
+					<div class="game-list">Loading games...</div>
                 </button>
             </div>
             <div class="categories">
@@ -71,14 +72,6 @@
             <div id="content">%CONTENT%</div>
             <div class="footer">Commit: <code>%COMMIT%</code> Branch: <code>%BRANCH%</code></div>
         </div>
-
-        <dialog id="gameSelector">
-            <button class="close">
-                <span class="mdi mdi-close"></span>
-            </button>
-            <h2>Select game</h2>
-            <div class="games">Loading games...</div>
-        </dialog>
 
         <script src="/resources/js/index.bundle.js"></script>
     </body>

@@ -25,10 +25,6 @@ async function init() {
     gameSelector.regenerate(menu.games);
     updateAllLinkListeners();
 
-    if (params.get('force') === 'gameselect') {
-        gameSelector.show(false);
-    }
-
     navigate(slug, true, false);
 }
 window.addEventListener('load', init);
