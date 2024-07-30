@@ -312,6 +312,10 @@ dialog .close {
     .nav-showTopics .sidebar {
         left: 0;
     }
+    .sidebar .article {
+        padding: 0.5rem 1rem;
+        font-size: 1.0rem;
+    }
 
     .categories {
         padding-top: 0.75rem !important;
