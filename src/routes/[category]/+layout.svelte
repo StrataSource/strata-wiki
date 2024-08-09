@@ -1,12 +1,15 @@
 <script lang="ts">
+    import { gameMeta } from "$lib/stores";
     import type { LayoutData } from "./$types";
     import Sidebar from "./Sidebar.svelte";
 
     export let data: LayoutData;
+
+    $gameMeta = data.games;
 </script>
 
 <div class="wrapper">
-    <Sidebar menu={data.menu}></Sidebar>
+    <Sidebar menu={data.menu} games={data.games}></Sidebar>
 
     <div class="content">
         <slot></slot>

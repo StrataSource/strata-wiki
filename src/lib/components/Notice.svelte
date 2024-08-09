@@ -10,6 +10,9 @@
 
     export let type: NoticeType = "normal";
 
+    export let icon: string | undefined = undefined;
+    export let title: string | undefined = undefined;
+
     const colorMap = {
         normal: undefined,
         game: undefined,
@@ -26,7 +29,9 @@
 <div class="notice" style:--c={color}>
     {#if type != "normal"}
         <div class="icon">
-            {#if type == "note"}
+            {#if icon}
+                <Icon d={icon}></Icon>
+            {:else if type == "note"}
                 <Icon d={mdiInformation}></Icon>
             {:else if type == "tip"}
                 <Icon d={mdiLightbulbOn}></Icon>
@@ -42,7 +47,9 @@
 
     <div>
         <div class="title">
-            {#if type == "note"}
+            {#if title}
+                {title}
+            {:else if type == "note"}
                 Notice:
             {:else if type == "tip"}
                 Tip:

@@ -2,6 +2,9 @@ interface ArticleMeta {
     title: string;
     weight?: number;
     id?: string;
+    deprecated?: boolean;
+    experimental?: boolean;
+    features?: [];
 }
 
 type NoticeType =
@@ -13,19 +16,20 @@ type NoticeType =
     | "tip"
     | "game";
 
-//TODO Remove this
-interface MenuEntry {
-    href: string;
-    meta: ArticleMeta;
-    dir: boolean;
-}
-
 interface MenuArticle {
     id: string;
-    title: string;
+    meta: ArticleMeta;
 }
 interface MenuCategory {
     id: string;
     title: string;
     articles: MenuArticle[];
+}
+
+interface GameMeta {
+    name: string;
+    features: string[];
+}
+interface GameMetaCollection {
+    [id: string]: GameMeta;
 }
