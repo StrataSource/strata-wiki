@@ -1,5 +1,9 @@
 import fs from "fs";
-import { getMarkdownTopic, parseMarkdown } from "./parsers/markdown.server";
+import {
+    getMarkdownPageMeta,
+    getMarkdownTopic,
+    parseMarkdown,
+} from "./parsers/markdown.server";
 import { error } from "@sveltejs/kit";
 
 export function getContentMeta(category: string, topic: string) {
@@ -86,6 +90,18 @@ export function getMenuTopic(category: string, topic: string) {
 
     return entry;
 }
+export function getPageMeta(category: string, topic: string, article: string) {
+    const meta = getContentMeta(category, topic);
+
+    switch (meta.type) {
+        case "markdown":
+            return getMarkdownPageMeta(category, topic, article);
+            break;
+
+        default:
+            break;
+    }
+}
 
 export function getCategories() {
     const categories = fs.readdirSync(`../docs`);
@@ -102,4 +118,18 @@ export function getCategories() {
     }
 
     return menu;
+}
+
+export function getGames() {
+    const gamesList = fs.readdirSync(`../games`);
+
+    const games: GameMetaCollection = {};
+
+    for (const game of gamesList) {
+        games[game] = JSON.parse(
+            fs.readFileSync(`../games/${game}/meta.json`, "utf-8")
+        );
+    }
+
+    return games;
 }

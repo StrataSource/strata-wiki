@@ -3,12 +3,11 @@ import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
 import fs from "fs";
-import { getContent } from "$lib/content.server";
+import { getContent, getPageMeta } from "$lib/content.server";
 
 export const load = (async ({ params }) => {
-    const doc = getContent(params.category, params.topic, params.article);
-
     return {
-        doc: doc,
+        doc: getContent(params.category, params.topic, params.article),
+        meta: getPageMeta(params.category, params.topic, params.article),
     };
 }) satisfies PageServerLoad;

@@ -24,6 +24,8 @@
         <br />
     {:else if dat.type == "thematicBreak"}
         <hr />
+    {:else if dat.type == "yaml"}
+        <!--Not displayed-->
     {:else}
         <strong>ERROR!</strong> Unknown content type <code>{dat.type}</code>
     {/if}

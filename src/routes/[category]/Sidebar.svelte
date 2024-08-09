@@ -1,7 +1,17 @@
 <script lang="ts">
     import { page } from "$app/stores";
+    import Icon from "$lib/components/Icon.svelte";
+    import { currentGame, gameMeta } from "$lib/stores";
+    import { getGamesWithSupport } from "$lib/supportChecker";
+    import {
+        mdiBlockHelper,
+        mdiDelete,
+        mdiFlaskEmpty,
+        mdiSelectionEllipse,
+    } from "@mdi/js";
 
     export let menu: MenuCategory[];
+    export let games: GameMetaCollection;
 </script>
 
 <div class="sidebar">
@@ -11,6 +21,18 @@
         class="logo"
     />
     <div class="menu">
+        <select class="game" bind:value={$currentGame}>
+            <option value="" disabled={$currentGame == ""}>
+                {#if $currentGame == ""}
+                    Select game...
+                {:else}
+                    No game
+                {/if}
+            </option>
+            {#each Object.entries(games) as [id, game]}
+                <option value={id}>{game.name}</option>
+            {/each}
+        </select>
         {#each menu as topic}
             <details open={$page.params.topic == topic.id}>
                 <summary
@@ -27,7 +49,33 @@
                         class:active={article.id === $page.params.article}
                         href="/{$page.params.category}/{topic.id}/{article.id}"
                     >
-                        {article.title}
+                        {article.meta.title || article.id}
+
+                        {#if article.meta.deprecated}
+                            <span title="Deprecated">
+                                <Icon d={mdiDelete} inline></Icon>
+                            </span>
+                        {/if}
+                        {#if article.meta.experimental}
+                            <span title="Experimental">
+                                <Icon d={mdiFlaskEmpty} inline></Icon>
+                            </span>
+                        {/if}
+                        {#if (article.meta?.features?.length || 0) > 0 && !getGamesWithSupport(article.meta.features || []).all}
+                            {#if $currentGame == ""}
+                                <span title="Limited support">
+                                    <Icon d={mdiSelectionEllipse} inline></Icon>
+                                </span>
+                            {:else if !getGamesWithSupport(article.meta.features || []).games.includes($currentGame)}
+                                <span
+                                    title="Unsupported in {$gameMeta[
+                                        $currentGame
+                                    ].name}"
+                                >
+                                    <Icon d={mdiBlockHelper} inline></Icon>
+                                </span>
+                            {/if}
+                        {/if}
                     </a>
                 {/each}
             </details>
@@ -36,6 +84,14 @@
 </div>
 
 <style lang="scss">
+    .game {
+        background-color: #333;
+        color: white;
+        border: none;
+        border-radius: 0.25rem;
+        padding: 0.5rem;
+    }
+
     .sidebar {
         width: 18rem;
         height: 100vh;

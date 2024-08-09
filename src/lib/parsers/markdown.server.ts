@@ -41,21 +41,31 @@ export function getMarkdownTopic(category: string, topic: string) {
             continue;
         }
 
-        const parsed = parseMarkdown(
-            fs.readFileSync(`../docs/${category}/${topic}/${article}`, "utf-8"),
-            `${category}/${topic}/${article.slice(0, -3)}`
-        );
+        const meta = getMarkdownPageMeta(category, topic, article.slice(0, -3));
 
-        let metaRaw = "title: " + article.slice(0, -3);
-
-        if (parsed.children[0].type == "yaml") {
-            metaRaw = parsed.children[0].value;
-        }
-
-        let meta = <ArticleMeta>yaml.load(metaRaw);
-
-        res.push({ id: article.slice(0, -3), title: meta.title });
+        res.push({ id: article.slice(0, -3), meta: meta });
     }
 
     return res;
+}
+
+export function getMarkdownPageMeta(
+    category: string,
+    topic: string,
+    article: string
+) {
+    const parsed = parseMarkdown(
+        fs.readFileSync(`../docs/${category}/${topic}/${article}.md`, "utf-8"),
+        `${category}/${topic}/${article}`
+    );
+
+    let metaRaw = "title: " + article;
+
+    if (parsed.children[0].type == "yaml") {
+        metaRaw = parsed.children[0].value;
+    }
+
+    let meta = <ArticleMeta>yaml.load(metaRaw);
+
+    return meta;
 }
