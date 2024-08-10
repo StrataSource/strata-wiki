@@ -11,28 +11,10 @@
     } from "@mdi/js";
 
     export let menu: MenuCategory[];
-    export let games: GameMetaCollection;
 </script>
 
-<nav class="sidebar" data-pagefind-ignore="all">
-    <img
-        src="https://branding.stratasource.org/i/strata/logo/ondark/color.svg"
-        alt="Strata Logo"
-        class="logo"
-    />
+<nav data-pagefind-ignore="all">
     <div class="menu">
-        <select class="game" bind:value={$currentGame}>
-            <option value="" disabled={$currentGame == ""}>
-                {#if $currentGame == ""}
-                    Select game...
-                {:else}
-                    No game
-                {/if}
-            </option>
-            {#each Object.entries(games) as [id, game]}
-                <option value={id}>{game.name}</option>
-            {/each}
-        </select>
         {#each menu as topic}
             <details open={$page.params.topic == topic.id}>
                 <summary
@@ -84,20 +66,12 @@
 </nav>
 
 <style lang="scss">
-    .game {
-        background-color: #333;
-        color: white;
-        border: none;
-        border-radius: 0.25rem;
-        padding: 0.5rem;
-    }
-
-    .sidebar {
+    nav {
         width: 18rem;
-        height: 100vh;
+        height: calc(100vh - 4.1rem);
 
         position: fixed;
-        top: 0;
+        top: 4.1rem;
         left: 0;
 
         overflow-y: auto;
@@ -105,15 +79,11 @@
         background-color: #222;
     }
 
-    .logo {
-        padding: 1rem;
-    }
-
     .menu {
         display: flex;
         flex-direction: column;
         gap: 0.1rem;
-        padding: 0 1rem;
+        padding: 0.5rem 1rem;
     }
 
     .item {
