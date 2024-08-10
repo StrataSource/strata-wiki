@@ -54,9 +54,6 @@
             <Icon d={mdiPound} inline></Icon>
         {/if}
     </button>
-    <a href="/todo" title="Edit section">
-        <Icon d={mdiPencil} inline></Icon>
-    </a>
 </svelte:element>
 
 <style lang="scss">
@@ -84,7 +81,6 @@
     }
 
     .h:hover {
-        & a,
         button {
             opacity: 0.5;
         }
