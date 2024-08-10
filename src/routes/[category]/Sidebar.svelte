@@ -14,7 +14,7 @@
     export let games: GameMetaCollection;
 </script>
 
-<div class="sidebar">
+<nav class="sidebar" data-pagefind-ignore="all">
     <img
         src="https://branding.stratasource.org/i/strata/logo/ondark/color.svg"
         alt="Strata Logo"
@@ -81,7 +81,7 @@
             </details>
         {/each}
     </div>
-</div>
+</nav>
 
 <style lang="scss">
     .game {

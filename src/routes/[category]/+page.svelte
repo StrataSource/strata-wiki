@@ -10,8 +10,6 @@
 
 {#each data.menu as topic}
     <div>
-        <Link href="/{$page.params.category}/{topic.id}"
-            >{topic.title}</Link
-        >
+        <Link href="/{$page.params.category}/{topic.id}">{topic.title}</Link>
     </div>
 {/each}
