@@ -59,7 +59,7 @@
     }
 
     .actions {
-        padding-right: 4rem;
+        padding-right: 5rem;
 
         display: flex;
         align-items: center;
