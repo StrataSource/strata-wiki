@@ -17,10 +17,18 @@
     <div class="actions">
         <span class="icons">
             {#if $page.params.article}
-                <Link href="/todo" title="Edit">
+                <Link
+                    href="https://github.com/StrataSource/Wiki/edit/more-than-2-less-than-4/docs{$page
+                        .url.pathname}.md"
+                    title="Edit"
+                >
                     <Icon d={mdiPencil} inline></Icon>
                 </Link>
-                <Link href="/todo" title="History">
+                <Link
+                    href="https://github.com/StrataSource/Wiki/commits/more-than-2-less-than-4/docs{$page
+                        .url.pathname}.md"
+                    title="History"
+                >
                     <Icon d={mdiHistory} inline></Icon>
                 </Link>
             {/if}
