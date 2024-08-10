@@ -11,7 +11,7 @@
 {#each data.menu.articles as article}
     <div>
         <Link href="/{$page.params.category}/{$page.params.topic}/{article.id}"
-            >{article.title}</Link
+            >{article.meta.title}</Link
         >
     </div>
 {/each}
