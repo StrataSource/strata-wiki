@@ -1,5 +1,6 @@
 interface ArticleMeta {
     title: string;
+    description?: string;
     weight?: number;
     id?: string;
     deprecated?: boolean;

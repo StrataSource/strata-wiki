@@ -6,7 +6,7 @@
 </script>
 
 <div class="wrapper">
-    <Sidebar menu={data.menu} games={data.games}></Sidebar>
+    <Sidebar menu={data.menu}></Sidebar>
 
     <article data-pagefind-body>
         <slot></slot>
@@ -15,9 +15,9 @@
 
 <style>
     article {
-        width: calc(100% - 24rem);
+        width: calc(100% - 22rem);
         padding: 2rem;
 
-        margin-left: 20rem;
+        margin-left: 18rem;
     }
 </style>

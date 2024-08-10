@@ -89,4 +89,8 @@
             opacity: 0.5;
         }
     }
+
+    h1 {
+        font-size: 2rem;
+    }
 </style>

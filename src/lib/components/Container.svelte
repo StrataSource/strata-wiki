@@ -4,7 +4,7 @@
 
 <style>
     div {
-        max-width: 60rem;
+        max-width: 70rem;
         margin: auto;
     }
 </style>

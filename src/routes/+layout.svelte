@@ -2,11 +2,14 @@
     import { gameMeta } from "$lib/stores";
     import "@fontsource/lexend-deca";
     import type { LayoutData } from "./$types";
+    import Topbar from "./Topbar.svelte";
 
     export let data: LayoutData;
 
     $gameMeta = data.games;
 </script>
+
+<Topbar></Topbar>
 
 <slot></slot>
 
