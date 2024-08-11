@@ -140,7 +140,8 @@
                     <h2>{category.title}</h2>
                 </div>
             {:else}
-                <a href="/{category.id}">
+                <!--TODO-->
+                <a href="/{category.id}" class:fade={category.id == "todo"}>
                     <Card>
                         <h3>
                             <span class="i">
@@ -213,6 +214,10 @@
         & a {
             text-decoration: none;
             color: currentColor;
+
+            &.fade {
+                opacity: 0.5;
+            }
         }
     }
 </style>
