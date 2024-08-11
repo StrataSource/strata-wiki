@@ -3,7 +3,6 @@
     import Icon from "$lib/components/Icon.svelte";
     import Link from "$lib/components/Link.svelte";
     import { mdiHistory, mdiMagnify, mdiPencil } from "@mdi/js";
-    import Layout from "./+layout.svelte";
     import { page } from "$app/stores";
 </script>
 
