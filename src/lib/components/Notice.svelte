@@ -45,7 +45,7 @@
         </div>
     {/if}
 
-    <div>
+    <div class="content">
         <div class="title">
             {#if title}
                 {title}
@@ -96,5 +96,9 @@
     .title {
         color: var(--c);
         font-weight: bold;
+    }
+
+    .content {
+        width: 100%;
     }
 </style>

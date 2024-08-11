@@ -5,6 +5,11 @@ import {
     parseMarkdown,
 } from "./parsers/markdown.server";
 import { error } from "@sveltejs/kit";
+import {
+    getMaterialPageMeta,
+    getMaterialTopic,
+    parseMaterial,
+} from "./parsers/material.server";
 
 export function getContentMeta(category: string, topic: string) {
     if (!fs.existsSync(`../docs/${category}/${topic || ""}/meta.json`)) {
@@ -23,8 +28,13 @@ export function getContentMeta(category: string, topic: string) {
 
     const meta: ArticleMeta = JSON.parse(metaRaw);
 
-    //TODO Different source types
-    return { type: "markdown", meta: meta };
+    let type: "markdown" | "material" = "markdown";
+
+    if (fs.existsSync(`../docs/${category}/${topic || ""}/materials.json`)) {
+        type = "material";
+    }
+
+    return { type: type, meta: meta };
 }
 
 export function getContent(category: string, topic: string, page: string) {
@@ -41,6 +51,10 @@ export function getContent(category: string, topic: string, page: string) {
                 ),
                 `${category}/${topic}/${page}`
             );
+            break;
+
+        case "material":
+            return parseMaterial(`${category}/${topic}`, page);
             break;
 
         default:
@@ -84,6 +98,10 @@ export function getMenuTopic(category: string, topic: string) {
             entry.articles = getMarkdownTopic(category, topic);
             break;
 
+        case "material":
+            entry.articles = getMaterialTopic(`${category}/${topic}`);
+            break;
+
         default:
             break;
     }
@@ -96,6 +114,10 @@ export function getPageMeta(category: string, topic: string, article: string) {
     switch (meta.type) {
         case "markdown":
             return getMarkdownPageMeta(category, topic, article);
+            break;
+
+        case "material":
+            return getMaterialPageMeta(article);
             break;
 
         default:
