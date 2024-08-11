@@ -18,6 +18,7 @@
         mdiVolumeHigh,
     } from "@mdi/js";
     import Icon from "$lib/components/Icon.svelte";
+    import Metadata from "$lib/components/Metadata.svelte";
 
     const categories: (
         | {
@@ -119,6 +120,8 @@
         },
     ];
 </script>
+
+<Metadata title="Home"></Metadata>
 
 <div class="hero" style:--i="url({heroHeader})">
     <Container>
