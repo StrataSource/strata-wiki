@@ -1,5 +1,6 @@
 <script lang="ts">
     import Link from "../Link.svelte";
+    import ImageRenderer from "./ImageRenderer.svelte";
     import StringRenderer from "./StringRenderer.svelte";
     import type { PhrasingContent } from "mdast";
 
@@ -21,7 +22,7 @@
     {:else if e.type == "break"}
         <br />
     {:else if e.type == "image"}
-        <img src={e.url} alt={e.alt} />
+        <ImageRenderer dat={e}></ImageRenderer>
     {:else if e.type == "inlineCode"}
         <code>{e.value}</code>
     {:else if e.type == "link"}
