@@ -63,11 +63,9 @@ export function getContent(category: string, topic: string, page: string) {
 }
 
 function sortByWeight(
-    a: { weight: number | null | undefined; title: string },
-    b: { weight: number | null | undefined; title: string }
+    a: { weight?: number | null; title: string },
+    b: { weight?: number | null; title: string }
 ) {
-    console.log(a.title, a.weight, b.title, b.weight);
-
     if (a.weight === b.weight) {
         return a.title.localeCompare(b.title);
     } else if (typeof a.weight != "number" && typeof b.weight == "number") {
