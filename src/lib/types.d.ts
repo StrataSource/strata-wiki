@@ -24,6 +24,7 @@ interface MenuArticle {
 interface MenuCategory {
     id: string;
     title: string;
+    weight: number | null;
     articles: MenuArticle[];
 }
 

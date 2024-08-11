@@ -42,6 +42,7 @@
 
 <style>
     code {
+        font-size: 1em;
         background-color: #333;
         padding: 0 0.1rem;
     }
