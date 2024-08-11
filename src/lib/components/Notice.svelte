@@ -50,7 +50,7 @@
             {#if title}
                 {title}
             {:else if type == "note"}
-                Notice:
+                Note:
             {:else if type == "tip"}
                 Tip:
             {:else if type == "warning"}
