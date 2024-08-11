@@ -13,12 +13,11 @@ import {
 
 export function getContentMeta(category: string, topic: string) {
     if (!fs.existsSync(`../docs/${category}/${topic || ""}/meta.json`)) {
-        return {
-            type: "markdown",
-            meta: {
-                title: topic,
-            },
+        const meta: ArticleMeta = {
+            title: topic,
         };
+
+        return { type: "markdown", meta: meta };
     }
 
     const metaRaw = fs.readFileSync(
@@ -63,6 +62,23 @@ export function getContent(category: string, topic: string, page: string) {
     }
 }
 
+function sortByWeight(
+    a: { weight: number | null | undefined; title: string },
+    b: { weight: number | null | undefined; title: string }
+) {
+    console.log(a.title, a.weight, b.title, b.weight);
+
+    if (a.weight === b.weight) {
+        return a.title.localeCompare(b.title);
+    } else if (typeof a.weight != "number" && typeof b.weight == "number") {
+        return 1;
+    } else if (typeof a.weight == "number" && typeof b.weight != "number") {
+        return -1;
+    } else {
+        return (a.weight || 0) - (b.weight || 0);
+    }
+}
+
 export function getMenu(category: string) {
     if (!fs.existsSync(`../docs/${category}`)) {
         throw error(404);
@@ -81,7 +97,7 @@ export function getMenu(category: string) {
         menu.push(getMenuTopic(category, topic));
     }
 
-    return menu;
+    return menu.sort(sortByWeight);
 }
 
 export function getMenuTopic(category: string, topic: string) {
@@ -90,6 +106,7 @@ export function getMenuTopic(category: string, topic: string) {
     const entry: MenuCategory = {
         id: topic,
         title: meta.meta.title,
+        weight: meta.meta.weight || null,
         articles: [],
     };
 
@@ -105,6 +122,10 @@ export function getMenuTopic(category: string, topic: string) {
         default:
             break;
     }
+
+    entry.articles = entry.articles.sort((a, b) =>
+        sortByWeight(a.meta, b.meta)
+    );
 
     return entry;
 }

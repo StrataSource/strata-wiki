@@ -4,6 +4,7 @@
 
     import heroHeader from "$lib/assets/heroHeader.svg";
     import {
+        mdiAccountGroup,
         mdiAlphaVBox,
         mdiAnimation,
         mdiCubeOutline,
@@ -101,7 +102,14 @@
             icon: mdiFileDocument,
             seperation: false,
         },
-
+        { seperation: true, title: "Contributing" },
+        {
+            id: "contribute/basics/getting-started",
+            title: "Contribute to the wiki",
+            description: "How to write content for the wiki",
+            icon: mdiAccountGroup,
+            seperation: false,
+        },
         {
             id: "test",
             title: "Test suite",

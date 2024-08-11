@@ -15,8 +15,9 @@
 
 <style>
     article {
-        width: calc(100% - 22rem);
+        width: calc(100% - 25rem);
         padding: 2rem;
+        padding-right: 5rem;
 
         margin-left: 18rem;
 
