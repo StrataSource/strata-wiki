@@ -24,11 +24,11 @@ function parseJSON(p: string) {
 
     console.log("Cache miss, regenerating...", p);
 
-    const parsed: Material[] = JSON.parse(raw);
+    const parsed: { shaders: Material[] } = JSON.parse(raw);
 
-    cache[p] = { content: parsed, original: raw };
+    cache[p] = { content: parsed.shaders, original: raw };
 
-    return parsed;
+    return parsed.shaders;
 }
 
 export function parseMaterial(p: string, name: string) {
