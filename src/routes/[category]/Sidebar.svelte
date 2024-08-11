@@ -99,6 +99,9 @@
         padding: 0.1rem;
         padding-left: 1rem;
 
+        text-overflow: ellipsis;
+        overflow: hidden;
+
         &:hover,
         &:focus {
             background-color: #333;

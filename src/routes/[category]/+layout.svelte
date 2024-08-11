@@ -19,5 +19,7 @@
         padding: 2rem;
 
         margin-left: 18rem;
+
+        vertical-align: middle;
     }
 </style>

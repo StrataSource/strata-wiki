@@ -39,3 +39,10 @@
         Unknown text type <code>{e.type}</code>
     {/if}
 {/each}
+
+<style>
+    code {
+        background-color: #333;
+        padding: 0 0.1rem;
+    }
+</style>

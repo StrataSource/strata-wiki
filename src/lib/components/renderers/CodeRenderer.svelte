@@ -157,9 +157,10 @@
 
 <style lang="scss">
     .wrapper {
-        background-color: #222;
+        background-color: #333;
         border-radius: 0.25rem;
         margin: 0.25rem 0;
+        width: 100%;
 
         position: relative;
     }

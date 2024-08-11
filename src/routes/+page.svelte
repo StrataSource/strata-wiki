@@ -74,7 +74,7 @@
         },
         { seperation: true, title: "Assets" },
         {
-            id: "todo",
+            id: "material",
             title: "Materials",
             description: "Material Reference",
             icon: mdiCubeOutline,
