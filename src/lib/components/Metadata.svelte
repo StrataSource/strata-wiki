@@ -15,11 +15,17 @@
         property="og:title"
         content={title}
     />
+    <!--TODO-->
     <meta
         data-pagefind-meta="image_alt:"
         property="og:url"
-        content="https://wiki.stratasource.org{$page.url.pathname}"
+        content="https://more-than-2-less-than-4.wiki-5tv.pages.dev{$page.url
+            .pathname}"
     />
-    <meta property="og:image" content="https://wiki.stratasource.org{og}" />
+    <!--TODO-->
+    <meta
+        property="og:image"
+        content="https://more-than-2-less-than-4.wiki-5tv.pages.dev{og}"
+    />
     <meta name="theme-color" content="#f0413c" />
 </svelte:head>
