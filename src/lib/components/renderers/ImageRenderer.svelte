@@ -20,11 +20,11 @@
     <YouTube video={ytMatched ? ytMatched[8] : "error"}></YouTube>
 {:else}
     <a
-        href="/_/img/raw/{$page.params.category}/{$page.params.topic}/{dat.url}"
+        href="/_/raw/{$page.params.category}/{$page.params.topic}/{dat.url}"
         target="_blank"
     >
         <img
-            src="/_/img/low/{$page.params.category}/{$page.params
+            src="/_/img/lo/{$page.params.category}/{$page.params
                 .topic}/{dat.url}"
             alt={dat.alt}
             title={dat.alt}
