@@ -3,6 +3,7 @@
 
     export let href: string = "";
     export let title: string | undefined = undefined;
+    export let download = false;
 
     const dispatch = createEventDispatcher();
 </script>
@@ -12,7 +13,12 @@
         <slot></slot>
     </button>
 {:else}
-    <a {href} {title} on:click={(e) => dispatch("click", e)}>
+    <a
+        {href}
+        {title}
+        download={download ? href.split("/").at(-1) : undefined}
+        on:click={(e) => dispatch("click", e)}
+    >
         <slot></slot>
     </a>
 {/if}
