@@ -10,6 +10,8 @@
         mdiCubeOutline,
         mdiCubeScan,
         mdiFileDocument,
+        mdiGridLarge,
+        mdiLayers,
         mdiNetwork,
         mdiScript,
         mdiSphere,
@@ -30,6 +32,21 @@
           }
         | { title: string; seperation: true }
     )[] = [
+        { seperation: true, title: "Getting started" },
+        {
+            id: "todo",
+            title: "Mapping",
+            description: "Creating content in Strata Source",
+            icon: mdiGridLarge,
+            seperation: false,
+        },
+        {
+            id: "modding/overview",
+            title: "Modding",
+            description: "Modding Strata Source games",
+            icon: mdiLayers,
+            seperation: false,
+        },
         { seperation: true, title: "Reference" },
         {
             id: "todo",
@@ -47,21 +64,21 @@
         },
         { seperation: true, title: "Scripting" },
         {
-            id: "todo",
+            id: "angelscript",
             title: "Angelscript",
             description: "Reference for Angelscript language",
             icon: mdiScript,
             seperation: false,
         },
         {
-            id: "todo",
+            id: "vscript",
             title: "VScript",
             description: "Reference for VScript language",
             icon: mdiAlphaVBox,
             seperation: false,
         },
         {
-            id: "todo",
+            id: "panorama/overview/getting-started",
             title: "Panorama",
             description: "In-Game UI Framework",
             icon: mdiViewDashboard,
