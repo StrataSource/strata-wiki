@@ -36,6 +36,7 @@
         "@sveltejs/adapter-static": "^3.0.2",
         "highlight.js": "^11.10.0",
         "js-yaml": "^4.1.0",
+        "node-fetch": "^3.3.2",
         "remark": "^15.0.1",
         "remark-frontmatter": "^5.0.0",
         "remark-gfm": "^4.0.0",
