@@ -5,6 +5,7 @@
     import ListRenderer from "./ListRenderer.svelte";
     import CodeRenderer from "./CodeRenderer.svelte";
     import NoticeRenderer from "./NoticeRenderer.svelte";
+    import TableRenderer from "./TableRenderer.svelte";
 
     export let dat: RootContent;
 </script>
@@ -20,6 +21,8 @@
         <CodeRenderer {dat}></CodeRenderer>
     {:else if dat.type == "blockquote"}
         <NoticeRenderer {dat}></NoticeRenderer>
+    {:else if dat.type == "table"}
+        <TableRenderer {dat}></TableRenderer>
     {:else if dat.type == "break"}
         <br />
     {:else if dat.type == "thematicBreak"}

@@ -1,6 +1,7 @@
 <script lang="ts">
     import Link from "../Link.svelte";
     import ImageRenderer from "./ImageRenderer.svelte";
+    import LinkRenderer from "./LinkRenderer.svelte";
     import StringRenderer from "./StringRenderer.svelte";
     import type { PhrasingContent } from "mdast";
 
@@ -26,9 +27,7 @@
     {:else if e.type == "inlineCode"}
         <code>{e.value}</code>
     {:else if e.type == "link"}
-        <Link href={e.url} title={e.title}
-            ><StringRenderer dat={e.children}></StringRenderer></Link
-        >
+        <LinkRenderer dat={e}></LinkRenderer>
     {:else if e.type == "footnoteReference" || e.type == "html" || e.type == "imageReference" || e.type == "linkReference"}
         <!--Not implemented: {e.type}-->
     {:else if e.type in simpleElements}
