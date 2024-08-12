@@ -104,7 +104,7 @@ export function getMenuTopic(category: string, topic: string) {
     const entry: MenuCategory = {
         id: topic,
         title: meta.meta.title,
-        weight: meta.meta.weight || null,
+        weight: typeof meta.meta.weight == "number" ? meta.meta.weight : null,
         articles: [],
     };
 
