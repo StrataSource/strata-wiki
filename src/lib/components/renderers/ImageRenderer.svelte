@@ -4,7 +4,11 @@
     import YouTube from "../embeds/YouTube.svelte";
 
     export let dat: Image;
-    let type: "image" | "youtube" = "image";
+    let type: "image" | "aside" | "youtube" = "image";
+
+    if (dat.url.startsWith("aside")) {
+        type = "aside";
+    }
 
     const ytRegex =
         /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(shorts\/)|(watch\?))\??v?=?([^#&?]*).*/;
@@ -18,13 +22,28 @@
 
 {#if type == "youtube"}
     <YouTube video={ytMatched ? ytMatched[8] : "error"}></YouTube>
+{:else if type == "aside"}
+    <aside>
+        <a
+            href="/_/raw/{$page.params.category}/{$page.params
+                .topic}/{dat.url.slice(6)}"
+            target="_blank"
+        >
+            <img
+                src="/_/img/lo/{$page.params.category}/{$page.params
+                    .topic}/{dat.url.slice(6)}"
+                alt={dat.alt}
+                title={dat.alt}
+            />
+        </a>
+    </aside>
 {:else}
     <a
         href="/_/raw/{$page.params.category}/{$page.params.topic}/{dat.url}"
         target="_blank"
     >
         <img
-            src="/_/img/lo/{$page.params.category}/{$page.params
+            src="/_/img/md/{$page.params.category}/{$page.params
                 .topic}/{dat.url}"
             alt={dat.alt}
             title={dat.alt}
@@ -32,7 +51,7 @@
     </a>
 {/if}
 
-<style>
+<style lang="scss">
     img {
         height: 20rem;
         max-width: 100%;
@@ -44,5 +63,18 @@
         width: fit-content;
         margin-bottom: 1rem;
         max-width: 100%;
+    }
+
+    aside {
+        float: right;
+        padding-left: 0.5rem;
+
+        & a {
+            margin-bottom: 0;
+        }
+
+        & img {
+            height: 11rem;
+        }
     }
 </style>
