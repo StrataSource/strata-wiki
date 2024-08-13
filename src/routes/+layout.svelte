@@ -3,6 +3,7 @@
     import "@fontsource/lexend-deca";
     import type { LayoutData } from "./$types";
     import Topbar from "./Topbar.svelte";
+    import Sidebar from "./Sidebar.svelte";
 
     export let data: LayoutData;
 
@@ -10,6 +11,8 @@
 </script>
 
 <Topbar></Topbar>
+
+<Sidebar menu={data.menu}></Sidebar>
 
 <slot></slot>
 
