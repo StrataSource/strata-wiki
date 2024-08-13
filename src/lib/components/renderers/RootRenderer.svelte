@@ -8,13 +8,15 @@
     import TableRenderer from "./TableRenderer.svelte";
 
     export let dat: RootContent;
+
+    export let i: number | undefined = undefined;
 </script>
 
-<div>
+<div class="root" class:first={i === 0}>
     {#if dat.type == "heading"}
         <HeaderRenderer {dat}></HeaderRenderer>
     {:else if dat.type == "paragraph"}
-        <StringRenderer dat={dat.children}></StringRenderer>
+        <p><StringRenderer dat={dat.children}></StringRenderer></p>
     {:else if dat.type == "list"}
         <ListRenderer {dat}></ListRenderer>
     {:else if dat.type == "code"}
@@ -33,3 +35,17 @@
         <strong>ERROR!</strong> Unknown content type <code>{dat.type}</code>
     {/if}
 </div>
+
+<style>
+    :global(.root:first-child *),
+    :global(.first.root *) {
+        margin-top: 0;
+    }
+    :global(.root:last-child *) {
+        margin-bottom: 0;
+    }
+
+    p {
+        text-align: justify;
+    }
+</style>

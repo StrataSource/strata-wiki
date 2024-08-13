@@ -52,7 +52,7 @@
 </script>
 
 <Notice {type}>
-    {#each d.children as child}
-        <RootRenderer dat={child}></RootRenderer>
+    {#each d.children as child, i}
+        <RootRenderer dat={child} {i}></RootRenderer>
     {/each}
 </Notice>

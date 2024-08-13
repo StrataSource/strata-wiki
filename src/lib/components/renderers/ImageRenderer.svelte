@@ -61,7 +61,6 @@
     a {
         display: inline-block;
         width: fit-content;
-        margin-bottom: 1rem;
         max-width: 100%;
     }
 
