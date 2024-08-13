@@ -198,6 +198,11 @@
         grid-template-columns: 1fr 1fr;
         gap: 1rem;
 
+        @media (max-width: 60rem) {
+            display: flex !important;
+            flex-direction: column;
+        }
+
         & .section {
             grid-column: 1 / 3;
 

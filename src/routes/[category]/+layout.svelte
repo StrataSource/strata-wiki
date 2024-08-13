@@ -1,26 +1,28 @@
 <script lang="ts">
-    import type { LayoutData } from "./$types";
-    import Sidebar from "./Sidebar.svelte";
-
-    export let data: LayoutData;
 </script>
 
 <div class="wrapper">
-    <Sidebar menu={data.menu}></Sidebar>
-
     <article data-pagefind-body>
         <slot></slot>
     </article>
 </div>
 
-<style>
+<style lang="scss">
     article {
         width: calc(100% - 25rem);
-        padding: 2rem;
+        padding: 0 2rem;
         padding-right: 5rem;
 
         margin-left: 18rem;
 
         vertical-align: middle;
+
+        transition: 250ms;
+
+        @media (max-width: 60rem) {
+            width: calc(100% - 2rem);
+            padding: 0 1rem;
+            margin-left: 0;
+        }
     }
 </style>
