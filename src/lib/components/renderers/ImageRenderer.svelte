@@ -53,8 +53,11 @@
 
 <style lang="scss">
     img {
-        height: 20rem;
+        max-height: 20rem;
         max-width: 100%;
+
+        object-fit: contain;
+
         display: block;
     }
 
@@ -74,6 +77,16 @@
 
         & img {
             height: 11rem;
+            max-width: 100%;
+        }
+
+        @media (max-width: 60rem) {
+            float: none;
+            text-align: center;
+
+            & a {
+                margin-bottom: 1rem;
+            }
         }
     }
 </style>
