@@ -39,7 +39,7 @@ export function parseMaterial(p: string, name: string) {
             continue;
         }
 
-        let temp = `# ${mat.name}\n\n`;
+        let temp = `---\n---\n\n` + `# ${mat.name}\n\n`;
 
         if (fs.existsSync(`../docs/${p}/${name}.md`)) {
             temp +=
