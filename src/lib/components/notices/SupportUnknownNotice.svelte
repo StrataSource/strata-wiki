@@ -16,7 +16,7 @@
     for (let index = 0; index < games.length; index++) {
         const game = games[index];
 
-        if (index == games.length - 1) {
+        if (index == games.length - 1 && games.length > 1) {
             gamesString += " and ";
         } else if (index != 0) {
             gamesString += ", ";

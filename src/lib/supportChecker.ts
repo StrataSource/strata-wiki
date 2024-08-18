@@ -22,7 +22,7 @@ export function getGamesWithSupport(features: string[]) {
                 break;
             }
         }
-        if (isSupported) {
+        if (isSupported || features.includes(id.toUpperCase())) {
             supportedGames.push(id);
         }
     }
