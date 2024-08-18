@@ -10,6 +10,11 @@ import {
     getMaterialTopic,
     parseMaterial,
 } from "./parsers/material.server";
+import {
+    getEntityPageMeta,
+    getEntityTopic,
+    parseEntity,
+} from "./parsers/entities.server";
 
 export function getContentMeta(category: string, topic: string) {
     if (!fs.existsSync(`../docs/${category}/${topic || ""}/meta.json`)) {
@@ -27,10 +32,22 @@ export function getContentMeta(category: string, topic: string) {
 
     const meta: ArticleMeta = JSON.parse(metaRaw);
 
-    let type: "markdown" | "material" = "markdown";
+    let type: "markdown" | "material" | "entity" = "markdown";
 
     if (fs.existsSync(`../docs/${category}/${topic || ""}/materials.json`)) {
         type = "material";
+    }
+
+    const games = getGames();
+
+    for (const game of Object.keys(games)) {
+        if (
+            fs.existsSync(
+                `../docs/${category}/${topic || ""}/entities_${game}.json`
+            )
+        ) {
+            type = "entity";
+        }
     }
 
     return { type: type, meta: meta };
@@ -54,6 +71,10 @@ export function getContent(category: string, topic: string, page: string) {
 
         case "material":
             return parseMaterial(`${category}/${topic}`, page);
+            break;
+
+        case "entity":
+            return parseEntity(`${category}/${topic}`, page);
             break;
 
         default:
@@ -117,6 +138,10 @@ export function getMenuTopic(category: string, topic: string) {
             entry.articles = getMaterialTopic(`${category}/${topic}`);
             break;
 
+        case "entity":
+            entry.articles = getEntityTopic(`${category}/${topic}`);
+            break;
+
         default:
             break;
     }
@@ -137,6 +162,10 @@ export function getPageMeta(category: string, topic: string, article: string) {
 
         case "material":
             return getMaterialPageMeta(article);
+            break;
+
+        case "entity":
+            return getEntityPageMeta(`${category}/${topic}`, article);
             break;
 
         default:

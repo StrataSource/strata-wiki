@@ -5,7 +5,7 @@ interface ArticleMeta {
     id?: string;
     deprecated?: boolean;
     experimental?: boolean;
-    features?: [];
+    features?: string[];
 }
 
 type NoticeType =

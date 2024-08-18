@@ -56,7 +56,7 @@
             seperation: false,
         },
         {
-            id: "todo",
+            id: "entities/reference",
             title: "Entities",
             description: "Engine Entity Reference",
             icon: mdiSphere,

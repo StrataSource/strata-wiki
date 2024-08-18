@@ -51,7 +51,9 @@ export function parseMaterial(p: string, name: string) {
         for (const param of mat.params) {
             temp +=
                 "> ```c\n" +
-                `> ${param.name} <${param.type}> = ${param.default}\n` +
+                `> ${param.name} <${param.type}>${
+                    param.default ? " = " + param.default : ""
+                }\n` +
                 "> ```\n" +
                 `> \n` +
                 `> ${param.desc}\n\n`;
