@@ -100,11 +100,16 @@ export function parseEntity(p: string, name: string) {
             temp +=
                 `### ${kv.name} \`<${
                     kv.type.includes("\n") ? "enum" : kv.type
-                }>${kv.default ? " = " + kv.default : ""}\`\n\n` +
+                }>` +
+                //If default, show it
+                `${kv.default ? " = " + kv.default : ""}\`\n\n` +
+                //If enum, add type
                 (kv.type.includes("\n")
                     ? "```\n" + `${kv.type}\n\n` + "```\n"
                     : "") +
+                //If origin, show it
                 (kv.origin == "" ? "" : `Origin: \`${kv.origin}\`\n\n`) +
+                //Description
                 `${kv.desc}\n\n`;
         }
     }
@@ -115,7 +120,9 @@ export function parseEntity(p: string, name: string) {
         for (const i of entity.inputs) {
             temp +=
                 `### ${i.name} \`<${i.type}>\` \n\n` +
+                //If origin, show it
                 (i.origin == "" ? "" : `Origin: \`${i.origin}\`\n\n`) +
+                //Description
                 `${i.desc}\n\n`;
         }
     }
@@ -126,7 +133,9 @@ export function parseEntity(p: string, name: string) {
         for (const o of entity.outputs) {
             temp +=
                 `### ${o.name} <\`${o.type}\`>\n\n` +
+                //If origin, show it
                 (o.origin == "" ? "" : `Origin: \`${o.origin}\`\n\n`) +
+                //Description
                 `${o.desc}\n\n`;
         }
     }
@@ -137,7 +146,9 @@ export function parseEntity(p: string, name: string) {
         for (const sf of entity.spawnFlags) {
             temp +=
                 `### \`${sf.num}\` ${sf.desc}\n\n` +
+                //If origin, show it
                 (sf.origin == "" ? "" : `Origin: \`${sf.origin}\`\n\n`) +
+                //Default
                 `Default: \`${sf.default}\`\n\n`;
         }
     }
@@ -163,7 +174,7 @@ export function getEntityTopic(p: string) {
 export function getEntityPageMeta(p: string, name: string) {
     indexEntities(p);
 
-    let meta: ArticleMeta = {
+    const meta: ArticleMeta = {
         id: name,
         title: name,
         features: index[p][name].support,
