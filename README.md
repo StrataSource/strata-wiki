@@ -1,38 +1,21 @@
-# create-svelte
+# Strata Wiki
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+[![Strata Source](https://branding.stratasource.org/i/strata/logo/ondark/color.svg)](https://stratasource.org)
 
-## Creating a project
+Welcome to the Strata Wiki!
 
-If you're seeing this, you've probably already done this step. Congrats!
+This is the custom wiki software that powers the Wiki for most of our games. If you're looking to edit contents on the wiki, you may wish to check out [the main Wiki repository](https://github.com/StrataSource/wiki/).
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Quick Start
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+To quickly start developing on the wiki, run the following:
 
 ```bash
+npm i
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+This will boot up the dev server that allows you to develop with instant refresh.
 
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+> [!NOTE]  
+> While the dev server is booting up, it'll execute a build of the full site and index it for the search. This may take a few minutes.
