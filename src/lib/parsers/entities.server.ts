@@ -7,16 +7,10 @@ interface Entity {
     type: string;
     classname: string;
     desc: string;
-    spawnFlags: EntitySpawnFlags[];
-    keyvalues: EntityKeyValues[];
-    inputs: EntityConnection[];
-    outputs: EntityConnection[];
-}
-interface EntitySpawnFlags {
-    num: number;
-    desc: string;
-    default: boolean;
-    origin: string;
+    bases?: string[];
+    keyvalues?: EntityKeyValues[];
+    inputs?: EntityConnection[];
+    outputs?: EntityConnection[];
 }
 interface EntityKeyValues {
     name: string;
@@ -93,12 +87,61 @@ export function parseEntity(p: string, name: string) {
         temp += fs.readFileSync(`../docs/${p}/${name}.md`, "utf-8") + "\n\n";
     }
 
-    if (entity.keyvalues.length > 0) {
+    const keyvalues: EntityKeyValues[] = [];
+    const inputs: EntityConnection[] = [];
+    const outputs: EntityConnection[] = [];
+
+    function parseEntityBase(en: Entity) {
+        if (en.keyvalues) {
+            for (const kv of en.keyvalues) {
+                if (keyvalues.filter((v) => v.name == kv.name).length < 1) {
+                    kv.origin = en.classname;
+                    keyvalues.push(kv);
+                }
+            }
+        }
+
+        if (en.inputs) {
+            for (const i of en.inputs) {
+                if (inputs.filter((v) => v.name == i.name).length < 1) {
+                    i.origin = en.classname;
+                    inputs.push(i);
+                }
+            }
+        }
+
+        if (en.outputs) {
+            for (const o of en.outputs) {
+                if (outputs.filter((v) => v.name == o.name).length < 1) {
+                    o.origin = en.classname;
+                    outputs.push(o);
+                }
+            }
+        }
+
+        if (en.bases) {
+            for (const base of en.bases) {
+                const e = index[p][base].entity;
+
+                parseEntityBase(e);
+            }
+        }
+    }
+    parseEntityBase(entity);
+
+    if (keyvalues.length > 0) {
         temp += "## KeyValues\n\n";
 
-        for (const kv of entity.keyvalues) {
+        let lastOrigin = entity.classname;
+
+        for (const kv of keyvalues) {
+            if (lastOrigin != kv.origin) {
+                temp += `### Inherited from [${kv.origin}](./${kv.origin})\n\n`;
+                lastOrigin = kv.origin;
+            }
+
             temp +=
-                `### ${kv.name} \`<${
+                `#### ${kv.name} \`<${
                     kv.type.includes("\n") ? "enum" : kv.type
                 }>` +
                 //If default, show it
@@ -107,49 +150,44 @@ export function parseEntity(p: string, name: string) {
                 (kv.type.includes("\n")
                     ? "```\n" + `${kv.type}\n\n` + "```\n"
                     : "") +
-                //If origin, show it
-                (kv.origin == "" ? "" : `Origin: \`${kv.origin}\`\n\n`) +
                 //Description
-                `${kv.desc}\n\n`;
+                `> ${kv.desc || "*No description provided.*"}\n\n`;
         }
     }
 
-    if (entity.inputs.length > 0) {
+    if (inputs.length > 0) {
         temp += "## Inputs\n\n";
 
-        for (const i of entity.inputs) {
+        let lastOrigin = entity.classname;
+
+        for (const i of inputs) {
+            if (lastOrigin != i.origin) {
+                temp += `### Inherited from [${i.origin}](./${i.origin})\n\n`;
+                lastOrigin = i.origin;
+            }
+
             temp +=
-                `### ${i.name} \`<${i.type}>\` \n\n` +
-                //If origin, show it
-                (i.origin == "" ? "" : `Origin: \`${i.origin}\`\n\n`) +
+                `#### ${i.name} \`<${i.type}>\` \n\n` +
                 //Description
-                `${i.desc}\n\n`;
+                `> ${i.desc || "*No description provided.*"}\n\n`;
         }
     }
 
-    if (entity.outputs.length > 0) {
+    if (outputs.length > 0) {
         temp += "## Outputs\n\n";
 
-        for (const o of entity.outputs) {
+        let lastOrigin = entity.classname;
+
+        for (const o of outputs) {
+            if (lastOrigin != o.origin) {
+                temp += `### Inherited from [${o.origin}](./${o.origin})\n\n`;
+                lastOrigin = o.origin;
+            }
+
             temp +=
-                `### ${o.name} <\`${o.type}\`>\n\n` +
-                //If origin, show it
-                (o.origin == "" ? "" : `Origin: \`${o.origin}\`\n\n`) +
+                `#### ${o.name} <\`${o.type}\`>\n\n` +
                 //Description
-                `${o.desc}\n\n`;
-        }
-    }
-
-    if (entity.spawnFlags.length > 0) {
-        temp += "## SpawnFlags\n\n";
-
-        for (const sf of entity.spawnFlags) {
-            temp +=
-                `### \`${sf.num}\` ${sf.desc}\n\n` +
-                //If origin, show it
-                (sf.origin == "" ? "" : `Origin: \`${sf.origin}\`\n\n`) +
-                //Default
-                `Default: \`${sf.default}\`\n\n`;
+                `> ${o.desc || "*No description provided.*"}\n\n`;
         }
     }
 
