@@ -22,3 +22,6 @@ vite.config.ts.timestamp-*
 
 # Pagefind
 static/pagefind
+
+# Linting
+static/report.json
