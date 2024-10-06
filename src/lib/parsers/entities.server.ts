@@ -3,6 +3,8 @@ import { error } from "@sveltejs/kit";
 import { parseMarkdown } from "./markdown.server";
 import { getGames } from "$lib/content.server";
 
+const baseType = "BASE";
+
 interface Entity {
     type: string;
     classname: string;
@@ -77,6 +79,12 @@ export function parseEntity(p: string, name: string) {
 
     let temp = "";
 
+    if (entity.type == baseType) {
+        temp +=
+            `> [!CAUTION]\n` +
+            `> \`${entity.classname}\` is an internal entity and should not be used on its own.\n\n`;
+    }
+
     temp += `# \`${entity.type}\` ${entity.classname}\n\n`;
 
     if (entity.desc != "") {
@@ -141,11 +149,11 @@ export function parseEntity(p: string, name: string) {
             }
 
             temp +=
-                `#### ${kv.name} \`<${
+                `> #### ${kv.name} \`<${
                     kv.type.includes("\n") ? "enum" : kv.type
                 }>` +
                 //If default, show it
-                `${kv.default ? " = " + kv.default : ""}\`\n\n` +
+                `${kv.default ? " = " + kv.default : ""}\`\n> \n` +
                 //If enum, add type
                 (kv.type.includes("\n")
                     ? "```\n" + `${kv.type}\n\n` + "```\n"
@@ -167,7 +175,7 @@ export function parseEntity(p: string, name: string) {
             }
 
             temp +=
-                `#### ${i.name} \`<${i.type}>\` \n\n` +
+                `> #### ${i.name} \`<${i.type}>\` \n> \n` +
                 //Description
                 `> ${i.desc || "*No description provided.*"}\n\n`;
         }
@@ -185,7 +193,7 @@ export function parseEntity(p: string, name: string) {
             }
 
             temp +=
-                `#### ${o.name} <\`${o.type}\`>\n\n` +
+                `> #### ${o.name} <\`${o.type}\`>\n> \n` +
                 //Description
                 `> ${o.desc || "*No description provided.*"}\n\n`;
         }
@@ -200,6 +208,9 @@ export function getEntityTopic(p: string) {
     const res: MenuArticle[] = [];
 
     for (const entity of Object.values(index[p])) {
+        if (entity.entity.type == baseType) {
+            continue;
+        }
         res.push({
             id: entity.entity.classname,
             meta: { title: entity.entity.classname, features: entity.support },
