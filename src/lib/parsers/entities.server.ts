@@ -2,6 +2,8 @@ import fs from "fs";
 import { error } from "@sveltejs/kit";
 import { parseMarkdown } from "./markdown.server";
 import { getGames } from "$lib/content.server";
+import { reportLint } from "$lib/linter.server";
+import { urlifyString } from "$lib/util";
 
 const baseType = "BASE";
 
@@ -45,7 +47,12 @@ function indexEntities(p: string) {
 
     for (const game of Object.keys(getGames())) {
         if (!fs.existsSync(`../docs/${p}/entities_${game}.json`)) {
-            console.warn(game, "doesn't have an entities file in", p);
+            reportLint(
+                "caution",
+                "entity_noDump_" + game,
+                `${game} does not an entity dump`,
+                `${p}`
+            );
             continue;
         }
 
@@ -160,6 +167,15 @@ export function parseEntity(p: string, name: string) {
                     : "") +
                 //Description
                 `> ${kv.desc || "*No description provided.*"}\n\n`;
+
+            if (!kv.desc) {
+                reportLint(
+                    "note",
+                    "entity_noDesc_kv_" + kv.name,
+                    `KeyValue "${kv.name}" does not have a description`,
+                    `${p}/${entity.classname}#${urlifyString(kv.name)}`
+                );
+            }
         }
     }
 
@@ -178,6 +194,15 @@ export function parseEntity(p: string, name: string) {
                 `> #### ${i.name} \`<${i.type}>\` \n> \n` +
                 //Description
                 `> ${i.desc || "*No description provided.*"}\n\n`;
+
+            if (!i.desc) {
+                reportLint(
+                    "note",
+                    "entity_noDesc_i_" + i.name,
+                    `Input "${i.name}" does not have a description`,
+                    `${p}/${entity.classname}#${urlifyString(i.name)}`
+                );
+            }
         }
     }
 
@@ -196,6 +221,15 @@ export function parseEntity(p: string, name: string) {
                 `> #### ${o.name} <\`${o.type}\`>\n> \n` +
                 //Description
                 `> ${o.desc || "*No description provided.*"}\n\n`;
+
+            if (!o.desc) {
+                reportLint(
+                    "note",
+                    "entity_noDesc_o_" + o.name,
+                    `Output "${o.name}" does not have a description`,
+                    `${p}/${entity.classname}#${urlifyString(o.name)}`
+                );
+            }
         }
     }
 

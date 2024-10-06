@@ -4,6 +4,7 @@
     import Icon from "../Icon.svelte";
     import { mdiCheck, mdiPencil, mdiPound } from "@mdi/js";
     import { page } from "$app/stores";
+    import { urlifyString } from "$lib/util";
 
     export let dat: Heading;
 
@@ -13,9 +14,7 @@
         for (const child of children) {
             switch (child.type) {
                 case "text":
-                    id += encodeURI(
-                        child.value.toLowerCase().replaceAll(" ", "-")
-                    );
+                    id += child.value;
                     break;
                 case "delete":
                 case "strong":
@@ -27,6 +26,8 @@
                     break;
             }
         }
+
+        id = urlifyString(id);
     }
 
     generateID(dat.children);

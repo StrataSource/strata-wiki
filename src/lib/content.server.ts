@@ -15,6 +15,8 @@ import {
     getEntityTopic,
     parseEntity,
 } from "./parsers/entities.server";
+import type { Root } from "mdast";
+import { flushLint } from "./linter.server";
 
 export function getContentMeta(category: string, topic: string) {
     if (!fs.existsSync(`../docs/${category}/${topic || ""}/meta.json`)) {
@@ -54,13 +56,17 @@ export function getContentMeta(category: string, topic: string) {
 }
 
 export function getContent(category: string, topic: string, page: string) {
+    console.log(`\n--- ${category}/${topic}/${page} ---\n`);
+
+    let c: Root;
+
     switch (getContentMeta(category, topic).type) {
         case "markdown":
             if (!fs.existsSync(`../docs/${category}/${topic}/${page}.md`)) {
                 throw error(404);
             }
 
-            return parseMarkdown(
+            c = parseMarkdown(
                 fs.readFileSync(
                     `../docs/${category}/${topic}/${page}.md`,
                     "utf-8"
@@ -70,17 +76,21 @@ export function getContent(category: string, topic: string, page: string) {
             break;
 
         case "material":
-            return parseMaterial(`${category}/${topic}`, page);
+            c = parseMaterial(`${category}/${topic}`, page);
             break;
 
         case "entity":
-            return parseEntity(`${category}/${topic}`, page);
+            c = parseEntity(`${category}/${topic}`, page);
             break;
 
         default:
             throw error(500, "Invalid content type");
             break;
     }
+
+    flushLint();
+
+    return c;
 }
 
 function sortByWeight(
