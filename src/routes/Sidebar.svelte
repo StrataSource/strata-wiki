@@ -88,7 +88,7 @@
                             href="/{$page.params
                                 .category}/{topic.id}/{article.id}"
                         >
-                            {article.meta.title || article.id}
+                            <div>{article.meta.title || article.id}</div>
 
                             {#if article.meta.deprecated}
                                 <span title="Deprecated">
@@ -203,7 +203,9 @@
         color: currentColor;
         text-decoration: none;
 
-        display: block;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.25rem;
 
         border-radius: 0.25rem;
 
@@ -212,9 +214,6 @@
         padding: 0.1rem;
         padding-left: 1rem;
 
-        text-overflow: ellipsis;
-        overflow: hidden;
-
         &:hover,
         &:focus {
             background-color: #333;
@@ -222,6 +221,11 @@
 
         &.active {
             background-color: var(--strataDark);
+        }
+
+        & div {
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
     }
 
