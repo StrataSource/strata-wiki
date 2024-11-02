@@ -15,44 +15,52 @@ import {
     getEntityTopic,
     parseEntity,
 } from "./parsers/entities.server";
+import {
+    getPanoramaPageMeta,
+    getPanoramaTopic,
+    parsePanorama,
+} from "./parsers/panorama.server";
+
 import type { Root } from "mdast";
-import { flushLint } from "./linter.server";
+import { flushLint, reportLint } from "./linter.server";
 
 export function getContentMeta(category: string, topic: string) {
-    if (!fs.existsSync(`../docs/${category}/${topic || ""}/meta.json`)) {
-        const meta: ArticleMeta = {
-            title: topic,
-        };
 
+    // No meta.json? This is markdown.
+    
+    if (!fs.existsSync(`../docs/${category}/${topic || ""}/meta.json`)) {
+        reportLint("warning", "warn_meta_legacy_topic", `Topic ${category}/${topic || ""} is missing a meta.json!`, `/${category}/${topic || ""}/`);
+        const meta: ArticleMeta = { title: topic };
         return { type: "markdown", meta: meta };
     }
 
-    const metaRaw = fs.readFileSync(
-        `../docs/${category}/${topic || ""}/meta.json`,
-        "utf-8"
-    );
+    // Check for material-type page
 
+    const metaRaw = fs.readFileSync(`../docs/${category}/${topic || ""}/meta.json`, "utf-8");
     const meta: ArticleMeta = JSON.parse(metaRaw);
-
-    let type: "markdown" | "material" | "entity" = "markdown";
-
     if (fs.existsSync(`../docs/${category}/${topic || ""}/materials.json`)) {
-        type = "material";
+        return { type: "material", meta: meta };
     }
+    
+    // Check for entity page
 
     const games = getGames();
-
     for (const game of Object.keys(games)) {
-        if (
-            fs.existsSync(
-                `../docs/${category}/${topic || ""}/entities_${game}.json`
-            )
-        ) {
-            type = "entity";
+        if (fs.existsSync(`../docs/${category}/${topic || ""}/entities_${game}.json`)) {
+            return { type: "entity", meta: meta };
         }
     }
 
-    return { type: type, meta: meta };
+    // Check for Panorama page
+
+    if (fs.existsSync(`../docs/${category}/${topic}/panorama.json`)) {
+        return { type: "panorama", meta: meta };
+    }
+
+    // What is this page???
+
+    // throw Error(`Page ${category}/${topic} is missing a meta.json!`);
+    return { type: "markdown", meta: meta };
 }
 
 export function getContent(category: string, topic: string, page: string) {
@@ -83,6 +91,10 @@ export function getContent(category: string, topic: string, page: string) {
             c = parseEntity(`${category}/${topic}`, page);
             break;
 
+        case "panorama":
+            c = parsePanorama(`${category}/${topic}`, page);
+            break;
+        
         default:
             throw error(500, "Invalid content type");
             break;
@@ -151,6 +163,10 @@ export function getMenuTopic(category: string, topic: string) {
         case "entity":
             entry.articles = getEntityTopic(`${category}/${topic}`);
             break;
+        
+        case "panorama":
+            entry.articles = getPanoramaTopic();
+            break;
 
         default:
             break;
@@ -162,21 +178,22 @@ export function getMenuTopic(category: string, topic: string) {
 
     return entry;
 }
+
 export function getPageMeta(category: string, topic: string, article: string) {
     const meta = getContentMeta(category, topic);
 
     switch (meta.type) {
         case "markdown":
             return getMarkdownPageMeta(category, topic, article);
-            break;
 
         case "material":
             return getMaterialPageMeta(article);
-            break;
 
         case "entity":
             return getEntityPageMeta(`${category}/${topic}`, article);
-            break;
+
+        case "panorama":
+            return getPanoramaPageMeta(article);
 
         default:
             break;

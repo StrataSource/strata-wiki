@@ -6,6 +6,9 @@ interface ArticleMeta {
     deprecated?: boolean;
     experimental?: boolean;
     features?: string[];
+
+    /** Used to store any additional data necessary to render the page. */
+    extraData?: unknown;
 }
 
 type NoticeType =
