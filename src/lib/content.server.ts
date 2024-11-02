@@ -16,30 +16,41 @@ import {
     parseEntity,
 } from "./parsers/entities.server";
 import type { Root } from "mdast";
-import { flushLint } from "./linter.server";
+import { flushLint, reportLint } from "./linter.server";
 
-export function getContentMeta(category: string, topic: string) {
-    if (!fs.existsSync(`../docs/${category}/${topic || ""}/meta.json`)) {
-        const meta: ArticleMeta = {
+export function getContentMeta(
+    category: string,
+    topic: string
+): { type: "markdown" | "material" | "entity"; meta: ArticleMeta } {
+    let meta: ArticleMeta;
+
+    //Check if meta.json exists, if not complain and fall back to using ID as the title
+    if (fs.existsSync(`../docs/${category}/${topic || ""}/meta.json`)) {
+        const metaRaw = fs.readFileSync(
+            `../docs/${category}/${topic || ""}/meta.json`,
+            "utf-8"
+        );
+
+        meta = JSON.parse(metaRaw);
+    } else {
+        reportLint(
+            "caution",
+            "meta_missing",
+            `Category/Topic is missing a meta.json!`,
+            `/${category}/${topic || ""}/`
+        );
+
+        meta = {
             title: topic,
         };
-
-        return { type: "markdown", meta: meta };
     }
 
-    const metaRaw = fs.readFileSync(
-        `../docs/${category}/${topic || ""}/meta.json`,
-        "utf-8"
-    );
-
-    const meta: ArticleMeta = JSON.parse(metaRaw);
-
-    let type: "markdown" | "material" | "entity" = "markdown";
-
+    //Check if topic type is material
     if (fs.existsSync(`../docs/${category}/${topic || ""}/materials.json`)) {
-        type = "material";
+        return { type: "material", meta: meta };
     }
 
+    //Check if topic type is entity by looping over every game and looking for that file.
     const games = getGames();
 
     for (const game of Object.keys(games)) {
@@ -48,11 +59,11 @@ export function getContentMeta(category: string, topic: string) {
                 `../docs/${category}/${topic || ""}/entities_${game}.json`
             )
         ) {
-            type = "entity";
+            return { type: "entity", meta: meta };
         }
     }
 
-    return { type: type, meta: meta };
+    return { type: "markdown", meta: meta };
 }
 
 export function getContent(category: string, topic: string, page: string) {
@@ -63,7 +74,7 @@ export function getContent(category: string, topic: string, page: string) {
     switch (getContentMeta(category, topic).type) {
         case "markdown":
             if (!fs.existsSync(`../docs/${category}/${topic}/${page}.md`)) {
-                throw error(404);
+                throw error(404, "Page not found");
             }
 
             c = parseMarkdown(
