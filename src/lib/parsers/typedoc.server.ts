@@ -49,7 +49,7 @@ export function parseTypedoc(p: string, name: string): Root {
 
     out.push(
         `> [!NOTE]\n` +
-            `Typedoc browsing is in early access and will change. If you got feedback, ping max in it.`
+            `Typedoc browsing is in early access and will probably change in the future. If you got feedback, ping max in it.`
     );
 
     out.push(`# ${namespace.name}`);
