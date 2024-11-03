@@ -150,6 +150,12 @@ export function parseEntity(p: string, name: string) {
         let lastOrigin = entity.classname;
 
         for (const kv of keyvalues) {
+            //Discard seperator lines starting with at least 3 dashes
+
+            if (kv.name.startsWith("---")) {
+                continue;
+            }
+
             if (lastOrigin != kv.origin) {
                 temp += `### Inherited from [${kv.origin}](./${kv.origin})\n\n`;
                 lastOrigin = kv.origin;
