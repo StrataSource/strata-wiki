@@ -77,8 +77,6 @@ export function getMaterialTopic(p: string) {
     return res;
 }
 
-export function getMaterialPageMeta(name: string) {
-    let meta: ArticleMeta = { id: name, title: name };
-
-    return meta;
+export function getMaterialPageMeta(name: string): ArticleMeta {
+    return { id: name, title: name };
 }

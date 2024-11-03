@@ -44,9 +44,11 @@
     {/key}
 </div>
 
-{#each data.doc.children as obj}
-    <RootRenderer dat={obj}></RootRenderer>
-{/each}
+{#key data}
+    {#each data.doc.children as obj}
+        <RootRenderer dat={obj}></RootRenderer>
+    {/each}
+{/key}
 
 <style>
     .notices {
