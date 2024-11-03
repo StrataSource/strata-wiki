@@ -27,13 +27,21 @@ function getProject(p: string) {
 
 function getNamespaces(p: string) {
     getProject(p);
-
     if (!namespaceCache[p]) {
         namespaceCache[p] = {};
+    }
 
-        for (const namespace of cache[p].namespaces) {
-            namespaceCache[p][namespace.name] = namespace;
+    function parseNamespace(namespace: NamespaceParser, prefix: string = "") {
+        namespaceCache[p][prefix + namespace.name] = namespace;
+
+        console.log(namespace.name, prefix);
+
+        for (const ns of namespace.namespaces) {
+            parseNamespace(ns, `${prefix}${namespace.name}.`);
         }
+    }
+    for (const namespace of cache[p].namespaces) {
+        parseNamespace(namespace);
     }
 
     return namespaceCache[p];
@@ -41,9 +49,16 @@ function getNamespaces(p: string) {
 
 export function parseTypedoc(p: string, name: string): Root {
     const project = getProject(p);
+
     const namespaces = getNamespaces(p);
 
     const namespace = namespaces[name];
+
+    function cleanType(input: string) {
+        return input
+            .replaceAll(`${project.name}.`, "")
+            .replaceAll("typescript.", "");
+    }
 
     const out: string[] = [];
 
@@ -52,7 +67,7 @@ export function parseTypedoc(p: string, name: string): Root {
             `Typedoc browsing is in early access and will probably change in the future. If you got feedback, ping max in it.`
     );
 
-    out.push(`# ${namespace.name}`);
+    out.push(`# ${name}`);
 
     if (namespace.source?.url) {
         out.push(`[View Source](${namespace.source.url})`);
@@ -89,23 +104,21 @@ export function parseTypedoc(p: string, name: string): Root {
 
             for (const param of signature.parameters) {
                 params.push(
-                    `${param.name}: ${param.type
-                        .toString()
-                        .replaceAll(`${project.name}.`, "")}${
-                        param.optional ? " | undefined" : ""
-                    }`
+                    `${param.rest ? "..." : ""}${param.name}${
+                        param.optional ? "?" : ""
+                    }: ${cleanType(param.type.toString())}`
                 );
             }
 
             out.push(
                 "```ts\n" +
-                    `${fn.name}(${params.join(", ")}): ${signature.returnType
+                    `${name}.${fn.name}(${params.join(
+                        ", "
+                    )}): ${signature.returnType
                         .toString()
                         .replaceAll(`${project.name}.`, "")}` +
                     "\n```"
             );
-
-            out.push("");
 
             out.push(
                 signature.comment.description || "*No description provided.*"
@@ -132,6 +145,34 @@ export function parseTypedoc(p: string, name: string): Root {
                 }
             }
 
+            if (signature.parameters.length > 0) {
+                out.push(
+                    `#### Parameter${
+                        signature.parameters.length == 1 ? "" : "s"
+                    }`
+                );
+
+                const temp: string[] = [
+                    "| Name | Type | Description |",
+                    "|---|---|---|",
+                ];
+
+                for (const param of signature.parameters) {
+                    temp.push(
+                        `| \`${param.rest ? "..." : ""}${
+                            param.name
+                        }\` | \`${cleanType(
+                            param.type.toString().replaceAll("|", "\\|")
+                        )}\` ${param.optional ? "(optional)" : ""} | ${
+                            param.comment.description ||
+                            "*No description provided.*"
+                        } |`
+                    );
+                }
+
+                out.push(temp.join("\n"));
+            }
+
             if (signature.comment.see.length > 0) {
                 out.push("#### See also");
 
@@ -142,21 +183,19 @@ export function parseTypedoc(p: string, name: string): Root {
         }
     }
 
-    out.push("```json\n" + JSON.stringify(namespace, null, 2) + "\n```");
-
     return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
 }
 
 export function getTypedocTopic(p: string): MenuArticle[] {
     const out: MenuArticle[] = [];
 
-    const project = getProject(p);
+    const namespaces = getNamespaces(p);
 
-    for (const namespace of project.namespaces) {
+    for (const [id, namespace] of Object.entries(namespaces)) {
         out.push({
-            id: namespace.name,
+            id: id,
             meta: {
-                title: namespace.name,
+                title: id,
                 features:
                     namespace.source?.path == sharedName ||
                     !namespace.source?.path
