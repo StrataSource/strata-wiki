@@ -37,7 +37,7 @@ export function getContentMeta(
             "caution",
             "meta_missing",
             `Category/Topic is missing a meta.json!`,
-            `/${category}/${topic || ""}/`
+            `${category}/${topic || ""}`
         );
 
         meta = {
