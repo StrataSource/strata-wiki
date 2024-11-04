@@ -15,3 +15,10 @@
         </li>
     {/each}
 </svelte:element>
+
+<style>
+    ol,
+    ul {
+        margin-top: 0;
+    }
+</style>
