@@ -134,51 +134,62 @@ export function parseTypedoc(p: string, name: string): Root {
             }
 
             if (signature.comment.example.length > 0) {
-                out.push(
-                    `#### Example${
+                const temp: string[] = [];
+
+                temp.push(
+                    `> #### Example${
                         signature.comment.example.length == 1 ? "" : "s"
                     }`
                 );
 
                 for (const example of signature.comment.example) {
-                    out.push(example.text);
+                    temp.push(...example.text.split("\n"));
                 }
+
+                out.push(temp.join("\n > "));
             }
 
             if (signature.parameters.length > 0) {
-                out.push(
-                    `#### Parameter${
+                const temp: string[] = [];
+                temp.push(
+                    `> #### Parameter${
                         signature.parameters.length == 1 ? "" : "s"
                     }`
                 );
 
-                const temp: string[] = [
-                    "| Name | Type | Description |",
-                    "|---|---|---|",
-                ];
+                temp.push("| Name | Type | Description |");
+                temp.push("|---|---|---|");
 
                 for (const param of signature.parameters) {
                     temp.push(
                         `| \`${param.rest ? "..." : ""}${
                             param.name
-                        }\` | \`${cleanType(
+                        }\` | ${cleanType(
                             param.type.toString().replaceAll("|", "\\|")
-                        )}\` ${param.optional ? "(optional)" : ""} | ${
+                        )} ${param.optional ? "(optional)" : ""} | ${
                             param.comment.description ||
                             "*No description provided.*"
                         } |`
                     );
                 }
 
-                out.push(temp.join("\n"));
+                out.push(temp.join("\n> "));
             }
 
-            if (signature.comment.see.length > 0) {
-                out.push("#### See also");
+            if (signature.comment.see.length > 0 || fn.source) {
+                const temp: string[] = [];
+
+                temp.push("> #### See also");
+
+                if (fn.source) {
+                    temp.push(`- [Definition](${fn.source?.url})`);
+                }
 
                 for (const see of signature.comment.see) {
-                    out.push(see.text);
+                    temp.push("- " + see.text);
                 }
+
+                out.push(temp.join("\n >"));
             }
         }
     }
