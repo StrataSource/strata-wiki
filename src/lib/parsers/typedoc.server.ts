@@ -2,9 +2,14 @@ import fs from "fs";
 import type { Root } from "mdast";
 import { parseMarkdown } from "./markdown.server";
 
-import { ProjectParser, type NamespaceParser } from "typedoc-json-parser";
+import {
+    ProjectParser,
+    TypeParser,
+    type NamespaceParser,
+} from "typedoc-json-parser";
 import { reportLint } from "$lib/linter.server";
 import { urlifyString } from "$lib/util";
+import { error } from "@sveltejs/kit";
 
 // TSdoc "path" that means it's supported everywhere
 const sharedName = "shared";
@@ -34,8 +39,6 @@ function getNamespaces(p: string) {
     function parseNamespace(namespace: NamespaceParser, prefix: string = "") {
         namespaceCache[p][prefix + namespace.name] = namespace;
 
-        console.log(namespace.name, prefix);
-
         for (const ns of namespace.namespaces) {
             parseNamespace(ns, `${prefix}${namespace.name}.`);
         }
@@ -48,11 +51,40 @@ function getNamespaces(p: string) {
 }
 
 export function parseTypedoc(p: string, name: string): Root {
+    const out: string[] = [];
+
+    out.push(
+        `> [!NOTE]\n` +
+            `Typedoc browsing is in early access and will probably change in the future. If you got feedback, ping max in it.`
+    );
+
+    if (name.startsWith("types/")) {
+        out.push(...renderTypePage(name.slice(6)));
+    } else {
+        out.push(...renderMainPage(p, name));
+    }
+
+    return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
+}
+
+function renderTypePage(type: string): string[] {
+    //TODO
+    return [
+        `# Type: ${type}`,
+        "This is a placeholder until a real type page arrives.",
+    ];
+}
+
+function renderMainPage(p: string, name: string): string[] {
     const project = getProject(p);
 
     const namespaces = getNamespaces(p);
 
     const namespace = namespaces[name];
+
+    if (!namespace) {
+        throw error(404, "Page not found");
+    }
 
     function cleanType(input: string) {
         return input
@@ -61,11 +93,6 @@ export function parseTypedoc(p: string, name: string): Root {
     }
 
     const out: string[] = [];
-
-    out.push(
-        `> [!NOTE]\n` +
-            `Typedoc browsing is in early access and will probably change in the future. If you got feedback, ping max in it.`
-    );
 
     out.push(`# ${name}`);
 
@@ -161,12 +188,27 @@ export function parseTypedoc(p: string, name: string): Root {
                 temp.push("|---|---|---|");
 
                 for (const param of signature.parameters) {
+                    let type = cleanType(
+                        param.type.toString().replaceAll("|", "\\|")
+                    );
+
+                    switch (param.type.kind) {
+                        case TypeParser.Kind.Intrinsic:
+                            break;
+
+                        case TypeParser.Kind.Reference:
+                            type = `[${type}](./types/${type})`;
+                            break;
+
+                        default:
+                            type = `\`${type}\``;
+                            break;
+                    }
+
                     temp.push(
                         `| \`${param.rest ? "..." : ""}${
                             param.name
-                        }\` | ${cleanType(
-                            param.type.toString().replaceAll("|", "\\|")
-                        )} ${param.optional ? "(optional)" : ""} | ${
+                        }\` | ${type} ${param.optional ? "(optional)" : ""} | ${
                             param.comment.description ||
                             "*No description provided.*"
                         } |`
@@ -194,7 +236,7 @@ export function parseTypedoc(p: string, name: string): Root {
         }
     }
 
-    return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
+    return out;
 }
 
 export function getTypedocTopic(p: string): MenuArticle[] {
@@ -220,6 +262,10 @@ export function getTypedocTopic(p: string): MenuArticle[] {
 }
 
 export function getTypedocPageMeta(p: string, name: string): ArticleMeta {
+    if (name.startsWith("types/")) {
+        return { title: name.slice(6) };
+    }
+
     const namespaces = getNamespaces(p);
 
     const namespace = namespaces[name];
