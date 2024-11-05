@@ -118,16 +118,15 @@ function generateTable(
 }
 
 function renderTypePage(name: string, p: string): string[] {
-    // Viewing types is currently not supported
+    //TODO Viewing types is currently not supported due to it being too complex for the initial release. Add in later release!
     console.log(
         "Tried viewing types for",
         name,
         "in",
         p,
-        "whcih is currently not supported."
+        "which is currently not supported."
     );
     throw error(404, "Page not found");
-    return [];
 }
 
 function renderMainPage(p: string, name: string): string[] {
@@ -285,6 +284,7 @@ export function getTypedocTopic(p: string): MenuArticle[] {
 }
 
 export function getTypedocPageMeta(p: string, name: string): ArticleMeta {
+    //Handling for incomplete type page
     if (name.startsWith("types/")) {
         return { title: name.slice(6) };
     }
