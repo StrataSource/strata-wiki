@@ -3,8 +3,10 @@ import type { Root } from "mdast";
 import { parseMarkdown } from "./markdown.server";
 
 import {
+    ParameterParser,
     ProjectParser,
     TypeParser,
+    VariableParser,
     type NamespaceParser,
 } from "typedoc-json-parser";
 import { reportLint } from "$lib/linter.server";
@@ -59,7 +61,7 @@ export function parseTypedoc(p: string, name: string): Root {
     );
 
     if (name.startsWith("types/")) {
-        out.push(...renderTypePage(name.slice(6)));
+        out.push(...renderTypePage(name.slice(6), p));
     } else {
         out.push(...renderMainPage(p, name));
     }
@@ -67,12 +69,65 @@ export function parseTypedoc(p: string, name: string): Root {
     return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
 }
 
-function renderTypePage(type: string): string[] {
-    //TODO
-    return [
-        `# Type: ${type}`,
-        "This is a placeholder until a real type page arrives.",
-    ];
+function cleanType(input: string, p: string) {
+    const project = getProject(p);
+    return input
+        .replaceAll(`${project.name}.`, "")
+        .replaceAll("typescript.", "");
+}
+
+function generateTable(
+    vars: (
+        | ParameterParser
+        | (VariableParser & {
+              rest?: never;
+              optional?: never;
+          })
+    )[],
+    p: string
+) {
+    const temp: string[] = [];
+
+    temp.push("| Name | Type | Description |");
+    temp.push("|---|---|---|");
+
+    for (const param of vars) {
+        let type = cleanType(param.type.toString().replaceAll("|", "\\|"), p);
+
+        switch (param.type.kind) {
+            case TypeParser.Kind.Intrinsic:
+                break;
+
+            /* case TypeParser.Kind.Reference:
+                type = `[${type}](./types/${type})`;
+                break; */
+
+            default:
+                type = `\`${type}\``;
+                break;
+        }
+
+        temp.push(
+            `| \`${param.rest ? "..." : ""}${param.name}\` | ${type} ${
+                param.optional ? "(optional)" : ""
+            } | ${param.comment.description || "*No description provided.*"} |`
+        );
+    }
+
+    return temp;
+}
+
+function renderTypePage(name: string, p: string): string[] {
+    // Viewing types is currently not supported
+    console.log(
+        "Tried viewing types for",
+        name,
+        "in",
+        p,
+        "whcih is currently not supported."
+    );
+    throw error(404, "Page not found");
+    return [];
 }
 
 function renderMainPage(p: string, name: string): string[] {
@@ -84,12 +139,6 @@ function renderMainPage(p: string, name: string): string[] {
 
     if (!namespace) {
         throw error(404, "Page not found");
-    }
-
-    function cleanType(input: string) {
-        return input
-            .replaceAll(`${project.name}.`, "")
-            .replaceAll("typescript.", "");
     }
 
     const out: string[] = [];
@@ -133,7 +182,7 @@ function renderMainPage(p: string, name: string): string[] {
                 params.push(
                     `${param.rest ? "..." : ""}${param.name}${
                         param.optional ? "?" : ""
-                    }: ${cleanType(param.type.toString())}`
+                    }: ${cleanType(param.type.toString(), p)}`
                 );
             }
 
@@ -177,55 +226,21 @@ function renderMainPage(p: string, name: string): string[] {
             }
 
             if (signature.parameters.length > 0) {
-                const temp: string[] = [];
-                temp.push(
+                const temp = generateTable(signature.parameters, p);
+
+                temp.unshift(
                     `> #### Parameter${
                         signature.parameters.length == 1 ? "" : "s"
                     }`
                 );
 
-                temp.push("| Name | Type | Description |");
-                temp.push("|---|---|---|");
-
-                for (const param of signature.parameters) {
-                    let type = cleanType(
-                        param.type.toString().replaceAll("|", "\\|")
-                    );
-
-                    switch (param.type.kind) {
-                        case TypeParser.Kind.Intrinsic:
-                            break;
-
-                        case TypeParser.Kind.Reference:
-                            type = `[${type}](./types/${type})`;
-                            break;
-
-                        default:
-                            type = `\`${type}\``;
-                            break;
-                    }
-
-                    temp.push(
-                        `| \`${param.rest ? "..." : ""}${
-                            param.name
-                        }\` | ${type} ${param.optional ? "(optional)" : ""} | ${
-                            param.comment.description ||
-                            "*No description provided.*"
-                        } |`
-                    );
-                }
-
                 out.push(temp.join("\n> "));
             }
 
-            if (signature.comment.see.length > 0 || fn.source) {
+            if (signature.comment.see.length > 0) {
                 const temp: string[] = [];
 
                 temp.push("> #### See also");
-
-                if (fn.source) {
-                    temp.push(`- [Definition](${fn.source?.url})`);
-                }
 
                 for (const see of signature.comment.see) {
                     temp.push("- " + see.text);
@@ -234,6 +249,14 @@ function renderMainPage(p: string, name: string): string[] {
                 out.push(temp.join("\n >"));
             }
         }
+    }
+
+    if (namespace.variables.length > 0) {
+        out.push("## Variables");
+
+        const temp = generateTable(namespace.variables, p);
+
+        out.push(temp.join("\n"));
     }
 
     return out;
