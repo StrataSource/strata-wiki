@@ -31,6 +31,7 @@ interface MenuCategory {
 interface GameMeta {
     name: string;
     features: string[];
+    color: string;
 }
 interface GameMetaCollection {
     [id: string]: GameMeta;

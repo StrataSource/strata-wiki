@@ -2,6 +2,7 @@
     import type { Blockquote, Code } from "mdast";
     import RootRenderer from "./RootRenderer.svelte";
     import Notice from "../Notice.svelte";
+    import { gameMeta } from "$lib/stores";
 
     export let dat: Blockquote;
 
@@ -17,6 +18,7 @@
         "tip",
     ];
     let type: NoticeType = "normal";
+    let game = "";
 
     function getType() {
         const firstChild = d.children[0];
@@ -34,16 +36,26 @@
 
             const typeRaw = matched[1].toLowerCase();
 
+            for (const [id, g] of Object.entries($gameMeta)) {
+                if (typeRaw.toUpperCase() === id.toUpperCase()) {
+                    type = "game";
+                    game = id;
+                }
+            }
+
             for (const t of types) {
                 if (typeRaw === t) {
                     type = t;
-                    //Remove tag from being displayed
-                    firstChild.children[0].value =
-                        firstChild.children[0].value.substring(
-                            `[!${t}]`.length
-                        );
                     break;
                 }
+            }
+
+            if (type != "normal") {
+                //Remove tag from being displayed
+                firstChild.children[0].value =
+                    firstChild.children[0].value.substring(
+                        `[!${typeRaw}]`.length
+                    );
             }
         }
     }
@@ -51,7 +63,7 @@
     getType();
 </script>
 
-<Notice {type}>
+<Notice {type} {game}>
     {#each d.children as child, i}
         <RootRenderer dat={child} {i}></RootRenderer>
     {/each}
