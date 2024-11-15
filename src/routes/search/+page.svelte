@@ -1,9 +1,11 @@
 <script lang="ts">
+    import { dev } from "$app/environment";
     import { goto } from "$app/navigation";
     import { page } from "$app/stores";
     import Container from "$lib/components/Container.svelte";
     import Icon from "$lib/components/Icon.svelte";
     import Metadata from "$lib/components/Metadata.svelte";
+    import Notice from "$lib/components/Notice.svelte";
     import { currentGame, gameMeta } from "$lib/stores";
     import {
         mdiBlockHelper,
@@ -73,6 +75,13 @@
 <Metadata title="Search{$term != '' ? ` for ${$term}` : ''}"></Metadata>
 
 <Container>
+    {#if dev}
+        <Notice type="warning" title="Dev mode active">
+            The search only indexes pages when the site is built. To update it,
+            run a build.
+        </Notice>
+    {/if}
+
     <h1>Search</h1>
 
     <input type="text" placeholder="Search..." bind:value={$term} />

@@ -40,8 +40,8 @@ export function getContentMeta(
     } else {
         reportLint(
             "caution",
-            "meta_missing",
-            `Category/Topic is missing a meta.json!`,
+            `meta_missing_${category}/${topic || ""}`,
+            `${category}${topic ? "/" + topic : ""} is missing a meta.json!`,
             `${category}/${topic || ""}`
         );
 

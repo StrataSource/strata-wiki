@@ -7,11 +7,18 @@
         mdiLightbulbOn,
     } from "@mdi/js";
     import Icon from "./Icon.svelte";
+    import { gameMeta } from "$lib/stores";
 
     export let type: NoticeType = "normal";
 
     export let icon: string | undefined = undefined;
     export let title: string | undefined = undefined;
+
+    export let game: string = "";
+
+    if (type == "game" && game == "") {
+        throw new Error("Notice type is game, but no game is specified!");
+    }
 
     const colorMap = {
         normal: undefined,
@@ -24,6 +31,10 @@
     };
 
     let color = colorMap[type] || "#333";
+
+    if (type == "game") {
+        color = $gameMeta[game].color || color;
+    }
 </script>
 
 <div class="notice" style:--c={color}>
@@ -31,6 +42,9 @@
         <div class="icon">
             {#if icon}
                 <Icon d={icon}></Icon>
+            {:else if type == "game"}
+                <!-- svelte-ignore a11y-missing-attribute -->
+                <img src="/_/icon/{game}.svg" />
             {:else if type == "note"}
                 <Icon d={mdiInformation}></Icon>
             {:else if type == "tip"}
@@ -49,6 +63,8 @@
         <div class="title">
             {#if title}
                 {title}
+            {:else if type == "game"}
+                {$gameMeta[game].name} only:
             {:else if type == "note"}
                 Note:
             {:else if type == "tip"}
@@ -91,6 +107,12 @@
         background-color: #333;
         color: var(--c);
         border-radius: 50%;
+
+        & img {
+            height: 1em;
+            display: block;
+            aspect-ratio: 1;
+        }
     }
 
     .title {

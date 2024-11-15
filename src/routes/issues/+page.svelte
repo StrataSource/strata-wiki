@@ -20,7 +20,7 @@
     {#if dev}
         <Notice type="warning" title="Dev mode active">
             This report list only updates when the site is built. To update it,
-            restart your dev server.
+            run a build.
         </Notice>
     {/if}
 
