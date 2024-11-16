@@ -15,19 +15,19 @@
 <style lang="scss">
     footer {
         background-color: #222;
-        width: 100%;
+        width: calc(100% - 4rem);
         margin-top: 1rem;
         padding: 1rem 2rem;
-    }
-
-    .sidebar {
-        width: calc(100% - 22rem);
-        margin-left: 18rem;
 
         @media (max-width: 60rem) {
             width: calc(100% - 2rem);
             margin-left: 0;
             padding: 1rem;
         }
+    }
+
+    .sidebar {
+        width: calc(100% - 22rem);
+        margin-left: 18rem;
     }
 </style>
