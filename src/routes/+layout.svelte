@@ -4,6 +4,7 @@
     import type { LayoutData } from "./$types";
     import Topbar from "./Topbar.svelte";
     import Sidebar from "./Sidebar.svelte";
+    import Footer from "./Footer.svelte";
 
     export let data: LayoutData;
 
@@ -14,7 +15,13 @@
 
 <Sidebar menu={data.menu}></Sidebar>
 
-<slot></slot>
+<div>
+    <main>
+        <slot></slot>
+    </main>
+
+    <Footer></Footer>
+</div>
 
 <style>
     :global(body) {
@@ -32,5 +39,12 @@
         --strata: #f0413c;
         --strataBright: #ef8686;
         --strataDark: #a32b2b;
+    }
+
+    div {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: calc(100vh - 4.1rem);
     }
 </style>
