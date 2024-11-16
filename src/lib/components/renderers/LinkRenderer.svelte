@@ -4,10 +4,12 @@
     import Link from "../Link.svelte";
     import Btn from "../Btn.svelte";
     import Icon from "../Icon.svelte";
-    import { mdiDownload } from "@mdi/js";
+    import { mdiDownload, mdiOpenInNew } from "@mdi/js";
     import { page } from "$app/stores";
 
     export let dat: LinkType;
+
+    let external = dat.url.includes("://");
 </script>
 
 {#if dat.url.startsWith("button:")}
@@ -26,15 +28,26 @@
             <Btn
                 href={dat.url.slice(7)}
                 title={dat.title ? dat.title : undefined}
+                target={external ? "_blank" : undefined}
             >
                 <StringRenderer dat={dat.children}></StringRenderer>
+                {#if external}
+                    <Icon d={mdiOpenInNew} inline></Icon>
+                {/if}
             </Btn>
         {/if}
     </span>
 {:else}
-    <Link href={dat.url} title={dat.title}
-        ><StringRenderer dat={dat.children}></StringRenderer></Link
+    <Link
+        href={dat.url}
+        title={dat.title}
+        target={external ? "_blank" : undefined}
     >
+        <StringRenderer dat={dat.children}></StringRenderer>
+        {#if external}
+            <Icon d={mdiOpenInNew} inline></Icon>
+        {/if}
+    </Link>
 {/if}
 
 <style>
