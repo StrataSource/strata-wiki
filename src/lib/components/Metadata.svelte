@@ -19,13 +19,13 @@
     <meta
         data-pagefind-meta="image_alt:"
         property="og:url"
-        content="https://more-than-2-less-than-4.wiki-5tv.pages.dev{$page.url
+        content="https://staging.wiki.stratasource.org/{$page.url
             .pathname}"
     />
     <!--TODO-->
     <meta
         property="og:image"
-        content="https://more-than-2-less-than-4.wiki-5tv.pages.dev{og}"
+        content="https://staging.wiki.stratasource.org/{og}"
     />
     <meta name="theme-color" content="#f0413c" />
 
@@ -35,6 +35,6 @@
     <!--TODO-->
     <meta
         name="twitter:image"
-        content="https://more-than-2-less-than-4.wiki-5tv.pages.dev{og}"
+        content="https://staging.wiki.stratasource.org/{og}"
     />
 </svelte:head>
