@@ -47,14 +47,14 @@
             </Link>
             {#if $page.params.article}
                 <Link
-                    href="https://github.com/StrataSource/Wiki/edit/more-than-2-less-than-4/docs{$page
+                    href="https://github.com/StrataSource/Wiki/edit/staging/docs{$page
                         .url.pathname}.md"
                     title="Edit"
                 >
                     <Icon d={mdiPencil} inline></Icon>
                 </Link>
                 <Link
-                    href="https://github.com/StrataSource/Wiki/commits/more-than-2-less-than-4/docs{$page
+                    href="https://github.com/StrataSource/Wiki/commits/staging/docs{$page
                         .url.pathname}.md"
                     title="History"
                 >
