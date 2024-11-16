@@ -20,8 +20,8 @@
         padding: 1rem 2rem;
 
         @media (max-width: 60rem) {
-            width: calc(100% - 2rem);
-            margin-left: 0;
+            width: calc(100% - 2rem) !important;
+            margin-left: 0 !important;
             padding: 1rem;
         }
     }
