@@ -267,6 +267,7 @@ export function getEntityPageMeta(p: string, name: string) {
         id: name,
         title: name,
         features: index[p][name].support,
+        disablePageActions: !fs.existsSync(`../docs/${p}/${name}.md`),
     };
 
     return meta;

@@ -200,7 +200,7 @@ export function getPageMeta(category: string, topic: string, article: string) {
             break;
 
         case "material":
-            return getMaterialPageMeta(article);
+            return getMaterialPageMeta(`${category}/${topic}`, article);
             break;
 
         case "entity":

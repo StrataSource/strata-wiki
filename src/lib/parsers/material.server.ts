@@ -56,8 +56,15 @@ export function parseMaterial(p: string, name: string) {
         for (const param of mat.params) {
             temp +=
                 "> ```c\n" +
-                `> ${param.name} <${param.type}>${
-                    param.default ? " = " + param.default : ""
+                `> ${param.name.toLowerCase()} <${param.type}>${
+                    param.default
+                        ? " = " +
+                          (["texture", "material", "string"].includes(
+                              param.type
+                          )
+                              ? `"${param.default}"`
+                              : param.default)
+                        : ""
                 }\n` +
                 "> ```\n" +
                 `> \n` +
@@ -82,6 +89,10 @@ export function getMaterialTopic(p: string) {
     return res;
 }
 
-export function getMaterialPageMeta(name: string): ArticleMeta {
-    return { id: name, title: name };
+export function getMaterialPageMeta(p: string, name: string): ArticleMeta {
+    return {
+        id: name,
+        title: name,
+        disablePageActions: !fs.existsSync(`../docs/${p}/${name}.md`),
+    };
 }

@@ -6,6 +6,10 @@ interface ArticleMeta {
     deprecated?: boolean;
     experimental?: boolean;
     features?: string[];
+    /**
+     * Disables page actions like editing or history.
+     */
+    disablePageActions?: boolean;
 }
 
 type NoticeType =

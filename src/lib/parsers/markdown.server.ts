@@ -65,7 +65,7 @@ export function getMarkdownPageMeta(
         metaRaw = parsed.children[0].value;
     }
 
-    let meta = <ArticleMeta>yaml.load(metaRaw);
+    const meta = <ArticleMeta>yaml.load(metaRaw);
 
     return meta;
 }
