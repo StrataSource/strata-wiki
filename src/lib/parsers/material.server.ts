@@ -4,6 +4,7 @@ import { parseMarkdown } from "./markdown.server";
 
 interface Material {
     name: string;
+    fallbacks: string[];
     params: MaterialParam[];
 }
 interface MaterialParam {
@@ -24,11 +25,11 @@ function parseJSON(p: string) {
 
     console.log("Cache miss, regenerating...", p);
 
-    const parsed: { shaders: Material[] } = JSON.parse(raw);
+    const parsed: Material[] = JSON.parse(raw);
 
-    cache[p] = { content: parsed.shaders, original: raw };
+    cache[p] = { content: parsed, original: raw };
 
-    return parsed.shaders;
+    return parsed;
 }
 
 export function parseMaterial(p: string, name: string) {
@@ -39,7 +40,11 @@ export function parseMaterial(p: string, name: string) {
             continue;
         }
 
-        let temp = `---\n---\n\n` + `# ${mat.name}\n\n`;
+        let temp = `# ${mat.name}\n\n`;
+
+        if (mat.fallbacks.length > 0) {
+            temp += `Aliases: \`${mat.fallbacks.join("`, `")}\`\n\n`;
+        }
 
         if (fs.existsSync(`../docs/${p}/${name}.md`)) {
             temp +=
