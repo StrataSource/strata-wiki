@@ -1,9 +1,10 @@
 <script lang="ts">
     export let href: string;
     export let title: string | null | undefined = undefined;
+    export let target: "_blank" | undefined = undefined
 </script>
 
-<a {href} {title}>
+<a {href} {title} {target}>
     <slot></slot>
 </a>
 

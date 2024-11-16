@@ -4,6 +4,7 @@
     export let href: string = "";
     export let title: string | undefined = undefined;
     export let download = false;
+    export let target: "_blank" | undefined = undefined
 
     const dispatch = createEventDispatcher();
 </script>
@@ -16,6 +17,7 @@
     <a
         {href}
         {title}
+        {target}
         download={download ? href.split("/").at(-1) : undefined}
         on:click={(e) => dispatch("click", e)}
     >
