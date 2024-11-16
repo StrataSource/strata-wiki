@@ -1,9 +1,11 @@
 import { persisted } from "svelte-persisted-store";
 import { writable, type Writable } from "svelte/store";
 
-export let currentGame = persisted("game", "");
-export let consent = persisted("consent", { youtube: false });
+export const currentGame = persisted("game", "");
+export const consent = persisted("consent", { youtube: false });
 
-export let gameMeta: Writable<GameMetaCollection> = writable({});
+export const gameMeta: Writable<GameMetaCollection> = writable({});
 
 export const openMenu = writable(false);
+
+export const currentArticle: Writable<ArticleMeta | undefined> = writable();

@@ -11,7 +11,7 @@
     } from "@mdi/js";
     import { page } from "$app/stores";
     import { writable } from "svelte/store";
-    import { openMenu } from "$lib/stores";
+    import { currentArticle, openMenu } from "$lib/stores";
 </script>
 
 <nav>
@@ -24,7 +24,7 @@
     <div class="actions">
         <span class="icons">
             <div class="desktop">
-                {#if $page.params.article}
+                {#if $page.params.article && $currentArticle && !$currentArticle.disablePageActions}
                     <Link
                         href="https://github.com/StrataSource/Wiki/edit/staging/docs{$page
                             .url.pathname}.md"

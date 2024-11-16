@@ -299,5 +299,6 @@ export function getTypedocPageMeta(p: string, name: string): ArticleMeta {
             namespace.source?.path == sharedName || !namespace.source?.path
                 ? []
                 : [namespace.source.path.toUpperCase()],
+        disablePageActions: true,
     };
 }

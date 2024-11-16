@@ -1,15 +1,21 @@
 <script lang="ts">
+    import { afterNavigate, beforeNavigate } from "$app/navigation";
     import Metadata from "$lib/components/Metadata.svelte";
     import DeprecationNotice from "$lib/components/notices/DeprecationNotice.svelte";
     import ExperimentalNotice from "$lib/components/notices/ExperimentalNotice.svelte";
     import NoSupportNotice from "$lib/components/notices/NoSupportNotice.svelte";
     import SupportUnknownNotice from "$lib/components/notices/SupportUnknownNotice.svelte";
     import RootRenderer from "$lib/components/renderers/RootRenderer.svelte";
-    import { currentGame } from "$lib/stores";
+    import { currentArticle, currentGame } from "$lib/stores";
     import { getGamesWithSupport } from "$lib/supportChecker";
+    import { onMount } from "svelte";
     import type { PageData } from "./$types";
 
     export let data: PageData;
+
+    afterNavigate(() => {
+        $currentArticle = data.meta;
+    });
 </script>
 
 <Metadata title={data.meta?.title || ""}></Metadata>
