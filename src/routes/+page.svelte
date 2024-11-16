@@ -32,14 +32,22 @@
           }
         | { title: string; seperation: true }
     )[] = [
-        { seperation: true, title: "Getting started" },
+        /* { seperation: true, title: "Getting started" },
         {
             id: "todo",
             title: "Mapping",
             description: "Creating content in Strata Source",
             icon: mdiGridLarge,
             seperation: false,
-        },
+        }, */
+        { seperation: true, title: "Reference" },
+        /* {
+            id: "todo",
+            title: "Sound Operators",
+            description: "List of sound operators",
+            icon: mdiVolumeHigh,
+            seperation: false,
+        }, */
         {
             id: "modding/overview",
             title: "Modding",
@@ -47,19 +55,18 @@
             icon: mdiLayers,
             seperation: false,
         },
-        { seperation: true, title: "Reference" },
-        {
-            id: "todo",
-            title: "Sound Operators",
-            description: "List of sound operators",
-            icon: mdiVolumeHigh,
-            seperation: false,
-        },
         {
             id: "entities/reference",
             title: "Entities",
             description: "Engine Entity Reference",
             icon: mdiSphere,
+            seperation: false,
+        },
+        {
+            id: "material/reference",
+            title: "Materials",
+            description: "Material Reference",
+            icon: mdiCubeOutline,
             seperation: false,
         },
         { seperation: true, title: "Scripting" },
@@ -83,7 +90,7 @@
             description: "In-Game UI Framework",
             icon: mdiViewDashboard,
             seperation: false,
-        },
+        },/* 
         {
             id: "todo",
             title: "Game Events",
@@ -92,13 +99,6 @@
             seperation: false,
         },
         { seperation: true, title: "Assets" },
-        {
-            id: "material",
-            title: "Materials",
-            description: "Material Reference",
-            icon: mdiCubeOutline,
-            seperation: false,
-        },
         {
             id: "todo",
             title: "Material Proxies",
@@ -119,7 +119,7 @@
             description: "Compiling and QC files",
             icon: mdiFileDocument,
             seperation: false,
-        },
+        }, */
         { seperation: true, title: "Contributing" },
         {
             id: "contribute/basics/getting-started",
@@ -239,6 +239,7 @@
 
             &.fade {
                 opacity: 0.5;
+                display: none;
             }
         }
     }
