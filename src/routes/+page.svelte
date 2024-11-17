@@ -6,18 +6,13 @@
     import {
         mdiAccountGroup,
         mdiAlphaVBox,
-        mdiAnimation,
         mdiCubeOutline,
-        mdiCubeScan,
-        mdiFileDocument,
-        mdiGridLarge,
         mdiLayers,
         mdiNetwork,
         mdiScript,
         mdiSphere,
         mdiTestTube,
         mdiViewDashboard,
-        mdiVolumeHigh,
     } from "@mdi/js";
     import Icon from "$lib/components/Icon.svelte";
     import Metadata from "$lib/components/Metadata.svelte";
@@ -90,7 +85,7 @@
             description: "In-Game UI Framework",
             icon: mdiViewDashboard,
             seperation: false,
-        },/* 
+        } /* 
         {
             id: "todo",
             title: "Game Events",
@@ -119,7 +114,7 @@
             description: "Compiling and QC files",
             icon: mdiFileDocument,
             seperation: false,
-        }, */
+        }, */,
         { seperation: true, title: "Contributing" },
         {
             id: "contribute/basics/getting-started",

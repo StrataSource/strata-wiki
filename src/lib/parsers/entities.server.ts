@@ -79,7 +79,7 @@ export function parseEntity(p: string, name: string) {
     indexEntities(p);
 
     if (!index[p][name]) {
-        throw error(404);
+        error(404, "Page not found");
     }
 
     const entity = index[p][name].entity;

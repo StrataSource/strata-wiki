@@ -126,7 +126,7 @@ function renderTypePage(name: string, p: string): string[] {
         p,
         "which is currently not supported."
     );
-    throw error(404, "Page not found");
+    error(404, "Page not found");
 }
 
 function renderMainPage(p: string, name: string): string[] {
@@ -137,7 +137,7 @@ function renderMainPage(p: string, name: string): string[] {
     const namespace = namespaces[name];
 
     if (!namespace) {
-        throw error(404, "Page not found");
+        error(404, "Page not found");
     }
 
     const out: string[] = [];

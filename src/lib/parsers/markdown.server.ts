@@ -29,7 +29,7 @@ export function parseMarkdown(doc: string, id?: string) {
 
 export function getMarkdownTopic(category: string, topic: string) {
     if (!fs.existsSync(`../docs/${category}/${topic}`)) {
-        throw error(404);
+        error(404, "Page not found");
     }
 
     const articles = fs.readdirSync(`../docs/${category}/${topic}`);

@@ -84,7 +84,7 @@ export function getContent(category: string, topic: string, page: string) {
     switch (getContentMeta(category, topic).type) {
         case "markdown":
             if (!fs.existsSync(`../docs/${category}/${topic}/${page}.md`)) {
-                throw error(404, "Page not found");
+                error(404, "Page not found");
             }
 
             c = parseMarkdown(
@@ -109,7 +109,7 @@ export function getContent(category: string, topic: string, page: string) {
             break;
 
         default:
-            throw error(500, "Invalid content type");
+            error(500, "Invalid content type");
             break;
     }
 
@@ -135,7 +135,7 @@ function sortByWeight(
 
 export function getMenu(category: string) {
     if (!fs.existsSync(`../docs/${category}`)) {
-        throw error(404);
+        error(404);
     }
 
     const topics = fs.readdirSync(`../docs/${category}`);

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Something went wrong - Strata Source Wiki</title>
+
+        <style>
+            body {
+                background-color: #111;
+                color: white;
+                font-family: sans-serif;
+                margin: 0;
+            }
+
+            .wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                min-height: 100vh;
+
+                max-width: 20rem;
+                margin: auto;
+            }
+
+            .status {
+                font-size: 2rem;
+                line-height: 1;
+                font-family: monospace;
+            }
+            .message {
+                font-size: 1.5rem;
+            }
+
+            .actions {
+                display: flex;
+                justify-content: center;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
+            a {
+                display: inline-block;
+                text-decoration: none;
+                padding: 0.5rem 1rem;
+                background-color: #f0413c;
+                color: white;
+                border: none;
+                font-size: 1em;
+                outline: none;
+                cursor: pointer;
+                border-radius: 0.25rem;
+                transition: 250ms;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrapper">
+            <div>
+                <div class="status">%sveltekit.status%</div>
+                <div class="message">%sveltekit.error.message%</div>
+
+                <p>
+                    You're seeing this page because the wiki has encountered a
+                    critical failure and is unable to serve content normally.
+                </p>
+                <p>
+                    Please try to repeat your last action and if you keep seeing
+                    this page, report the issue to us using the button below.
+                </p>
+
+                <div class="actions">
+                    <a href="/">Return home</a>
+
+                    <a
+                        href="https://github.com/StrataSource/Wiki/issues/new"
+                        target="_blank"
+                        id="report"
+                        >Report issue</a
+                    >
+
+                    <script>
+                        const btn = document.getElementById("report");
+
+                        let report = [
+                            "<!-- Describe what you did to get to the error page here -->",
+                            "",
+                            "",
+                            "<!-- DO NOT DELETE THE SECTION BELOW! It contains important report data that might help us clear out this issue. -->",
+                            "#### Error information",
+                            "Code: `%sveltekit.status%`",
+                            "Message: `%sveltekit.error.message%`",
+                            "",
+                            "URL: " + location.toString(),
+                            "Browser: " + navigator.userAgent,
+                        ];
+
+                        btn.href += `?body=${encodeURIComponent(
+                            report.join("\n")
+                        )}`;
+                    </script>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
