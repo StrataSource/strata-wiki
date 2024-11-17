@@ -74,7 +74,7 @@ export function parseMaterial(p: string, name: string) {
         return parseMarkdown(temp, `${p}/${name}`);
     }
 
-    throw error(404);
+    error(404, "Page not found");
 }
 
 export function getMaterialTopic(p: string) {

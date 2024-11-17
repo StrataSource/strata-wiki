@@ -6,7 +6,7 @@ export const prerender = true;
 
 export const GET: RequestHandler = async ({ params }) => {
     if (!fs.existsSync(`../docs/${params.p}`)) {
-        throw error(404);
+        error(404, "Page not found");
     }
     const original = fs.readFileSync(`../docs/${params.p}`);
 
