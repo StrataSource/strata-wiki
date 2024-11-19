@@ -16,7 +16,7 @@
     footer {
         background-color: #222;
         width: calc(100% - 4rem);
-        margin-top: 1rem;
+        margin-top: 2rem;
         padding: 1rem 2rem;
 
         @media (max-width: 60rem) {
