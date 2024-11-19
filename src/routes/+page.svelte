@@ -8,7 +8,6 @@
         mdiAlphaVBox,
         mdiCubeOutline,
         mdiLayers,
-        mdiNetwork,
         mdiScript,
         mdiSphere,
         mdiTestTube,

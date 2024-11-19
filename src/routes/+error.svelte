@@ -1,7 +1,6 @@
 <script>
     import { page } from "$app/stores";
     import Btn from "$lib/components/Btn.svelte";
-    import Container from "$lib/components/Container.svelte";
 </script>
 
 <div class="wrapper">
