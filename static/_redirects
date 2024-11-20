@@ -1,0 +1,27 @@
+/shared/* /_legacy/:splat 301
+/p2ce/* /_legacy/:splat 301
+/momentum/* /_legacy/:splat 301
+
+/shared / 301
+/p2ce / 301
+/momentum / 301
+
+/_legacy/reference/general* /modding/overview:splat 301
+
+/_legacy/reference/PBR/* /material/pbr/:splat 301
+/_legacy/reference/PBR /material/pbr/overview 301
+
+/_legacy/reference/util* /modding/util:splat 301
+
+/_legacy/vscript/overview /vscript 301
+/_legacy/vscript/* /vscript/:splat 301
+
+/_legacy/angelscript/overview /angelscript 301
+/_legacy/angelscript/* /angelscript/:splat 301
+
+/_legacy/panorama/overview/* /panorama/overview/:splat 301
+/_legacy/panorama/overview /panorama/overview/getting-started 301
+
+/_legacy/panorama/controls* /panorama/controls:splat 301
+
+/_legacy/* /:splat 301

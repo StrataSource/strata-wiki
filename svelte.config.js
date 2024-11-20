@@ -14,7 +14,6 @@ const config = {
         adapter: adapter({
             assets: "build",
             pages: "build",
-            fallback: "404.html",
             strict: true,
         }),
     },

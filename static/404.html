@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Page not found - Strata Source Wiki</title>
+
+        <style>
+            body {
+                background-color: #111;
+                color: white;
+                font-family: sans-serif;
+                margin: 0;
+            }
+
+            .wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                min-height: 100vh;
+
+                max-width: 20rem;
+                margin: auto;
+            }
+
+            .status {
+                font-size: 2rem;
+                line-height: 1;
+                font-family: monospace;
+            }
+            .message {
+                font-size: 1.5rem;
+            }
+
+            .actions {
+                display: flex;
+                justify-content: center;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
+            .actions a {
+                display: inline-block;
+                text-decoration: none;
+                padding: 0.5rem 1rem;
+                background-color: #f0413c;
+                color: white;
+                border: none;
+                font-size: 1em;
+                outline: none;
+                cursor: pointer;
+                border-radius: 0.25rem;
+                transition: 250ms;
+            }
+
+            a {
+                color: #f0413c;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrapper">
+            <div>
+                <div class="status">404</div>
+                <div class="message">Page not found</div>
+
+                <p>
+                    Looks like you've stumbled upon a page that doesn't exist
+                    anymore or never existed.
+                </p>
+                <p>
+                    If you got here through an internal link, please
+                    <a
+                        href="https://github.com/StrataSource/Wiki/issues/new"
+                        target="_blank"
+                        id="report"
+                    >
+                        report this issue to us.
+                    </a>
+                </p>
+
+                <div class="actions">
+                    <a href="/">Return home</a>
+
+                    <a href="/search" id="search">Search page name</a>
+
+                    <script>
+                        const searchBtn = document.getElementById("search");
+
+                        searchBtn.href += `?q=${encodeURIComponent(
+                            window.location.pathname
+                                .replaceAll("/", " ")
+                                .replaceAll("-", " ")
+                                .trim()
+                        )}`;
+
+                        const reportBtn = document.getElementById("report");
+
+                        let report = [
+                            "<!-- Describe what you did to get to the error page here -->",
+                            "",
+                            "",
+                            "<!-- DO NOT DELETE THE SECTION BELOW! It contains important report data that might help us clear out this issue. -->",
+                            "#### Error information",
+                            "Code: `%sveltekit.status%`",
+                            "Message: `%sveltekit.error.message%`",
+                            "",
+                            "URL: " + location.toString(),
+                            "Browser: " + navigator.userAgent,
+                        ];
+
+                        reportBtn.href += `?body=${encodeURIComponent(
+                            report.join("\n")
+                        )}`;
+                    </script>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
