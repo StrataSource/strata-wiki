@@ -24,6 +24,10 @@
 </div>
 
 <style>
+    :global(html) {
+        overscroll-behavior: none;
+    }
+
     :global(body) {
         background: #111;
         color: #fff;
