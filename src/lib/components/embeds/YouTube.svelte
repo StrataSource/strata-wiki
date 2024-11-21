@@ -37,7 +37,9 @@
             <strong>YouTube content</strong>
             <br />
             <div>To show you this content, we need to connect to YouTube.</div>
-            <div>You can change this at any time in your privacy settings.</div>
+            <div>
+                You can revoke this at any time by clearing this sites data.
+            </div>
             <br />
             <Btn on:click={enable}>Enable YouTube content</Btn>
         </div>
