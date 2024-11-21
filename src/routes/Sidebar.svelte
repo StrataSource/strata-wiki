@@ -3,7 +3,7 @@
     import GameSelector from "$lib/components/GameSelector.svelte";
     import Icon from "$lib/components/Icon.svelte";
     import Link from "$lib/components/Link.svelte";
-    import { currentGame, gameMeta, openMenu } from "$lib/stores";
+    import { currentArticle, currentGame, gameMeta, openMenu } from "$lib/stores";
     import { getGamesWithSupport } from "$lib/supportChecker";
     import {
         mdiBlockHelper,
@@ -45,7 +45,7 @@
             <Link href="/" title="Home">
                 <Icon d={mdiHome} inline></Icon>
             </Link>
-            {#if $page.params.article}
+            {#if $page.params.article && $currentArticle && !$currentArticle.disablePageActions}
                 <Link
                     href="https://github.com/StrataSource/Wiki/edit/staging/docs{$page
                         .url.pathname}.md"
