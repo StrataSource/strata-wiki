@@ -55,11 +55,6 @@ function getNamespaces(p: string) {
 export function parseTypedoc(p: string, name: string): Root {
     const out: string[] = [];
 
-    out.push(
-        `> [!NOTE]\n` +
-            `Typedoc browsing is in early access and will probably change in the future. If you got feedback, ping max in it.`
-    );
-
     if (name.startsWith("types/")) {
         out.push(...renderTypePage(name.slice(6), p));
     } else {
