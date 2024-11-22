@@ -3,7 +3,12 @@
     import GameSelector from "$lib/components/GameSelector.svelte";
     import Icon from "$lib/components/Icon.svelte";
     import Link from "$lib/components/Link.svelte";
-    import { currentArticle, currentGame, gameMeta, openMenu } from "$lib/stores";
+    import {
+        currentArticle,
+        currentGame,
+        gameMeta,
+        openMenu,
+    } from "$lib/stores";
     import { getGamesWithSupport } from "$lib/supportChecker";
     import {
         mdiBlockHelper,
@@ -230,6 +235,8 @@
     }
 
     summary {
+        cursor: pointer;
+
         &.active {
             font-weight: bold;
         }
