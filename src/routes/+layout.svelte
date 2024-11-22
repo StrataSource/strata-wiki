@@ -6,10 +6,18 @@
     import Sidebar from "./Sidebar.svelte";
     import Footer from "./Footer.svelte";
 
+    import faviconSvg from "$lib/assets/favicon.svg";
+    import faviconPng from "$lib/assets/favicon.png";
+
     export let data: LayoutData;
 
     $gameMeta = data.games;
 </script>
+
+<svelte:head>
+    <link rel="icon" type="image/svg+xml" href={faviconSvg} />
+    <link rel="icon" type="image/png" href={faviconPng} />
+</svelte:head>
 
 <Topbar></Topbar>
 
