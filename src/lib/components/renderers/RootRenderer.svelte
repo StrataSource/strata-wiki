@@ -44,8 +44,4 @@
     :global(.root:last-child *) {
         margin-bottom: 0;
     }
-
-    p {
-        text-align: justify;
-    }
 </style>
