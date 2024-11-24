@@ -5,6 +5,7 @@
     import "highlight.js/styles/felipec.min.css";
     import Icon from "../Icon.svelte";
     import { mdiCheck, mdiContentCopy } from "@mdi/js";
+    import "@fontsource/source-code-pro";
 
     export let dat: Code;
 
@@ -169,6 +170,7 @@
         padding: 1rem;
         overflow-x: auto;
         white-space: pre;
+        font-family: "Source Code Pro", monospace;
     }
 
     .actions {

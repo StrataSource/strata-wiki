@@ -32,6 +32,7 @@
     "type": "module",
     "dependencies": {
         "@fontsource/lexend-deca": "^5.0.13",
+        "@fontsource/source-code-pro": "^5.1.0",
         "@mdi/js": "^7.4.47",
         "@sveltejs/adapter-static": "^3.0.2",
         "highlight.js": "^11.10.0",

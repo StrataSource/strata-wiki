@@ -1,9 +1,9 @@
 <script lang="ts">
-    import Link from "../Link.svelte";
     import ImageRenderer from "./ImageRenderer.svelte";
     import LinkRenderer from "./LinkRenderer.svelte";
     import StringRenderer from "./StringRenderer.svelte";
     import type { PhrasingContent } from "mdast";
+    import "@fontsource/source-code-pro";
 
     export let dat: PhrasingContent[];
 
@@ -45,5 +45,6 @@
         font-size: 1em;
         background-color: #333;
         padding: 0 0.1rem;
+        font-family: "Source Code Pro", monospace;
     }
 </style>
