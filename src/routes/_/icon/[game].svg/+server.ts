@@ -10,7 +10,7 @@ export const GET: RequestHandler = async ({ params }) => {
             "caution",
             `icon_missing_${params.game}`,
             `${params.game} is missing an icon!`,
-            `_/icon/${params.game}/icon.svg`
+            `_/icon/${params.game}.svg`
         );
         flushLint();
         return new Response(fs.readFileSync(`./src/lib/assets/fallback.svg`));
