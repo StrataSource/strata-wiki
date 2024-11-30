@@ -11,6 +11,10 @@
 
     onMount(async () => {
         lint = await (await fetch("/report.json")).json();
+
+        for (const [id, issue] of Object.entries(lint.issues)) {
+            issue.links = [...new Set(issue.links)];
+        }
     });
 </script>
 
