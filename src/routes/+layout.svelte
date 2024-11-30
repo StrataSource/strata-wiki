@@ -34,6 +34,7 @@
 <style>
     :global(html) {
         overscroll-behavior: none;
+        scroll-padding-top: 6rem;
     }
 
     :global(body) {
