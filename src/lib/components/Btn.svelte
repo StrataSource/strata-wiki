@@ -4,7 +4,7 @@
     export let href: string = "";
     export let title: string | undefined = undefined;
     export let download = false;
-    export let target: "_blank" | undefined = undefined
+    export let target: "_blank" | undefined = undefined;
 
     const dispatch = createEventDispatcher();
 </script>
