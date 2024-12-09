@@ -5,6 +5,7 @@ import { parseMarkdown } from "./markdown.server";
 import {
     ParameterParser,
     ProjectParser,
+    TypeAliasParser,
     TypeParser,
     VariableParser,
     type NamespaceParser,
@@ -18,6 +19,7 @@ const sharedName = "shared";
 
 const cache: { [p: string]: ProjectParser } = {};
 const namespaceCache: { [p: string]: { [fn: string]: NamespaceParser } } = {};
+const typeCache: { [p: string]: { [fn: string]: TypeAliasParser } } = {};
 
 function getProject(p: string) {
     if (cache[p]) {
@@ -52,11 +54,25 @@ function getNamespaces(p: string) {
     return namespaceCache[p];
 }
 
+function getTypes(p: string) {
+    const project = getProject(p);
+
+    if (!typeCache[p]) {
+        typeCache[p] = {};
+    }
+
+    for (const type of project.typeAliases) {
+        typeCache[p][type.name] = type;
+    }
+
+    return typeCache[p];
+}
+
 export function parseTypedoc(p: string, name: string): Root {
     const out: string[] = [];
 
-    if (name.startsWith("types/")) {
-        out.push(...renderTypePage(name.slice(6), p));
+    if (name.startsWith("type/")) {
+        out.push(...renderTypePage(name.slice(5), p));
     } else {
         out.push(...renderMainPage(p, name));
     }
@@ -81,6 +97,8 @@ function generateTable(
     )[],
     p: string
 ) {
+    const types = getTypes(p);
+
     const temp: string[] = [];
 
     temp.push("| Name | Type | Description |");
@@ -93,9 +111,13 @@ function generateTable(
             case TypeParser.Kind.Intrinsic:
                 break;
 
-            /* case TypeParser.Kind.Reference:
-                type = `[${type}](./types/${type})`;
-                break; */
+            case TypeParser.Kind.Reference:
+                if (types[type]) {
+                    type = `[${type}](./type/${type})`;
+                } else {
+                    type = `\`${type}\``;
+                }
+                break;
 
             default:
                 type = `\`${type}\``;
@@ -114,14 +136,34 @@ function generateTable(
 
 function renderTypePage(name: string, p: string): string[] {
     //TODO Viewing types is currently not supported due to it being too complex for the initial release. Add in later release!
-    console.log(
-        "Tried viewing types for",
-        name,
-        "in",
-        p,
-        "which is currently not supported."
+
+    const types = getTypes(p);
+
+    const type = types[name];
+
+    if (!type) {
+        error(404, "Page not found");
+    }
+
+    const out = [];
+
+    out.push(`# Type: ${type.name}`);
+
+    if (type.source?.url) {
+        out.push(`[View Source](${type.source.url})`);
+    }
+
+    out.push(
+        [
+            "```ts",
+            `${type.name} = ${cleanType(type.type.toString(), p)}`,
+            "```",
+        ].join("\n")
     );
-    error(404, "Page not found");
+
+    out.push(type.comment.description || "*No description provided.*");
+
+    return out;
 }
 
 function renderMainPage(p: string, name: string): string[] {
@@ -261,6 +303,9 @@ export function getTypedocTopic(p: string): MenuArticle[] {
 
     const namespaces = getNamespaces(p);
 
+    //TODO: Add type overview page
+    //out.push({ id: "type", meta: { title: "Types", weight: -100 } });
+
     for (const [id, namespace] of Object.entries(namespaces)) {
         out.push({
             id: id,
@@ -280,8 +325,8 @@ export function getTypedocTopic(p: string): MenuArticle[] {
 
 export function getTypedocPageMeta(p: string, name: string): ArticleMeta {
     //Handling for incomplete type page
-    if (name.startsWith("types/")) {
-        return { title: name.slice(6) };
+    if (name.startsWith("type/")) {
+        return { title: "Type: " + name.slice(5), disablePageActions: true };
     }
 
     const namespaces = getNamespaces(p);
