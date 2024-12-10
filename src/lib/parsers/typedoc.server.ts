@@ -96,10 +96,12 @@ function getInterfaces(p: string) {
 export function parseTypedoc(p: string, name: string): Root {
     const out: string[] = [];
 
-    if (name.startsWith("type/")) {
-        out.push(...renderTypePage(name.slice(5), p));
-    } else if (name.startsWith("interface/")) {
+    if (name.startsWith("interface/")) {
         out.push(...renderInterfacePage(name.slice(10), p));
+    } else if (name == "type") {
+        out.push(...renderTypeOverviewPage(p));
+    } else if (name == "interface") {
+        out.push(...renderInterfaceOverviewPage(p));
     } else {
         out.push(...renderMainPage(p, name));
     }
@@ -141,7 +143,7 @@ function generateTable(
 
             case TypeParser.Kind.Reference:
                 if (types[type]) {
-                    type = `[${type}](/${p}/type/${type})`;
+                    type = `[${type}](/${p}/type#${urlifyString(type)})`;
                 } else if (interfaces[type]) {
                     type = `[${type}](/${p}/interface/${type})`;
                 } else {
@@ -295,67 +297,100 @@ function renderInterfacePage(name: string, p: string): string[] {
     return out;
 }
 
-function renderTypePage(name: string, p: string): string[] {
-    //TODO Viewing types is currently not supported due to it being too complex for the initial release. Add in later release!
+function renderInterfaceOverviewPage(p: string): string[] {
+    const out: string[] = [];
 
+    const project = getProject(p);
+
+    out.push("# Interface Overview");
+
+    for (const interf of project.interfaces) {
+        out.push(`## ${interf.name}`);
+
+        const temp: string[] = [];
+
+        if (interf.properties.length > 0) {
+            temp.push(
+                `[${interf.properties.length} ${
+                    interf.properties.length == 1 ? "property" : "properties"
+                }](./interface/${interf.name}#properties)`
+            );
+        }
+
+        if (interf.methods.length > 0) {
+            temp.push(
+                `[${interf.methods.length} function${
+                    interf.methods.length == 1 ? "" : "s"
+                }](./interface/${interf.name}#functions)`
+            );
+        }
+
+        out.push(temp.join(" - "));
+
+        out.push(interf.comment.description || "*No description provided.*");
+
+        out.push(`[Read more](button:./interface/${interf.name})`);
+    }
+
+    return out;
+}
+
+function renderTypeOverviewPage(p: string): string[] {
+    const out: string[] = [];
+
+    const project = getProject(p);
     const types = getTypes(p);
     const interfaces = getInterfaces(p);
 
-    const type = types[name];
+    out.push("# Type Overview");
 
-    if (!type) {
-        error(404, "Page not found");
-    }
+    for (const type of project.typeAliases) {
+        out.push(`## ${type.name}`);
 
-    const out = [];
+        out.push(type.comment.description || "*No description provided.*");
 
-    out.push(`# Type: ${type.name}`);
-
-    if (type.source?.url) {
-        out.push(`[View Source](${type.source.url})`);
-    }
-
-    out.push(type.comment.description || "*No description provided.*");
-
-    out.push(
-        [
-            "```ts",
-            type.name + " = " + cleanType(type.type.toString(), p),
-            "```",
-        ].join("\n")
-    );
-
-    // This is cursed, but it works stupidly well so I'm not changing it
-    const typeSegmentsRaw = [
-        ...new Set(
-            cleanType(type.type.toString(), p)
-                .replace(/[^\w\s]/gi, " ")
-                .split(" ")
-        ),
-    ];
-
-    const typeSegments: { name: string; link: string }[] = [];
-
-    for (const segment of typeSegmentsRaw) {
-        if (types[segment]) {
-            typeSegments.push({ name: segment, link: `/${p}/type/${segment}` });
-        }
-        if (interfaces[segment]) {
-            typeSegments.push({
-                name: segment,
-                link: `/${p}/interface/${segment}`,
-            });
-        }
-    }
-
-    console.log(typeSegmentsRaw, typeSegments);
-
-    if (typeSegments.length > 0) {
-        out.push("## See also");
         out.push(
-            "- " +
-                typeSegments.map((v) => `[${v.name}](${v.link})`).join("\n- ")
+            [
+                "```ts",
+                type.name + " = " + cleanType(type.type.toString(), p),
+                "```",
+            ].join("\n")
         );
+
+        // This is cursed, but it works stupidly well so I'm not changing it
+        const typeSegmentsRaw = [
+            ...new Set(
+                cleanType(type.type.toString(), p)
+                    .replace(/[^\w\s]/gi, " ")
+                    .split(" ")
+            ),
+        ];
+
+        const typeSegments: { name: string; link: string }[] = [];
+
+        for (const segment of typeSegmentsRaw) {
+            if (types[segment]) {
+                typeSegments.push({
+                    name: segment,
+                    link: `#${urlifyString(segment)}`,
+                });
+            }
+            if (interfaces[segment]) {
+                typeSegments.push({
+                    name: segment,
+                    link: `/${p}/interface/${segment}`,
+                });
+            }
+        }
+
+        if (typeSegments.length > 0) {
+            out.push(
+                "See also: " +
+                    typeSegments
+                        .map((v) => `[${v.name}](${v.link})`)
+                        .join(" - ")
+            );
+        }
     }
 
     return out;
@@ -412,8 +447,8 @@ export function getTypedocTopic(p: string): MenuArticle[] {
 
     const namespaces = getNamespaces(p);
 
-    //TODO: Add type overview page
-    //out.push({ id: "type", meta: { title: "Types", weight: -100 } });
+    out.push({ id: "type", meta: { title: "Types", weight: -100 } });
+    out.push({ id: "interface", meta: { title: "Interfaces", weight: -100 } });
 
     for (const [id, namespace] of Object.entries(namespaces)) {
         out.push({
@@ -440,6 +475,15 @@ export function getTypedocPageMeta(p: string, name: string): ArticleMeta {
     if (name.startsWith("interface/")) {
         return {
             title: "Interface: " + name.slice(10),
+            disablePageActions: true,
+        };
+    }
+    if (name == "type") {
+        return { title: "Type Overview", disablePageActions: true };
+    }
+    if (name == "interface") {
+        return {
+            title: "Interface Overview",
             disablePageActions: true,
         };
     }
