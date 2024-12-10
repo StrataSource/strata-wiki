@@ -75,10 +75,10 @@ export function parseVscript(p: string, name: string) {
         }
 
         if (c.methods.length > 0 && c.class != scriptClass.class) {
-            out.push(`### Inherited from [${c.class}](./${c.class})`);
+            out.push(`## Inherited from [${c.class}](./${c.class})`);
         }
         for (const method of c.methods) {
-            out.push(`#### ${method.method.replace(extension + "::", "")}`);
+            out.push(`### ${method.method.replace(extension + "::", "")}`);
             out.push(method.doc || "*No description provided*");
             out.push(["```c", method.signature, "```"].join("\n"));
         }
