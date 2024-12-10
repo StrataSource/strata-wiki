@@ -26,10 +26,10 @@
         "Come on Gordon, crank that thing!",
         "Lost to the archives...",
         "Secret Macaron Hack",
-        "The sun is leaking",
         "Half-Life 2 confirmed!",
         "Portal 2: Combat Evolved",
         "If found, please return to Strata Team",
+        "sleep(30);"
     ];
 
     for (let i = messages.length - 1; i >= 0; i--) {
