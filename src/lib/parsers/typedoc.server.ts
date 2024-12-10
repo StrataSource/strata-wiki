@@ -325,11 +325,11 @@ function renderInterfaceOverviewPage(p: string): string[] {
             );
         }
 
+        temp.push(`[Read more](./interface/${interf.name})`);
+
         out.push(temp.join(" - "));
 
         out.push(interf.comment.description || "*No description provided.*");
-
-        out.push(`[Read more](button:./interface/${interf.name})`);
     }
 
     return out;
