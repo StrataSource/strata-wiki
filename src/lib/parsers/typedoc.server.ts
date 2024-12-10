@@ -3,8 +3,12 @@ import type { Root } from "mdast";
 import { parseMarkdown } from "./markdown.server";
 
 import {
+    InterfaceParser,
+    InterfacePropertyParser,
     ParameterParser,
     ProjectParser,
+    PropertyParser,
+    SignatureParser,
     TypeAliasParser,
     TypeParser,
     VariableParser,
@@ -13,6 +17,8 @@ import {
 import { reportLint } from "$lib/linter.server";
 import { urlifyString } from "$lib/util";
 import { error } from "@sveltejs/kit";
+import { page } from "$app/stores";
+import { get } from "svelte/store";
 
 // TSdoc "path" that means it's supported everywhere
 const sharedName = "shared";
@@ -20,6 +26,7 @@ const sharedName = "shared";
 const cache: { [p: string]: ProjectParser } = {};
 const namespaceCache: { [p: string]: { [fn: string]: NamespaceParser } } = {};
 const typeCache: { [p: string]: { [fn: string]: TypeAliasParser } } = {};
+const interfaceCache: { [p: string]: { [fn: string]: InterfaceParser } } = {};
 
 function getProject(p: string) {
     if (cache[p]) {
@@ -57,9 +64,11 @@ function getNamespaces(p: string) {
 function getTypes(p: string) {
     const project = getProject(p);
 
-    if (!typeCache[p]) {
-        typeCache[p] = {};
+    if (typeCache[p]) {
+        return typeCache[p];
     }
+
+    typeCache[p] = {};
 
     for (const type of project.typeAliases) {
         typeCache[p][type.name] = type;
@@ -68,11 +77,29 @@ function getTypes(p: string) {
     return typeCache[p];
 }
 
+function getInterfaces(p: string) {
+    const project = getProject(p);
+
+    if (interfaceCache[p]) {
+        return interfaceCache[p];
+    }
+
+    interfaceCache[p] = {};
+
+    for (const interf of project.interfaces) {
+        interfaceCache[p][interf.name] = interf;
+    }
+
+    return interfaceCache[p];
+}
+
 export function parseTypedoc(p: string, name: string): Root {
     const out: string[] = [];
 
     if (name.startsWith("type/")) {
         out.push(...renderTypePage(name.slice(5), p));
+    } else if (name.startsWith("interface/")) {
+        out.push(...renderInterfacePage(name.slice(10), p));
     } else {
         out.push(...renderMainPage(p, name));
     }
@@ -88,16 +115,13 @@ function cleanType(input: string, p: string) {
 }
 
 function generateTable(
-    vars: (
-        | ParameterParser
-        | (VariableParser & {
-              rest?: never;
-              optional?: never;
-          })
-    )[],
+    vars: (Partial<
+        ParameterParser | InterfacePropertyParser | VariableParser
+    > & { rest?: boolean; optional?: boolean })[],
     p: string
 ) {
     const types = getTypes(p);
+    const interfaces = getInterfaces(p);
 
     const temp: string[] = [];
 
@@ -105,7 +129,11 @@ function generateTable(
     temp.push("|---|---|---|");
 
     for (const param of vars) {
-        let type = cleanType(param.type.toString().replaceAll("|", "\\|"), p);
+        if (!param.type) {
+            continue;
+        }
+
+        let type = cleanType(param.type?.toString().replaceAll("|", "\\|"), p);
 
         switch (param.type.kind) {
             case TypeParser.Kind.Intrinsic:
@@ -113,7 +141,9 @@ function generateTable(
 
             case TypeParser.Kind.Reference:
                 if (types[type]) {
-                    type = `[${type}](./type/${type})`;
+                    type = `[${type}](/${p}/type/${type})`;
+                } else if (interfaces[type]) {
+                    type = `[${type}](/${p}/interface/${type})`;
                 } else {
                     type = `\`${type}\``;
                 }
@@ -127,17 +157,149 @@ function generateTable(
         temp.push(
             `| \`${param.rest ? "..." : ""}${param.name}\` | ${type} ${
                 param.optional ? "(optional)" : ""
-            } | ${param.comment.description || "*No description provided.*"} |`
+            } | ${param.comment?.description || "*No description provided.*"} |`
         );
     }
 
     return temp;
 }
 
+function generateSignature(
+    name: string,
+    signature: SignatureParser,
+    p: string
+) {
+    const out: string[] = [];
+
+    const project = getProject(p);
+
+    if (
+        signature.comment.blockTags.filter((v) => v.name == "deprecated")
+            .length > 0 ||
+        signature.comment.deprecated
+    ) {
+        out.push(
+            `> [!CAUTION]\n` +
+                `> DEPRECATED: ` +
+                (signature.comment.blockTags.filter(
+                    (v) => v.name == "deprecated"
+                )[0]?.text || "Avoid using this function.")
+        );
+    }
+
+    const params: string[] = [];
+
+    for (const param of signature.parameters) {
+        params.push(
+            `${param.rest ? "..." : ""}${param.name}${
+                param.optional ? "?" : ""
+            }: ${cleanType(param.type.toString(), p)}`
+        );
+    }
+
+    out.push(
+        "```ts\n" +
+            `${name}.${signature.name}(${params.join(
+                ", "
+            )}): ${signature.returnType
+                .toString()
+                .replaceAll(`${project.name}.`, "")}` +
+            "\n```"
+    );
+
+    out.push(signature.comment.description || "*No description provided.*");
+
+    if (!signature.comment.description) {
+        reportLint(
+            "note",
+            "typedoc_noDesc_" + signature.name,
+            `${signature.name} does not have a description!`,
+            `${p}/${name}#${urlifyString(signature.name)}`
+        );
+    }
+
+    if (signature.comment.example.length > 0) {
+        const temp: string[] = [];
+
+        temp.push(
+            `> #### Example${signature.comment.example.length == 1 ? "" : "s"}`
+        );
+
+        for (const example of signature.comment.example) {
+            temp.push(...example.text.split("\n"));
+        }
+
+        out.push(temp.join("\n > "));
+    }
+
+    if (signature.parameters.length > 0) {
+        const temp = generateTable(signature.parameters, p);
+
+        temp.unshift(
+            `> #### Parameter${signature.parameters.length == 1 ? "" : "s"}`
+        );
+
+        out.push(temp.join("\n> "));
+    }
+
+    if (signature.comment.see.length > 0) {
+        const temp: string[] = [];
+
+        temp.push("> #### See also");
+
+        for (const see of signature.comment.see) {
+            temp.push("- " + see.text);
+        }
+
+        out.push(temp.join("\n >"));
+    }
+
+    return out;
+}
+
+function renderInterfacePage(name: string, p: string): string[] {
+    const out: string[] = [];
+
+    const interfaces = getInterfaces(p);
+
+    const interf = interfaces[name];
+
+    if (!interf) {
+        error(404, "Page not found");
+    }
+
+    out.push(`# Interface: ${interf.name}`);
+
+    if (interf.source?.url) {
+        out.push(`[View Source](${interf.source.url})`);
+    }
+
+    out.push(interf.comment.description || "*No description provided*");
+
+    if (interf.properties.length > 0) {
+        out.push("## Properties");
+        out.push(generateTable(interf.properties, p).join("\n"));
+    }
+
+    if (interf.methods.length > 0) {
+        out.push("## Functions");
+
+        for (const method of interf.methods) {
+            out.push(`### ${method.name}`);
+            for (const signature of method.signatures) {
+                out.push(...generateSignature(interf.name, signature, p));
+            }
+        }
+    }
+
+    return out;
+}
+
 function renderTypePage(name: string, p: string): string[] {
     //TODO Viewing types is currently not supported due to it being too complex for the initial release. Add in later release!
 
     const types = getTypes(p);
+    const interfaces = getInterfaces(p);
 
     const type = types[name];
 
@@ -153,15 +315,48 @@ function renderTypePage(name: string, p: string): string[] {
         out.push(`[View Source](${type.source.url})`);
     }
 
+    out.push(type.comment.description || "*No description provided.*");
+
     out.push(
         [
             "```ts",
-            `${type.name} = ${cleanType(type.type.toString(), p)}`,
+            type.name + " = " + cleanType(type.type.toString(), p),
             "```",
         ].join("\n")
     );
 
-    out.push(type.comment.description || "*No description provided.*");
+    // This is cursed, but it works stupidly well so I'm not changing it
+    const typeSegmentsRaw = [
+        ...new Set(
+            cleanType(type.type.toString(), p)
+                .replace(/[^\w\s]/gi, " ")
+                .split(" ")
+        ),
+    ];
+
+    const typeSegments: { name: string; link: string }[] = [];
+
+    for (const segment of typeSegmentsRaw) {
+        if (types[segment]) {
+            typeSegments.push({ name: segment, link: `/${p}/type/${segment}` });
+        }
+        if (interfaces[segment]) {
+            typeSegments.push({
+                name: segment,
+                link: `/${p}/interface/${segment}`,
+            });
+        }
+    }
+
+    console.log(typeSegmentsRaw, typeSegments);
+
+    if (typeSegments.length > 0) {
+        out.push("## See also");
+        out.push(
+            "- " +
+                typeSegments.map((v) => `[${v.name}](${v.link})`).join("\n- ")
+        );
+    }
 
     return out;
 }
@@ -197,93 +392,7 @@ function renderMainPage(p: string, name: string): string[] {
 
             out.push(`### ${signature.name}`);
 
-            if (
-                signature.comment.blockTags.filter(
-                    (v) => v.name == "deprecated"
-                ).length > 0 ||
-                signature.comment.deprecated
-            ) {
-                out.push(
-                    `> [!CAUTION]\n` +
-                        `> DEPRECATED: ` +
-                        (signature.comment.blockTags.filter(
-                            (v) => v.name == "deprecated"
-                        )[0]?.text || "Avoid using this function.")
-                );
-            }
-
-            const params: string[] = [];
-
-            for (const param of signature.parameters) {
-                params.push(
-                    `${param.rest ? "..." : ""}${param.name}${
-                        param.optional ? "?" : ""
-                    }: ${cleanType(param.type.toString(), p)}`
-                );
-            }
-
-            out.push(
-                "```ts\n" +
-                    `${name}.${fn.name}(${params.join(
-                        ", "
-                    )}): ${signature.returnType
-                        .toString()
-                        .replaceAll(`${project.name}.`, "")}` +
-                    "\n```"
-            );
-
-            out.push(
-                signature.comment.description || "*No description provided.*"
-            );
-
-            if (!signature.comment.description) {
-                reportLint(
-                    "note",
-                    "typedoc_noDesc_" + signature.name,
-                    `${signature.name} does not have a description!`,
-                    `${p}/${name}#${urlifyString(signature.name)}`
-                );
-            }
-
-            if (signature.comment.example.length > 0) {
-                const temp: string[] = [];
-
-                temp.push(
-                    `> #### Example${
-                        signature.comment.example.length == 1 ? "" : "s"
-                    }`
-                );
-
-                for (const example of signature.comment.example) {
-                    temp.push(...example.text.split("\n"));
-                }
-
-                out.push(temp.join("\n > "));
-            }
-
-            if (signature.parameters.length > 0) {
-                const temp = generateTable(signature.parameters, p);
-
-                temp.unshift(
-                    `> #### Parameter${
-                        signature.parameters.length == 1 ? "" : "s"
-                    }`
-                );
-
-                out.push(temp.join("\n> "));
-            }
-
-            if (signature.comment.see.length > 0) {
-                const temp: string[] = [];
-
-                temp.push("> #### See also");
-
-                for (const see of signature.comment.see) {
-                    temp.push("- " + see.text);
-                }
-
-                out.push(temp.join("\n >"));
-            }
+            out.push(...generateSignature(name, signature, p));
         }
     }
 
@@ -324,9 +433,15 @@ export function getTypedocTopic(p: string): MenuArticle[] {
 }
 
 export function getTypedocPageMeta(p: string, name: string): ArticleMeta {
-    //Handling for incomplete type page
+    //Handling for type and interface page
     if (name.startsWith("type/")) {
         return { title: "Type: " + name.slice(5), disablePageActions: true };
+    }
+    if (name.startsWith("interface/")) {
+        return {
+            title: "Interface: " + name.slice(10),
+            disablePageActions: true,
+        };
     }
 
     const namespaces = getNamespaces(p);
