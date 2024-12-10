@@ -72,7 +72,7 @@
             seperation: false,
         },
         {
-            id: "vscript",
+            id: "vscript/reference/Globals",
             title: "VScript",
             description: "Reference for VScript language",
             icon: mdiAlphaVBox,
