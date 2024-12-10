@@ -98,7 +98,7 @@ export function parseTypedoc(p: string, name: string): Root {
 
     if (name.startsWith("interface/")) {
         out.push(...renderInterfacePage(name.slice(10), p));
-    } else if (name == "type") {
+    } else if (name == "types") {
         out.push(...renderTypeOverviewPage(p));
     } else if (name == "interface") {
         out.push(...renderInterfaceOverviewPage(p));
@@ -447,7 +447,7 @@ export function getTypedocTopic(p: string): MenuArticle[] {
 
     const namespaces = getNamespaces(p);
 
-    out.push({ id: "type", meta: { title: "Types", weight: -100 } });
+    out.push({ id: "types", meta: { title: "Types", weight: -100 } });
     out.push({ id: "interface", meta: { title: "Interfaces", weight: -100 } });
 
     for (const [id, namespace] of Object.entries(namespaces)) {
@@ -469,19 +469,15 @@ export function getTypedocTopic(p: string): MenuArticle[] {
 
 export function getTypedocPageMeta(p: string, name: string): ArticleMeta {
     //Handling for type and interface page
-    if (name.startsWith("type/")) {
-        return { title: "Type: " + name.slice(5), disablePageActions: true };
-    }
+
     if (name.startsWith("interface/")) {
         return {
             title: "Interface: " + name.slice(10),
             disablePageActions: true,
         };
-    }
-    if (name == "type") {
+    } else if (name == "types") {
         return { title: "Type Overview", disablePageActions: true };
-    }
-    if (name == "interface") {
+    } else if (name == "interface") {
         return {
             title: "Interface Overview",
             disablePageActions: true,
