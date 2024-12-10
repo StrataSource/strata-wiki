@@ -22,11 +22,19 @@ import {
     getTypedocTopic,
     parseTypedoc,
 } from "./parsers/typedoc.server";
+import {
+    getVscriptPageMeta,
+    getVscriptTopic,
+    parseVscript,
+} from "./parsers/vscript.server";
 
 export function getContentMeta(
     category: string,
     topic: string
-): { type: "markdown" | "material" | "entity" | "typedoc"; meta: ArticleMeta } {
+): {
+    type: "markdown" | "material" | "entity" | "typedoc" | "vscript";
+    meta: ArticleMeta;
+} {
     let meta: ArticleMeta;
 
     //Check if meta.json exists, if not complain and fall back to using ID as the title
@@ -55,9 +63,14 @@ export function getContentMeta(
         return { type: "material", meta: meta };
     }
 
-    //Check if topic type is material
+    //Check if topic type is typedoc
     if (fs.existsSync(`../docs/${category}/${topic || ""}/typedoc.json`)) {
         return { type: "typedoc", meta: meta };
+    }
+
+    //Check if topic type is vscript
+    if (fs.existsSync(`../docs/${category}/${topic || ""}/vscript.json`)) {
+        return { type: "vscript", meta: meta };
     }
 
     //Check if topic type is entity by looping over every game and looking for that file.
@@ -106,6 +119,10 @@ export function getContent(category: string, topic: string, page: string) {
 
         case "typedoc":
             c = parseTypedoc(`${category}/${topic}`, page);
+            break;
+
+        case "vscript":
+            c = parseVscript(`${category}/${topic}`, page);
             break;
 
         default:
@@ -181,6 +198,10 @@ export function getMenuTopic(category: string, topic: string) {
             entry.articles = getTypedocTopic(`${category}/${topic}`);
             break;
 
+        case "vscript":
+            entry.articles = getVscriptTopic(`${category}/${topic}`);
+            break;
+
         default:
             break;
     }
@@ -209,6 +230,10 @@ export function getPageMeta(category: string, topic: string, article: string) {
 
         case "typedoc":
             return getTypedocPageMeta(`${category}/${topic}`, article);
+            break;
+
+        case "vscript":
+            return getVscriptPageMeta(`${category}/${topic}`, article);
             break;
 
         default:
