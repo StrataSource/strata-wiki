@@ -369,6 +369,9 @@ function renderTypeOverviewPage(p: string): string[] {
         const typeSegments: { name: string; link: string }[] = [];
 
         for (const segment of typeSegmentsRaw) {
+            if (segment == type.name) {
+                continue;
+            }
             if (types[segment]) {
                 typeSegments.push({
                     name: segment,
