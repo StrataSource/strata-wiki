@@ -143,7 +143,7 @@ function generateTable(
 
             case TypeParser.Kind.Reference:
                 if (types[type]) {
-                    type = `[${type}](/${p}/type#${urlifyString(type)})`;
+                    type = `[${type}](/${p}/types#${urlifyString(type)})`;
                 } else if (interfaces[type]) {
                     type = `[${type}](/${p}/interface/${type})`;
                 } else {
