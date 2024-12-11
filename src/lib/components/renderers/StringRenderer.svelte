@@ -18,7 +18,7 @@
 </script>
 
 {#each dat as e}
-    {#if e.type == "text"}
+    {#if e.type == "text" || e.type == "html"}
         {e.value}
     {:else if e.type == "break"}
         <br />
@@ -28,7 +28,7 @@
         <code>{e.value}</code>
     {:else if e.type == "link"}
         <LinkRenderer dat={e}></LinkRenderer>
-    {:else if e.type == "footnoteReference" || e.type == "html" || e.type == "imageReference" || e.type == "linkReference"}
+    {:else if e.type == "footnoteReference" || e.type == "imageReference" || e.type == "linkReference"}
         <!--Not implemented: {e.type}-->
     {:else if e.type in simpleElements}
         <svelte:element this={simpleElements[e.type]}

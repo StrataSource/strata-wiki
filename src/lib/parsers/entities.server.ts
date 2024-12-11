@@ -22,6 +22,15 @@ interface EntityKeyValues {
     default: string;
     desc: string;
     origin: string;
+    choices?: {
+        [choice: string]: string;
+    };
+    flags?: {
+        [flag: string]: {
+            default: boolean;
+            num: number;
+        };
+    };
 }
 interface EntityConnection {
     name: string;
@@ -172,7 +181,33 @@ export function parseEntity(p: string, name: string) {
                     ? "```\n" + `${kv.type}\n\n` + "```\n"
                     : "") +
                 //Description
-                `> ${kv.desc || "*No description provided.*"}\n\n`;
+                `> ${kv.desc || "*No description provided.*"}\n`;
+
+            if (kv.choices) {
+                temp += `> \n`;
+                temp += `> **Possible Values:**\n`;
+                temp += `> \n`;
+                temp += `> | Name | Value |\n`;
+                temp += `> |---|---:|\n`;
+                for (const [id, value] of Object.entries(kv.choices)) {
+                    temp += `> | ${id} | ${value} |\n`;
+                }
+            }
+
+            if (kv.flags) {
+                temp += `> \n`;
+                temp += `> **Possible Flags:**\n`;
+                temp += `> \n`;
+                temp += `> | Name | Value | Default |\n`;
+                temp += `> |---|---:|:---:|\n`;
+                for (const [id, value] of Object.entries(kv.flags)) {
+                    temp += `> | ${id} | ${value.num} | ${
+                        value.default ? "✅" : "❌"
+                    } |\n`;
+                }
+            }
+
+            temp += "\n";
 
             if (!kv.desc) {
                 reportLint(
