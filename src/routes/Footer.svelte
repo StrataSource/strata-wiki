@@ -21,7 +21,7 @@
         "The end is never the end is never...",
         "It's not a bug, it's a feature!",
         "Working hard or hardly working!",
-        "Introducing Funko Pop Wallace!",
+        "Over scoped and over budget",
         "Another day, another dollar!",
         "Come on Gordon, crank that thing!",
         "Lost to the archives...",
@@ -29,7 +29,7 @@
         "Half-Life 2 confirmed!",
         "Portal 2: Combat Evolved",
         "If found, please return to Strata Team",
-        "sleep(30);"
+        "sleep(30);",
     ];
 
     for (let i = messages.length - 1; i >= 0; i--) {
