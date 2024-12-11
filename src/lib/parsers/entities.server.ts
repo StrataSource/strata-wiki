@@ -224,7 +224,7 @@ export function parseEntity(p: string, name: string) {
             }
 
             temp +=
-                `> #### ${o.name} <\`${o.type}\`>\n> \n` +
+                `> #### ${o.name} \`<${o.type}>\`\n> \n` +
                 //Description
                 `> ${o.desc || "*No description provided.*"}\n\n`;
 
