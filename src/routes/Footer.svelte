@@ -102,6 +102,7 @@
         padding: 0;
 
         font-size: 1em;
+        font-family: inherit;
         border: none;
 
         cursor: pointer;

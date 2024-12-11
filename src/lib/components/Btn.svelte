@@ -41,6 +41,8 @@
         outline: none;
         cursor: pointer;
 
+        font-family: inherit;
+
         border-radius: 0.25rem;
 
         transition: 250ms;
