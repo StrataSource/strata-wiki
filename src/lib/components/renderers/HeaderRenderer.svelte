@@ -69,6 +69,7 @@
         cursor: pointer;
 
         font-size: 1em;
+        font-family: inherit;
 
         opacity: 0;
 
