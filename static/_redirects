@@ -17,7 +17,8 @@
 /_legacy/vscript/global/functions /vscript/reference/Globals 301
 /_legacy/vscript/global /vscript/reference/Globals 301
 /_legacy/vscript/global/constants /vscript/other/constants 301
-/_legacy/vscript/classes* /vscript/reference:splat 301
+/_legacy/vscript/class* /vscript/reference:splat 301
+/_legacy/vscript/* /vscript/:splat 301
 
 /_legacy/angelscript/overview /angelscript 301
 /_legacy/angelscript/* /angelscript/:splat 301
