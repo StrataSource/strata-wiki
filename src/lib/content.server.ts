@@ -27,12 +27,23 @@ import {
     getVscriptTopic,
     parseVscript,
 } from "./parsers/vscript.server";
+import {
+    getSoundOperatorsPageMeta,
+    getSoundOperatorsTopic,
+    parseSoundOperators,
+} from "./parsers/sounds_operators.server";
 
 export function getContentMeta(
     category: string,
     topic: string
 ): {
-    type: "markdown" | "material" | "entity" | "typedoc" | "vscript";
+    type:
+        | "markdown"
+        | "material"
+        | "entity"
+        | "typedoc"
+        | "vscript"
+        | "sound_operators";
     meta: ArticleMeta;
 } {
     let meta: ArticleMeta;
@@ -71,6 +82,13 @@ export function getContentMeta(
     //Check if topic type is vscript
     if (fs.existsSync(`../docs/${category}/${topic || ""}/vscript.json`)) {
         return { type: "vscript", meta: meta };
+    }
+
+    //Check if topic type is vscript
+    if (
+        fs.existsSync(`../docs/${category}/${topic || ""}/sound_operators.json`)
+    ) {
+        return { type: "sound_operators", meta: meta };
     }
 
     //Check if topic type is entity by looping over every game and looking for that file.
@@ -123,6 +141,10 @@ export function getContent(category: string, topic: string, page: string) {
 
         case "vscript":
             c = parseVscript(`${category}/${topic}`, page);
+            break;
+
+        case "sound_operators":
+            c = parseSoundOperators(`${category}/${topic}`, page);
             break;
 
         default:
@@ -202,6 +224,10 @@ export function getMenuTopic(category: string, topic: string) {
             entry.articles = getVscriptTopic(`${category}/${topic}`);
             break;
 
+        case "sound_operators":
+            entry.articles = getSoundOperatorsTopic(`${category}/${topic}`);
+            break;
+
         default:
             break;
     }
@@ -234,6 +260,10 @@ export function getPageMeta(category: string, topic: string, article: string) {
 
         case "vscript":
             return getVscriptPageMeta(`${category}/${topic}`, article);
+            break;
+
+        case "sound_operators":
+            return getSoundOperatorsPageMeta(`${category}/${topic}`, article);
             break;
 
         default:
