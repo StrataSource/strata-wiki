@@ -107,6 +107,8 @@
 
         cursor: pointer;
 
+        transition: 250ms;
+
         &:hover {
             color: var(--strataBright);
         }
