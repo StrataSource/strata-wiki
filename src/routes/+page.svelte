@@ -6,6 +6,9 @@
     import {
         mdiAccountGroup,
         mdiAlphaVBox,
+        mdiArrowRight,
+        mdiArrowRightBold,
+        mdiArrowRightThick,
         mdiCubeOutline,
         mdiLayers,
         mdiScript,
@@ -15,6 +18,7 @@
     } from "@mdi/js";
     import Icon from "$lib/components/Icon.svelte";
     import Metadata from "$lib/components/Metadata.svelte";
+    import { dev } from "$app/environment";
 
     const categories: (
         | {
@@ -65,7 +69,7 @@
         },
         { seperation: true, title: "Scripting" },
         {
-            id: "angelscript",
+            id: "angelscript/hammer/classes",
             title: "Angelscript",
             description: "Reference for Angelscript language",
             icon: mdiScript,
@@ -123,9 +127,9 @@
             seperation: false,
         },
         {
-            id: "test",
+            id: dev ? "test" : "",
             title: "Test suite",
-            description: "Suite for testing the Wiki",
+            description: "(Dev only) Suite for testing the Wiki",
             icon: mdiTestTube,
             seperation: false,
         },
@@ -138,7 +142,6 @@
     <Container>
         <div>
             <h1>Welcome to the Strata Wiki</h1>
-            <div>Some tagline here, todo</div>
         </div>
     </Container>
 </div>
@@ -150,7 +153,7 @@
                 <div class="section">
                     <h2>{category.title}</h2>
                 </div>
-            {:else}
+            {:else if category.id != ""}
                 <a href="/{category.id}">
                     <Card>
                         <h3>
@@ -178,7 +181,7 @@
         justify-content: center;
         text-align: center;
 
-        min-height: 20rem;
+        min-height: 10rem;
         margin-bottom: 1rem;
 
         & h1 {
