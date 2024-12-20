@@ -1,7 +1,6 @@
 <script>
     import { mdiFlaskEmpty } from "@mdi/js";
     import Notice from "../Notice.svelte";
-    import Link from "../Link.svelte";
 </script>
 
 <div data-pagefind-meta="experimental: true" data-pagefind-ignore>

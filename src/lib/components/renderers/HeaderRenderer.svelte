@@ -2,7 +2,7 @@
     import type { Heading, PhrasingContent } from "mdast";
     import StringRenderer from "./StringRenderer.svelte";
     import Icon from "../Icon.svelte";
-    import { mdiCheck, mdiPencil, mdiPound } from "@mdi/js";
+    import { mdiCheck, mdiPound } from "@mdi/js";
     import { page } from "$app/stores";
     import { urlifyString } from "$lib/util";
 
