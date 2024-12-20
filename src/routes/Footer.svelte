@@ -1,7 +1,5 @@
 <script lang="ts">
     import { page } from "$app/stores";
-    import Btn from "$lib/components/Btn.svelte";
-    import Container from "$lib/components/Container.svelte";
     import Icon from "$lib/components/Icon.svelte";
     import Link from "$lib/components/Link.svelte";
     import { mdiHeart } from "@mdi/js";

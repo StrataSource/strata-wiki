@@ -6,9 +6,6 @@
     import {
         mdiAccountGroup,
         mdiAlphaVBox,
-        mdiArrowRight,
-        mdiArrowRightBold,
-        mdiArrowRightThick,
         mdiCubeOutline,
         mdiLayers,
         mdiScript,

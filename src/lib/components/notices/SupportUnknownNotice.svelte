@@ -1,7 +1,6 @@
 <script lang="ts">
     import { mdiSelectionEllipse } from "@mdi/js";
     import Notice from "../Notice.svelte";
-    import Link from "../Link.svelte";
     import { getGamesWithSupport } from "$lib/supportChecker";
     import { gameMeta } from "$lib/stores";
 
