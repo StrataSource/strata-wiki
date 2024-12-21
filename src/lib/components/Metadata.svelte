@@ -15,26 +15,16 @@
         property="og:title"
         content={title}
     />
-    <!--TODO-->
     <meta
         data-pagefind-meta="image_alt:"
         property="og:url"
-        content="https://staging.wiki.stratasource.org/{$page.url
-            .pathname}"
+        content="https://wiki.stratasource.org/{$page.url.pathname}"
     />
-    <!--TODO-->
-    <meta
-        property="og:image"
-        content="https://staging.wiki.stratasource.org/{og}"
-    />
+    <meta property="og:image" content="https://wiki.stratasource.org/{og}" />
     <meta name="theme-color" content="#f0413c" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="{title} - Strata Source Wiki" />
     <meta name="twitter:site" content="@stratasource" />
-    <!--TODO-->
-    <meta
-        name="twitter:image"
-        content="https://staging.wiki.stratasource.org/{og}"
-    />
+    <meta name="twitter:image" content="https://wiki.stratasource.org/{og}" />
 </svelte:head>
