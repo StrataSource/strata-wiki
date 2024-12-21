@@ -26,14 +26,14 @@
             <div class="desktop">
                 {#if $page.params.article && $currentArticle && !$currentArticle.disablePageActions}
                     <Link
-                        href="https://github.com/StrataSource/Wiki/edit/staging/docs{$page
+                        href="https://github.com/StrataSource/Wiki/edit/main/docs{$page
                             .url.pathname}.md"
                         title="Edit"
                     >
                         <Icon d={mdiPencil} inline></Icon>
                     </Link>
                     <Link
-                        href="https://github.com/StrataSource/Wiki/commits/staging/docs{$page
+                        href="https://github.com/StrataSource/Wiki/commits/main/docs{$page
                             .url.pathname}.md"
                         title="History"
                     >
