@@ -100,7 +100,7 @@ export function getVscriptTopic(p: string) {
             meta: {
                 title: c,
                 weight: c == "Globals" ? 0 : undefined,
-                features: ["VSCRIPT"],
+                features: ["USE_VSCRIPT"],
             },
         });
     }
@@ -113,6 +113,6 @@ export function getVscriptPageMeta(p: string, name: string): ArticleMeta {
         id: name,
         title: name,
         disablePageActions: true,
-        features: ["VSCRIPT"],
+        features: ["USE_VSCRIPT"],
     };
 }
