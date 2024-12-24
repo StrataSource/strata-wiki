@@ -28,6 +28,13 @@
         "Portal 2: Combat Evolved",
         "If found, please return to Strata Team",
         "sleep(30);",
+        "Entity prop_static (-2040.00 -354.09 512.00) leaked!",
+        "Oh fiddlesticks, what now?",
+        "Node Graph out of date. Rebuilding...",
+        "ThreadComputeStaticPropLighting: 1...2...3...4...5...6...7...8...9...",
+        "WARNING: Too many light styles on a face at (-81.000000, 1002.000000, -63.750000)",
+        "Breaking news: Wallace Wrench has lost his wrench.",
+        "Now with up to 46% more bugs!",
     ];
 
     for (let i = messages.length - 1; i >= 0; i--) {
