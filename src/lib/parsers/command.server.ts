@@ -123,6 +123,16 @@ export function parseCommand(p: string, name: string) {
 
     const out: string[] = [];
 
+    if (name == "list") {
+        out.push(
+            Object.keys(all)
+                .map((v) => `- [${v}](./${v})`)
+                .join("\n")
+        );
+
+        return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
+    }
+
     const command = all[name];
 
     if (!command) {
@@ -225,10 +235,19 @@ export function parseCommand(p: string, name: string) {
 export function getCommandTopic(p: string) {
     const res: MenuArticle[] = [];
 
+    return [
+        {
+            id: "list",
+            meta: {
+                title: "List",
+            },
+        },
+    ];
+
     const all = parseJSON(p);
 
     for (const c of Object.values(all)) {
-        res.push({
+        /* res.push({
             id: c.name,
             meta: {
                 title: c.name,
@@ -240,12 +259,36 @@ export function getCommandTopic(p: string) {
                 ],
             },
         });
+        */
+
+        res.push({
+            id: c.name,
+            meta: {
+                title: "",
+                features: [
+                    /* 
+                    ...Object.keys(unknownCache[p]).map(
+                        (v) => `UNKNOWN_${v.toUpperCase()}`
+                    ),
+                    ...c.games.map((v) => v.toUpperCase()),
+                 */
+                ],
+            },
+        });
     }
 
     return res;
 }
 
 export function getCommandPageMeta(p: string, name: string): ArticleMeta {
+    if (name == "list") {
+        return {
+            id: name,
+            title: name,
+            disablePageActions: true,
+        };
+    }
+
     const all = parseJSON(p);
 
     const c = all[name];
