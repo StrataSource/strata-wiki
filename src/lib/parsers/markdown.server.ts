@@ -6,6 +6,7 @@ import remarkFrontmatter from "remark-frontmatter";
 import fs from "fs";
 import yaml from "js-yaml";
 import { error } from "@sveltejs/kit";
+import { dev } from "$app/environment";
 
 const cache: { [id: string]: { content: Root; original: string } } = {};
 
@@ -15,6 +16,7 @@ export function parseMarkdown(doc: string, id?: string) {
     }
 
     console.log("Cache miss, regenerating...", id);
+
     const res = remark()
         .use(remarkFrontmatter, { type: "yaml", marker: "-" })
         .use(remarkGfm)

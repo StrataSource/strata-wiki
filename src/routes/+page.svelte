@@ -65,7 +65,7 @@
             icon: mdiCubeOutline,
             seperation: false,
         },
-		{
+        {
             id: "audio/overview/overview",
             title: "Audio",
             description: "Audio Reference",
