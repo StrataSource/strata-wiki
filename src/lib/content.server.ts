@@ -32,6 +32,12 @@ import {
     getSoundOperatorsTopic,
     parseSoundOperators,
 } from "./parsers/sounds_operators.server";
+import {
+    getCommandPageMeta,
+    getCommandTopic,
+    parseCommand,
+} from "./parsers/command.server.js";
+import { dev } from "$app/environment";
 
 export function getContentMeta(
     category: string,
@@ -43,7 +49,8 @@ export function getContentMeta(
         | "entity"
         | "typedoc"
         | "vscript"
-        | "sound_operators";
+        | "sound_operators"
+        | "command";
     meta: ArticleMeta;
 } {
     let meta: ArticleMeta;
@@ -102,13 +109,22 @@ export function getContentMeta(
         ) {
             return { type: "entity", meta: meta };
         }
+        if (
+            fs.existsSync(
+                `../docs/${category}/${topic || ""}/commands_${game}.json`
+            )
+        ) {
+            return { type: "command", meta: meta };
+        }
     }
 
     return { type: "markdown", meta: meta };
 }
 
 export function getContent(category: string, topic: string, page: string) {
-    console.log(`\n--- ${category}/${topic}/${page} ---\n`);
+    if (dev) {
+        console.log(`\n--- ${category}/${topic}/${page} ---\n`);
+    }
 
     let c: Root;
 
@@ -145,6 +161,10 @@ export function getContent(category: string, topic: string, page: string) {
 
         case "sound_operators":
             c = parseSoundOperators(`${category}/${topic}`, page);
+            break;
+
+        case "command":
+            c = parseCommand(`${category}/${topic}`, page);
             break;
 
         default:
@@ -228,6 +248,10 @@ export function getMenuTopic(category: string, topic: string) {
             entry.articles = getSoundOperatorsTopic(`${category}/${topic}`);
             break;
 
+        case "command":
+            entry.articles = getCommandTopic(`${category}/${topic}`);
+            break;
+
         default:
             break;
     }
@@ -264,6 +288,10 @@ export function getPageMeta(category: string, topic: string, article: string) {
 
         case "sound_operators":
             return getSoundOperatorsPageMeta(`${category}/${topic}`, article);
+            break;
+
+        case "command":
+            return getCommandPageMeta(`${category}/${topic}`, article);
             break;
 
         default:

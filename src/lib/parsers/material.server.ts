@@ -23,8 +23,6 @@ function parseJSON(p: string) {
         return cache[p].content;
     }
 
-    console.log("Cache miss, regenerating...", p);
-
     const parsed: Material[] = JSON.parse(raw);
 
     cache[p] = { content: parsed, original: raw };

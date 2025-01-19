@@ -10,6 +10,7 @@
     import { getGamesWithSupport } from "$lib/supportChecker";
     import { onMount } from "svelte";
     import type { PageData } from "./$types";
+    import UnknownSupportNotice from "$lib/components/notices/UnknownSupportNotice.svelte";
 
     export let data: PageData;
 
@@ -42,6 +43,8 @@
                 {#if $currentGame == ""}
                     <SupportUnknownNotice features={data.meta?.features || []}
                     ></SupportUnknownNotice>
+                {:else if getGamesWithSupport(data.meta?.features || []).unknownGames.includes($currentGame)}
+                    <UnknownSupportNotice></UnknownSupportNotice>
                 {:else if !getGamesWithSupport(data.meta?.features || []).games.includes($currentGame)}
                     <NoSupportNotice></NoSupportNotice>
                 {/if}
