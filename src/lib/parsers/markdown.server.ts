@@ -15,7 +15,9 @@ export function parseMarkdown(doc: string, id?: string) {
         return cache[id].content;
     }
 
-    console.log("Cache miss, regenerating...", id);
+    if (dev) {
+        console.log("Cache miss, regenerating...", id);
+    }
 
     const res = remark()
         .use(remarkFrontmatter, { type: "yaml", marker: "-" })

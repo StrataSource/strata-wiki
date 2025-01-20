@@ -25,7 +25,10 @@
 
     export let menu: MenuCategory[] | undefined = undefined;
 
+    let loaded = false;
+
     onMount(() => {
+        loaded = true;
         navigating.subscribe(() => {
             $openMenu = false;
         });
@@ -86,43 +89,56 @@
                         {topic.title}
                     </summary>
 
-                    {#each topic.articles as article}
-                        <a
-                            class="item"
-                            class:active={article.id === $page.params.article}
-                            href="/{$page.params
-                                .category}/{topic.id}/{article.id}"
-                        >
-                            <div>{article.meta.title || article.id}</div>
+                    {#each topic.articles as article, i}
+                        {#if i < 100 || loaded}
+                            <a
+                                class="item"
+                                class:active={article.id ===
+                                    $page.params.article}
+                                href="/{$page.params
+                                    .category}/{topic.id}/{article.id}"
+                            >
+                                <div>{article.meta.title || article.id}</div>
 
-                            {#if article.meta.deprecated}
-                                <span title="Deprecated">
-                                    <Icon d={mdiDelete} inline></Icon>
-                                </span>
-                            {/if}
-                            {#if article.meta.experimental}
-                                <span title="Experimental">
-                                    <Icon d={mdiFlaskEmpty} inline></Icon>
-                                </span>
-                            {/if}
-                            {#if (article.meta?.features?.length || 0) > 0 && !getGamesWithSupport(article.meta.features || []).all}
-                                {#if $currentGame == ""}
-                                    <span title="Limited support">
-                                        <Icon d={mdiSelectionEllipse} inline
-                                        ></Icon>
-                                    </span>
-                                {:else if !getGamesWithSupport(article.meta.features || []).games.includes($currentGame)}
-                                    <span
-                                        title="Unsupported in {$gameMeta[
-                                            $currentGame
-                                        ].name}"
-                                    >
-                                        <Icon d={mdiBlockHelper} inline></Icon>
+                                {#if article.meta.deprecated}
+                                    <span title="Deprecated">
+                                        <Icon d={mdiDelete} inline></Icon>
                                     </span>
                                 {/if}
-                            {/if}
-                        </a>
+                                {#if article.meta.experimental}
+                                    <span title="Experimental">
+                                        <Icon d={mdiFlaskEmpty} inline></Icon>
+                                    </span>
+                                {/if}
+                                {#if (article.meta?.features?.length || 0) > 0 && !getGamesWithSupport(article.meta.features || []).all}
+                                    {#if $currentGame == ""}
+                                        <span title="Limited support">
+                                            <Icon d={mdiSelectionEllipse} inline
+                                            ></Icon>
+                                        </span>
+                                    {:else if !getGamesWithSupport(article.meta.features || []).games.includes($currentGame)}
+                                        <span
+                                            title="Unsupported in {$gameMeta[
+                                                $currentGame
+                                            ].name}"
+                                        >
+                                            <Icon d={mdiBlockHelper} inline
+                                            ></Icon>
+                                        </span>
+                                    {/if}
+                                {/if}
+                            </a>
+                        {/if}
                     {/each}
+
+                    {#if topic.articles.length > 100 && !loaded}
+                        <a
+                            class="item"
+                            href="/{$page.params.category}/{topic.id}"
+                        >
+                            <div>More...</div>
+                        </a>
+                    {/if}
                 </details>
             {/each}
         {/if}
