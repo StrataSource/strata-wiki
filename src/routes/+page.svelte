@@ -6,6 +6,7 @@
     import {
         mdiAccountGroup,
         mdiAlphaVBox,
+        mdiConsoleLine,
         mdiCubeOutline,
         mdiLayers,
         mdiScript,
@@ -70,6 +71,13 @@
             title: "Audio",
             description: "Audio Reference",
             icon: mdiSpeaker,
+            seperation: false,
+        },
+        {
+            id: "console/commands",
+            title: "Console",
+            description: "Console and CVAR Reference",
+            icon: mdiConsoleLine,
             seperation: false,
         },
         { seperation: true, title: "Scripting" },
