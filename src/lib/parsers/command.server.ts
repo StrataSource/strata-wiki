@@ -141,12 +141,18 @@ export function parseCommand(p: string, name: string) {
         out.push(`🟪 Executable on Client and Server`);
     }
 
+    let sample = `${command.name} ${
+        command.type == "command" ? "<arguments>" : "<value>"
+    }`;
     if (command.name.startsWith("+")) {
-        out.push("```\n" + `bind [key] ${command.name}` + "\n```");
-        out.push("```\n" + `unbind [key] ${command.name}` + "\n```");
+        sample = `bind [key] ${command.name}`;
+    }
 
+    out.push("```\n" + sample + "\n```");
+
+    if (command.name.startsWith("+")) {
         out.push(
-            `Binds/Unbinds the \`${command.name.slice(
+            `Binds the \`${command.name.slice(
                 1
             )}\` action to a key of your choice.`
         );
@@ -155,12 +161,6 @@ export function parseCommand(p: string, name: string) {
             out.push(command.help);
         }
     } else {
-        let sample = `${command.name} ${
-            command.type == "command" ? "<arguments>" : "<value>"
-        }`;
-
-        out.push("```\n" + sample + "\n```");
-
         out.push(
             command.help == "" ? "*No description provided*" : command.help
         );
