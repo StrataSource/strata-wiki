@@ -55,6 +55,8 @@ export function getContentMeta(
 } {
     let meta: ArticleMeta;
 
+    console.log(path)
+
     //Check if meta.json exists, if not complain and fall back to using ID as the title
     if (fs.existsSync(`../docs/${path}/meta.json`)) {
         const metaRaw = fs.readFileSync(
@@ -125,10 +127,17 @@ export function getContent(path: string, article: string) {
     if (dev) {
         console.log(`\n--- ${path}/${article} ---\n`);
     }
+    console.log(article);
+
+    const slug: string[] = path.split('/');
+    // First is top level category, we can remove that
+    //slug.shift();
+    // Now are topics. We need to step down and see if any provide our current path
+    
 
     let c: Root;
 
-    switch (getContentMeta(path).type) {
+    switch (getContentMeta(slug[0] + '/' + slug[1]).type) {
         case "markdown":
             if (!fs.existsSync(`../docs/${path}/${article}.md`)) {
                 error(404, "Page not found");
@@ -214,7 +223,10 @@ export function getMenu(path: string) {
 }
 
 export function getMenuTopic(path: string) {
-    const meta = getContentMeta(path);
+    
+    const slug: string[] = path.split('/');
+
+    const meta = getContentMeta(slug[0] + '/' + slug[1]);
 
     const entry: MenuTopic = {
         id: path,
@@ -270,6 +282,16 @@ export function getMenuTopic(path: string) {
     return entry;
 }
 export function getPageMeta(path: string, article: string) {
+    
+    const slug: string[] = path.split('/');
+    path = slug[0] + '/' + slug[1];
+    slug.shift();
+    slug.shift();
+    slug.push(article);
+    article = slug.join('/');
+
+    console.log("Get meta " + path);
+
     const meta = getContentMeta(path);
 
     switch (meta.type) {

@@ -28,7 +28,7 @@ const namespaceCache: { [p: string]: { [fn: string]: NamespaceParser } } = {};
 const typeCache: { [p: string]: { [fn: string]: TypeAliasParser } } = {};
 const interfaceCache: { [p: string]: { [fn: string]: InterfaceParser } } = {};
 
-function getProject(p: string) {
+function getProject(p: string) {    
     if (cache[p]) {
         return cache[p];
     }
@@ -94,10 +94,24 @@ function getInterfaces(p: string) {
 }
 
 export function parseTypedoc(p: string, name: string): Root {
-    const out: string[] = [];
+    console.log(p)
+    const parts1 = p.split('/');
+    p = `${parts1[0]}/${parts1[1]}`;
+    console.log("AAA")
+    console.log(p)
 
-    if (name.startsWith("interface/")) {
-        out.push(...renderInterfacePage(name.slice(10), p));
+    const out: string[] = [];
+    name = parts1[2] + '/' + name;
+    console.log("asdfasdf");
+    console.log(name);
+
+    const parts = name.split('/');
+
+    if (parts.length > 1 && parts[0] == "interface") {
+        parts.shift();
+        let path = parts.join('/');
+        console.log("WEEE");
+        out.push(...renderInterfacePage(path, p));
     } else if (name == "types") {
         out.push(...renderTypeOverviewPage(p));
     } else if (name == "interface") {
@@ -294,6 +308,8 @@ function renderInterfacePage(name: string, p: string): string[] {
         }
     }
 
+    console.log("WOWW");
+
     return out;
 }
 
@@ -449,7 +465,7 @@ export function getTypedocTopic(p: string): MenuArticle[] {
     const out: MenuArticle[] = [];
 
     out.push({ id: "types", meta: { title: "Types", weight: -100 } });
-    
+
     const namespaces = getNamespaces(p);
     for (const [id, namespace] of Object.entries(namespaces)) {
         out.push({

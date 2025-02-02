@@ -6,6 +6,8 @@ interface ArticleMeta {
     deprecated?: boolean;
     experimental?: boolean;
     features?: string[];
+    type?: string;
+    
     /**
      * Disables page actions like editing or history.
      */
