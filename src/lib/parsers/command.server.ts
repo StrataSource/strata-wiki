@@ -141,9 +141,7 @@ export function parseCommand(p: string, name: string) {
         out.push(`🟪 Executable on Client and Server`);
     }
 
-    let sample = `${command.name} ${
-        command.type == "command" ? "<arguments>" : "<value>"
-    }`;
+    let sample = `${command.name} ${command.type == "cvar" ? "<value>" : ""}`;
     if (command.name.startsWith("+")) {
         sample = `bind [key] ${command.name}`;
     }
