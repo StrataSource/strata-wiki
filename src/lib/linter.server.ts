@@ -1,4 +1,4 @@
-import { building } from "$app/environment";
+import { building, dev } from "$app/environment";
 import fs from "fs";
 
 export interface LintIssue {
@@ -31,19 +31,21 @@ export function reportLint(
     message: string,
     link: string
 ) {
-    switch (level) {
-        case "caution":
-            console.error("❗", message);
-            break;
-        case "warning":
-            console.warn("🔶", message);
-            break;
-        case "note":
-            console.info("🔹", message);
-            break;
+    if (dev) {
+        switch (level) {
+            case "caution":
+                console.error("❗", message);
+                break;
+            case "warning":
+                console.warn("🔶", message);
+                break;
+            case "note":
+                console.info("🔹", message);
+                break;
 
-        default:
-            break;
+            default:
+                break;
+        }
     }
 
     if (lintStore.issues[id]) {
