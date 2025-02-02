@@ -215,7 +215,7 @@ export function parseCommand(p: string, name: string) {
     }
 
     if (command.flags.includes("norecord")) {
-        out.push("> [!NOTE]\n" + "> This value will not be recorded in demos.");
+        out.push("> [!NOTE]\n" + "> This will not be recorded in demos.");
     }
 
     if (command.flags.includes("demo")) {
