@@ -24,7 +24,7 @@
     import { fade } from "svelte/transition";
 
     interface Props {
-        menu?: MenuCategory[] | undefined;
+        menu?: MenuTopic[] | undefined;
     }
 
     let { menu = undefined }: Props = $props();

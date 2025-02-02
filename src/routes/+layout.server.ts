@@ -2,7 +2,7 @@ import { getGames, getMenu } from "$lib/content.server";
 import type { LayoutServerLoad } from "./$types";
 
 export const load = (async ({ params }) => {
-    let menu: MenuCategory[] | undefined = undefined;
+    let menu: MenuTopic[] | undefined = undefined;
 
     try {
         if (params.category) {

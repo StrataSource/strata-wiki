@@ -25,7 +25,7 @@ interface MenuArticle {
     id: string;
     meta: ArticleMeta;
 }
-interface MenuCategory {
+interface MenuTopic {
     id: string;
     title: string;
     weight: number | null;
