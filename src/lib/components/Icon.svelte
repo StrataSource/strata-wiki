@@ -1,6 +1,10 @@
 <script lang="ts">
-    export let d: string;
-    export let inline = false;
+    interface Props {
+        d: string;
+        inline?: boolean;
+    }
+
+    let { d, inline = false }: Props = $props();
 </script>
 
 <svg viewBox="0 0 24 24" class:inline>

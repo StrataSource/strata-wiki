@@ -1,9 +1,13 @@
 <script lang="ts">
     import { page } from "$app/stores";
 
-    export let title: string;
 
     import og from "$lib/assets/og.png";
+    interface Props {
+        title: string;
+    }
+
+    let { title }: Props = $props();
 </script>
 
 <svelte:head>

@@ -4,9 +4,13 @@
     import Icon from "../Icon.svelte";
     import Btn from "../Btn.svelte";
 
-    export let video: string;
+    interface Props {
+        video: string;
+    }
 
-    let state: "inactive" | "consent" | "active" = "inactive";
+    let { video }: Props = $props();
+
+    let state: "inactive" | "consent" | "active" = $state("inactive");
 
     function play() {
         if ($consent.youtube === true) {
@@ -29,7 +33,7 @@
 
 <div class="wrapper" style:--bg="url(/_/yt/{video}.jpg)">
     {#if state == "inactive" || (state == "active" && $consent.youtube !== true)}
-        <button on:click={play} class="inactive">
+        <button onclick={play} class="inactive">
             <Icon d={mdiPlay}></Icon>
         </button>
     {:else if state == "consent"}

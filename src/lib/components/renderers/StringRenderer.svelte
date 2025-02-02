@@ -5,7 +5,11 @@
     import type { PhrasingContent } from "mdast";
     import "@fontsource/source-code-pro";
 
-    export let dat: PhrasingContent[];
+    interface Props {
+        dat: PhrasingContent[];
+    }
+
+    let { dat }: Props = $props();
 
     const simpleElements: {
         [tag: string]: string;

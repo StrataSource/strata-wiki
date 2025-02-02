@@ -4,7 +4,7 @@
     import Link from "$lib/components/Link.svelte";
     import { mdiHeart } from "@mdi/js";
 
-    const messages = [
+    const messages = $state([
         "Long live the empire!",
         "Strata Rocks!",
         "Portal 2: Wiki Edition",
@@ -35,14 +35,14 @@
         "WARNING: Too many light styles on a face at (-81.000000, 1002.000000, -63.750000)",
         "Breaking news: Wallace Wrench has lost his wrench.",
         "Now with up to 46% more bugs!",
-    ];
+    ]);
 
     for (let i = messages.length - 1; i >= 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [messages[i], messages[j]] = [messages[j], messages[i]];
     }
 
-    let messageId = 0;
+    let messageId = $state(0);
 
     function updateMessage() {
         messageId++;
@@ -65,7 +65,7 @@
     </div>
 
     <div>
-        <button class="motd" on:click={updateMessage}>
+        <button class="motd" onclick={updateMessage}>
             <Icon d={mdiHeart}></Icon>
             {messages[messageId]}
         </button>

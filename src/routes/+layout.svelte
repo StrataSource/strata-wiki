@@ -9,7 +9,12 @@
     import faviconSvg from "$lib/assets/favicon.svg";
     import faviconPng from "$lib/assets/favicon.png";
 
-    export let data: LayoutData;
+    interface Props {
+        data: LayoutData;
+        children?: import('svelte').Snippet;
+    }
+
+    let { data, children }: Props = $props();
 
     $gameMeta = data.games;
 </script>
@@ -25,7 +30,7 @@
 
 <div>
     <main>
-        <slot></slot>
+        {@render children?.()}
     </main>
 
     <Footer></Footer>

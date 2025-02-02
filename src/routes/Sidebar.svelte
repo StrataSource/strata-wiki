@@ -23,9 +23,13 @@
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
 
-    export let menu: MenuCategory[] | undefined = undefined;
+    interface Props {
+        menu?: MenuCategory[] | undefined;
+    }
 
-    let loaded = false;
+    let { menu = undefined }: Props = $props();
+
+    let loaded = $state(false);
 
     onMount(() => {
         loaded = true;
@@ -37,8 +41,9 @@
 
 {#if $openMenu}
     <button
+        aria-label="Close menu"
         transition:fade={{ duration: 250 }}
-        on:click={() => ($openMenu = false)}
+        onclick={() => ($openMenu = false)}
         class="nav-bg"
     ></button>
 {/if}

@@ -4,7 +4,11 @@
     import Notice from "../Notice.svelte";
     import { gameMeta } from "$lib/stores";
 
-    export let dat: Blockquote;
+    interface Props {
+        dat: Blockquote;
+    }
+
+    let { dat }: Props = $props();
 
     //Clone object to prevent confusing hydration and cache
     const d = structuredClone(dat);
@@ -17,8 +21,8 @@
         "bug",
         "tip",
     ];
-    let type: NoticeType = "normal";
-    let game = "";
+    let type: NoticeType = $state("normal");
+    let game = $state("");
 
     function getType() {
         const firstChild = d.children[0];

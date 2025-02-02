@@ -9,12 +9,21 @@
     import Icon from "./Icon.svelte";
     import { gameMeta } from "$lib/stores";
 
-    export let type: NoticeType = "normal";
+    interface Props {
+        type?: NoticeType;
+        icon?: string | undefined;
+        title?: string | undefined;
+        game?: string;
+        children?: import("svelte").Snippet;
+    }
 
-    export let icon: string | undefined = undefined;
-    export let title: string | undefined = undefined;
-
-    export let game: string = "";
+    let {
+        type = "normal",
+        icon = undefined,
+        title = undefined,
+        game = "",
+        children,
+    }: Props = $props();
 
     if (type == "game" && game == "") {
         throw new Error("Notice type is game, but no game is specified!");
@@ -30,10 +39,10 @@
         bug: "var(--strata)",
     };
 
-    let color = colorMap[type] || "#333";
+    let color = $state(colorMap[type] || "#333");
 
     if (type == "game") {
-        color = $gameMeta[game].color || color;
+        color = $gameMeta[game].color || (() => color)();
     }
 </script>
 
@@ -43,7 +52,7 @@
             {#if icon}
                 <Icon d={icon}></Icon>
             {:else if type == "game"}
-                <!-- svelte-ignore a11y-missing-attribute -->
+                <!-- svelte-ignore a11y_missing_attribute -->
                 <img src="/_/icon/{game}.svg" />
             {:else if type == "note"}
                 <Icon d={mdiInformation}></Icon>
@@ -77,7 +86,7 @@
                 Bug:
             {/if}
         </div>
-        <slot></slot>
+        {@render children?.()}
     </div>
 </div>
 

@@ -7,7 +7,11 @@
     import { mdiDownload, mdiOpenInNew } from "@mdi/js";
     import { page } from "$app/stores";
 
-    export let dat: LinkType;
+    interface Props {
+        dat: LinkType;
+    }
+
+    let { dat }: Props = $props();
 
     let external = dat.url.includes("://");
 </script>

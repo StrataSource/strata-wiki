@@ -1,17 +1,28 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
 
-    export let href: string = "";
-    export let title: string | undefined = undefined;
-    export let download = false;
-    export let target: "_blank" | undefined = undefined;
+    interface Props {
+        href?: string;
+        title?: string | undefined;
+        download?: boolean;
+        target?: "_blank" | undefined;
+        children?: import('svelte').Snippet;
+    }
+
+    let {
+        href = "",
+        title = undefined,
+        download = false,
+        target = undefined,
+        children
+    }: Props = $props();
 
     const dispatch = createEventDispatcher();
 </script>
 
 {#if href == ""}
-    <button {title} on:click={(e) => dispatch("click", e)}>
-        <slot></slot>
+    <button {title} onclick={(e) => dispatch("click", e)}>
+        {@render children?.()}
     </button>
 {:else}
     <a
@@ -19,9 +30,9 @@
         {title}
         {target}
         download={download ? href.split("/").at(-1) : undefined}
-        on:click={(e) => dispatch("click", e)}
+        onclick={(e) => dispatch("click", e)}
     >
-        <slot></slot>
+        {@render children?.()}
     </a>
 {/if}
 
