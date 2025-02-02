@@ -76,7 +76,7 @@
         {
             id: "console/commands",
             title: "Console",
-            description: "Console and CVAR Reference",
+            description: "ConCommands and ConVars Reference",
             icon: mdiConsoleLine,
             seperation: false,
         },
