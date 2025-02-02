@@ -103,7 +103,7 @@ function parseJSON(p: string) {
         );
 
         for (const c of raw) {
-            if (c.name.startsWith("-")) {
+            if (c.name.startsWith("-") || c.name.startsWith("_")) {
                 continue;
             }
 
