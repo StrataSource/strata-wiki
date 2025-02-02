@@ -6,9 +6,13 @@
     import { page } from "$app/stores";
     import { urlifyString } from "$lib/util";
 
-    export let dat: Heading;
+    interface Props {
+        dat: Heading;
+    }
 
-    let id = "";
+    let { dat }: Props = $props();
+
+    let id = $state("");
 
     function generateID(children: PhrasingContent[]) {
         for (const child of children) {
@@ -32,7 +36,7 @@
 
     generateID(dat.children);
 
-    let copySuccessful = 0;
+    let copySuccessful = $state(0);
 
     function copyHash() {
         navigator.clipboard.writeText(
@@ -48,7 +52,7 @@
 
 <svelte:element this={"h" + dat.depth} {id} class="h">
     <StringRenderer dat={dat.children}></StringRenderer>
-    <button title="Copy position" on:click={copyHash}>
+    <button title="Copy position" onclick={copyHash}>
         {#if copySuccessful > 0}
             <Icon d={mdiCheck} inline></Icon>
         {:else}

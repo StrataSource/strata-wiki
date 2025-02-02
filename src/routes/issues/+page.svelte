@@ -7,7 +7,7 @@
     import type { LintIssue } from "$lib/linter.server";
     import { onMount } from "svelte";
 
-    let lint: { issues: { [id: string]: LintIssue }; timestamp: number };
+    let lint: { issues: { [id: string]: LintIssue }; timestamp: number } = $state();
 
     onMount(async () => {
         lint = await (await fetch("/report.json")).json();

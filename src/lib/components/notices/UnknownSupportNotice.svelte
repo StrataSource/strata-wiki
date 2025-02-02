@@ -3,7 +3,8 @@
     import Notice from "../Notice.svelte";
     import { currentGame, gameMeta } from "$lib/stores";
 
-    export let name = $gameMeta[$currentGame].name;
+    /** @type {{name?: any}} */
+    let { name = $gameMeta[$currentGame].name } = $props();
 </script>
 
 <Notice

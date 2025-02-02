@@ -7,9 +7,13 @@
     import NoticeRenderer from "./NoticeRenderer.svelte";
     import TableRenderer from "./TableRenderer.svelte";
 
-    export let dat: RootContent;
 
-    export let i: number | undefined = undefined;
+    interface Props {
+        dat: RootContent;
+        i?: number | undefined;
+    }
+
+    let { dat, i = undefined }: Props = $props();
 </script>
 
 <div class="root" class:first={i === 0}>

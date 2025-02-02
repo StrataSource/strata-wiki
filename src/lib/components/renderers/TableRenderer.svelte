@@ -3,7 +3,11 @@
     import { page } from "$app/stores";
     import StringRenderer from "./StringRenderer.svelte";
 
-    export let dat: Table;
+    interface Props {
+        dat: Table;
+    }
+
+    let { dat }: Props = $props();
 </script>
 
 <div class="wrapper">

@@ -46,7 +46,7 @@
             </div>
 
             <div class="mobile">
-                <button on:click={() => ($openMenu = !$openMenu)}>
+                <button onclick={() => ($openMenu = !$openMenu)}>
                     {#if $openMenu}
                         <Icon d={mdiClose}></Icon>
                     {:else}

@@ -12,7 +12,11 @@
     import type { PageData } from "./$types";
     import UnknownSupportNotice from "$lib/components/notices/UnknownSupportNotice.svelte";
 
-    export let data: PageData;
+    interface Props {
+        data: PageData;
+    }
+
+    let { data }: Props = $props();
 
     afterNavigate(() => {
         $currentArticle = data.meta;

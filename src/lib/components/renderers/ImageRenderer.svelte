@@ -3,8 +3,12 @@
     import { page } from "$app/stores";
     import YouTube from "../embeds/YouTube.svelte";
 
-    export let dat: Image;
-    let type: "image" | "aside" | "youtube" = "image";
+    interface Props {
+        dat: Image;
+    }
+
+    let { dat }: Props = $props();
+    let type: "image" | "aside" | "youtube" = $state("image");
 
     if (dat.url.startsWith("aside")) {
         type = "aside";

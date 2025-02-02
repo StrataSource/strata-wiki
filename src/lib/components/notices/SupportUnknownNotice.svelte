@@ -5,11 +5,15 @@
     import { gameMeta } from "$lib/stores";
     import UnknownSupportNotice from "./UnknownSupportNotice.svelte";
 
-    export let features: string[];
+    interface Props {
+        features: string[];
+    }
+
+    let { features }: Props = $props();
 
     const support = getGamesWithSupport(features);
 
-    let gamesString = "";
+    let gamesString = $state("");
 
     for (let index = 0; index < support.games.length; index++) {
         const game = support.games[index];
@@ -23,7 +27,7 @@
         gamesString += $gameMeta[game].name;
     }
 
-    let unknownGamesString = "";
+    let unknownGamesString = $state("");
 
     for (let index = 0; index < support.unknownGames.length; index++) {
         const game = support.unknownGames[index];

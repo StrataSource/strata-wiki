@@ -4,7 +4,11 @@
     import Metadata from "$lib/components/Metadata.svelte";
     import type { PageData } from "./$types";
 
-    export let data: PageData;
+    interface Props {
+        data: PageData;
+    }
+
+    let { data }: Props = $props();
 </script>
 
 <Metadata title={data.meta.title}></Metadata>

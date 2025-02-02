@@ -7,7 +7,11 @@
     import { mdiCheck, mdiContentCopy } from "@mdi/js";
     import "@fontsource/source-code-pro";
 
-    export let dat: Code;
+    interface Props {
+        dat: Code;
+    }
+
+    let { dat }: Props = $props();
 
     if (dat.lang == "kv" || dat.lang == "vdf") {
         hljs.registerLanguage("kv", (hljs) => ({
@@ -127,7 +131,7 @@
         });
     }
 
-    let copySuccess = 0;
+    let copySuccess = $state(0);
 
     function copy() {
         navigator.clipboard.writeText(dat.value);
@@ -142,7 +146,7 @@
 
 <div class="wrapper">
     <div class="actions">
-        <button on:click={copy} title="Copy code">
+        <button onclick={copy} title="Copy code">
             {#if copySuccess > 0}
                 <Icon d={mdiCheck}></Icon>
             {:else}

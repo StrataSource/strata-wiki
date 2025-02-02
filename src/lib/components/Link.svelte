@@ -1,11 +1,21 @@
 <script lang="ts">
-    export let href: string;
-    export let title: string | null | undefined = undefined;
-    export let target: "_blank" | undefined = undefined
+    interface Props {
+        href: string;
+        title?: string | null | undefined;
+        target?: "_blank" | undefined;
+        children?: import('svelte').Snippet;
+    }
+
+    let {
+        href,
+        title = undefined,
+        target = undefined,
+        children
+    }: Props = $props();
 </script>
 
 <a {href} {title} {target}>
-    <slot></slot>
+    {@render children?.()}
 </a>
 
 <style lang="scss">

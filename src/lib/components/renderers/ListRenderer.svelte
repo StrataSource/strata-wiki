@@ -3,7 +3,11 @@
     import StringRenderer from "./StringRenderer.svelte";
     import RootRenderer from "./RootRenderer.svelte";
 
-    export let dat: List;
+    interface Props {
+        dat: List;
+    }
+
+    let { dat }: Props = $props();
 </script>
 
 <svelte:element this={dat.ordered ? "ol" : "ul"}>

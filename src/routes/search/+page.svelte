@@ -22,9 +22,9 @@
 
     let term = writable("");
 
-    let results: PagefindSearchFragment[] = [];
+    let results: PagefindSearchFragment[] = $state([]);
 
-    let loading = 0;
+    let loading = $state(0);
 
     onMount(async () => {
         //@ts-expect-error
