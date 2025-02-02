@@ -20,6 +20,7 @@ import { flushLint, reportLint } from "./linter.server";
 import {
     getTypedocPageMeta,
     getTypedocTopic,
+    getTypedocSubtopics,
     parseTypedoc,
 } from "./parsers/typedoc.server";
 import {
@@ -40,8 +41,7 @@ import {
 import { dev } from "$app/environment";
 
 export function getContentMeta(
-    category: string,
-    topic: string
+    path: string,
 ): {
     type:
         | "markdown"
@@ -56,9 +56,9 @@ export function getContentMeta(
     let meta: ArticleMeta;
 
     //Check if meta.json exists, if not complain and fall back to using ID as the title
-    if (fs.existsSync(`../docs/${category}/${topic || ""}/meta.json`)) {
+    if (fs.existsSync(`../docs/${path}/meta.json`)) {
         const metaRaw = fs.readFileSync(
-            `../docs/${category}/${topic || ""}/meta.json`,
+            `../docs/${path}/meta.json`,
             "utf-8"
         );
 
@@ -66,34 +66,34 @@ export function getContentMeta(
     } else {
         reportLint(
             "caution",
-            `meta_missing_${category}/${topic || ""}`,
-            `${category}${topic ? "/" + topic : ""} is missing a meta.json!`,
-            `${category}/${topic || ""}`
+            `meta_missing_${path}`,
+            `${path} is missing a meta.json!`,
+            `${path}`
         );
 
         meta = {
-            title: topic,
+            title: path,
         };
     }
 
     //Check if topic type is material
-    if (fs.existsSync(`../docs/${category}/${topic || ""}/materials.json`)) {
+    if (fs.existsSync(`../docs/${path}/materials.json`)) {
         return { type: "material", meta: meta };
     }
 
     //Check if topic type is typedoc
-    if (fs.existsSync(`../docs/${category}/${topic || ""}/typedoc.json`)) {
+    if (fs.existsSync(`../docs/${path}/typedoc.json`)) {
         return { type: "typedoc", meta: meta };
     }
 
     //Check if topic type is vscript
-    if (fs.existsSync(`../docs/${category}/${topic || ""}/vscript.json`)) {
+    if (fs.existsSync(`../docs/${path}/vscript.json`)) {
         return { type: "vscript", meta: meta };
     }
 
     //Check if topic type is vscript
     if (
-        fs.existsSync(`../docs/${category}/${topic || ""}/sound_operators.json`)
+        fs.existsSync(`../docs/${path}/sound_operators.json`)
     ) {
         return { type: "sound_operators", meta: meta };
     }
@@ -104,14 +104,14 @@ export function getContentMeta(
     for (const game of Object.keys(games)) {
         if (
             fs.existsSync(
-                `../docs/${category}/${topic || ""}/entities_${game}.json`
+                `../docs/${path}/entities_${game}.json`
             )
         ) {
             return { type: "entity", meta: meta };
         }
         if (
             fs.existsSync(
-                `../docs/${category}/${topic || ""}/commands_${game}.json`
+                `../docs/${path}/commands_${game}.json`
             )
         ) {
             return { type: "command", meta: meta };
@@ -121,50 +121,50 @@ export function getContentMeta(
     return { type: "markdown", meta: meta };
 }
 
-export function getContent(category: string, topic: string, page: string) {
+export function getContent(path: string, article: string) {
     if (dev) {
-        console.log(`\n--- ${category}/${topic}/${page} ---\n`);
+        console.log(`\n--- ${path}/${article} ---\n`);
     }
 
     let c: Root;
 
-    switch (getContentMeta(category, topic).type) {
+    switch (getContentMeta(path).type) {
         case "markdown":
-            if (!fs.existsSync(`../docs/${category}/${topic}/${page}.md`)) {
+            if (!fs.existsSync(`../docs/${path}/${article}.md`)) {
                 error(404, "Page not found");
             }
 
             c = parseMarkdown(
                 fs.readFileSync(
-                    `../docs/${category}/${topic}/${page}.md`,
+                    `../docs/${path}/${article}.md`,
                     "utf-8"
                 ),
-                `${category}/${topic}/${page}`
+                `${path}/${article}`
             );
             break;
 
         case "material":
-            c = parseMaterial(`${category}/${topic}`, page);
+            c = parseMaterial(path, article);
             break;
 
         case "entity":
-            c = parseEntity(`${category}/${topic}`, page);
+            c = parseEntity(path, article);
             break;
 
         case "typedoc":
-            c = parseTypedoc(`${category}/${topic}`, page);
+            c = parseTypedoc(path, article);
             break;
 
         case "vscript":
-            c = parseVscript(`${category}/${topic}`, page);
+            c = parseVscript(path, article);
             break;
 
         case "sound_operators":
-            c = parseSoundOperators(`${category}/${topic}`, page);
+            c = parseSoundOperators(path, article);
             break;
 
         case "command":
-            c = parseCommand(`${category}/${topic}`, page);
+            c = parseCommand(path, article);
             break;
 
         default:
@@ -194,74 +194,79 @@ function sortByWeight(
 
 const menuCache: { [id: string]: MenuTopic[] } = {};
 
-export function getMenu(category: string) {
-    if (menuCache[category]) {
-        return menuCache[category];
+export function getMenu(path: string) {
+    if (menuCache[path]) {
+        return menuCache[path];
     }
 
-    if (!fs.existsSync(`../docs/${category}`)) {
+    if (!fs.existsSync(`../docs/${path}`)) {
         error(404);
     }
 
-    const topics = fs.readdirSync(`../docs/${category}`);
+    const topics = fs.readdirSync(`../docs/${path}`);
 
     const menu: MenuTopic[] = [];
 
     for (const topic of topics) {
-        const stat = fs.lstatSync(`../docs/${category}/${topic}`);
+        const stat = fs.lstatSync(`../docs/${path}/${topic}`);
         if (!stat.isDirectory()) {
             continue;
         }
 
-        menu.push(getMenuTopic(category, topic));
+        menu.push(getMenuTopic(`${path}/${topic}`));
     }
 
-    return (menuCache[category] = menu.sort(sortByWeight));
+    return (menuCache[path] = menu.sort(sortByWeight));
 }
 
 const topicCache: { [id: string]: MenuTopic } = {};
 
-export function getMenuTopic(category: string, topic: string) {
-    const meta = getContentMeta(category, topic);
 
-    if (topicCache[category + ";" + topic]) {
-        return topicCache[category + ";" + topic];
+export function getMenuTopic(path: string) {
+    const meta = getContentMeta(path);
+
+    if (topicCache[path]) {
+        return topicCache[path];
     }
 
     const entry: MenuTopic = {
-        id: topic,
+        id: path,
         title: meta.meta.title,
         weight: typeof meta.meta.weight == "number" ? meta.meta.weight : null,
         articles: [],
+        subtopics: [],
     };
+    
+    entry.subtopics = getMenu(path);
 
     switch (meta.type) {
         case "markdown":
-            entry.articles = getMarkdownTopic(category, topic);
+            entry.articles = getMarkdownTopic(path);
             break;
 
         case "material":
-            entry.articles = getMaterialTopic(`${category}/${topic}`);
+            entry.articles = getMaterialTopic(path);
             break;
 
         case "entity":
-            entry.articles = getEntityTopic(`${category}/${topic}`);
+            entry.articles = getEntityTopic(path);
             break;
 
         case "typedoc":
-            entry.articles = getTypedocTopic(`${category}/${topic}`);
+            entry.articles = getTypedocTopic(path);
+            entry.subtopics = getTypedocSubtopics(path);
             break;
 
         case "vscript":
-            entry.articles = getVscriptTopic(`${category}/${topic}`);
+            entry.articles = getVscriptTopic(path);
             break;
 
         case "sound_operators":
-            entry.articles = getSoundOperatorsTopic(`${category}/${topic}`);
+            entry.articles = getSoundOperatorsTopic(path);
             break;
 
         case "command":
-            entry.articles = getCommandTopic(`${category}/${topic}`);
+            entry.articles = getCommandTopic(path);
             break;
 
         default:
@@ -276,40 +281,40 @@ export function getMenuTopic(category: string, topic: string) {
         entry.articles.reverse();
     }
 
-    topicCache[category + ";" + topic] = entry;
+    topicCache[path] = entry;
 
     return entry;
 }
-export function getPageMeta(category: string, topic: string, article: string) {
-    const meta = getContentMeta(category, topic);
+export function getPageMeta(path: string, article: string) {
+    const meta = getContentMeta(path);
 
     switch (meta.type) {
         case "markdown":
-            return getMarkdownPageMeta(category, topic, article);
+            return getMarkdownPageMeta(path, article);
             break;
 
         case "material":
-            return getMaterialPageMeta(`${category}/${topic}`, article);
+            return getMaterialPageMeta(path, article);
             break;
 
         case "entity":
-            return getEntityPageMeta(`${category}/${topic}`, article);
+            return getEntityPageMeta(path, article);
             break;
 
         case "typedoc":
-            return getTypedocPageMeta(`${category}/${topic}`, article);
+            return getTypedocPageMeta(path, article);
             break;
 
         case "vscript":
-            return getVscriptPageMeta(`${category}/${topic}`, article);
+            return getVscriptPageMeta(path, article);
             break;
 
         case "sound_operators":
-            return getSoundOperatorsPageMeta(`${category}/${topic}`, article);
+            return getSoundOperatorsPageMeta(path, article);
             break;
 
         case "command":
-            return getCommandPageMeta(`${category}/${topic}`, article);
+            return getCommandPageMeta(path, article);
             break;
 
         default:
@@ -328,7 +333,7 @@ export function getCategories() {
             continue;
         }
 
-        menu.push({ id: category, ...getContentMeta(category, "").meta });
+        menu.push({ id: category, ...getContentMeta(category).meta });
     }
 
     return menu;

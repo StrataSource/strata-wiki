@@ -31,12 +31,12 @@ export function parseMarkdown(doc: string, id?: string) {
     return res;
 }
 
-export function getMarkdownTopic(category: string, topic: string) {
-    if (!fs.existsSync(`../docs/${category}/${topic}`)) {
+export function getMarkdownTopic(path: string) {
+    if (!fs.existsSync(`../docs/${path}`)) {
         error(404, "Page not found");
     }
 
-    const articles = fs.readdirSync(`../docs/${category}/${topic}`);
+    const articles = fs.readdirSync(`../docs/${path}`);
 
     const res: MenuArticle[] = [];
 
@@ -45,7 +45,7 @@ export function getMarkdownTopic(category: string, topic: string) {
             continue;
         }
 
-        const meta = getMarkdownPageMeta(category, topic, article.slice(0, -3));
+        const meta = getMarkdownPageMeta(path, article.slice(0, -3));
 
         res.push({ id: article.slice(0, -3), meta: meta });
     }
@@ -54,13 +54,12 @@ export function getMarkdownTopic(category: string, topic: string) {
 }
 
 export function getMarkdownPageMeta(
-    category: string,
-    topic: string,
+    path: string,
     article: string
 ) {
     const parsed = parseMarkdown(
-        fs.readFileSync(`../docs/${category}/${topic}/${article}.md`, "utf-8"),
-        `${category}/${topic}/${article}`
+        fs.readFileSync(`../docs/${path}/${article}.md`, "utf-8"),
+        `${path}/${article}`
     );
 
     let metaRaw = `title: "${article}"`;

@@ -31,6 +31,7 @@ interface MenuTopic {
     title: string;
     weight: number | null;
     articles: MenuArticle[];
+    subtopics: MenuTopic[];
 }
 
 interface GameMeta {
