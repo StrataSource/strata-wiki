@@ -445,11 +445,9 @@ function renderMainPage(p: string, name: string): string[] {
 export function getTypedocTopic(p: string): MenuArticle[] {
     const out: MenuArticle[] = [];
 
-    const namespaces = getNamespaces(p);
-
     out.push({ id: "types", meta: { title: "Types", weight: -100 } });
-    out.push({ id: "interface", meta: { title: "Interfaces", weight: -100 } });
-
+    
+    const namespaces = getNamespaces(p);
     for (const [id, namespace] of Object.entries(namespaces)) {
         out.push({
             id: id,
@@ -463,6 +461,36 @@ export function getTypedocTopic(p: string): MenuArticle[] {
             },
         });
     }
+
+    return out;
+}
+
+export function getTypedocSubtopics(p: string): MenuTopic[] {
+    const out: MenuTopic[] = [];
+
+    const interfaces = getInterfaces(p);
+    const interfaceTopic: MenuTopic = {
+        id: `${p}/interface`,
+        title: "Interfaces",
+        weight: -1,
+        articles: [],
+        subtopics: [],
+    };
+    for (const [id, namespace] of Object.entries(interfaces)) {
+        interfaceTopic.articles.push({
+            id: id,
+            meta: {
+                title: id,
+                features:
+                namespace.source?.path == sharedName ||
+                !namespace.source?.path
+                ? []
+                : [namespace.source.path.toUpperCase()],
+            },
+        });
+    }
+    out.push(interfaceTopic);
+
 
     return out;
 }
