@@ -236,6 +236,10 @@ export function parseCommand(p: string, name: string) {
         );
     }
 
+    if (fs.existsSync(`../docs/${p}/${name}.md`)) {
+        out.push(fs.readFileSync(`../docs/${p}/${name}.md`, "utf-8"));
+    }
+
     return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
 }
 
