@@ -45,7 +45,7 @@
     :global(body) {
         background: #111;
         color: #fff;
-        font-family: "Lexend Deca";
+        font-family: "Inter", "Helvetica Neue", sans-serif;
 
         margin: 0;
 
@@ -58,6 +58,10 @@
         --strataBright: #ef8686;
         --strataDark: #a32b2b;
     }
+
+	:global(h1, h2, h3, h4, h5, h6) {
+		font-family: "Lexend Deca", "Helvetica Neue", sans-serif;
+	}
 
     div {
         display: flex;

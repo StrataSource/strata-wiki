@@ -41,6 +41,10 @@
 </div>
 
 <style>
+	:global(.root) {
+		line-height: 1.5;
+	}
+
     :global(.root:first-child *),
     :global(.first.root *) {
         margin-top: 0;
