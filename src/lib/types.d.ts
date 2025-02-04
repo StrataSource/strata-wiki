@@ -1,3 +1,15 @@
+interface ContentMeta {
+    type:
+        | "markdown"
+        | "material"
+        | "entity"
+        | "typedoc"
+        | "vscript"
+        | "sound_operators"
+        | "command";
+    meta: ArticleMeta;
+}
+
 interface ArticleMeta {
     title: string;
     description?: string;

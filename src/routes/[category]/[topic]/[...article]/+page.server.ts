@@ -1,9 +1,13 @@
 import type { PageServerLoad } from "./$types";
-import { getContent, getPageMeta } from "$lib/content.server";
+import { getContent, getPageMeta, getContentMeta } from "$lib/content.server";
 
 export const load = (async ({ params }) => {
+    const contentmeta = await getContentMeta(params.category, params.topic);
+    const doc = await getContent(contentmeta, params.category, params.topic, params.article);
+    const meta = await getPageMeta(contentmeta, params.category, params.topic, params.article);
+
     return {
-        doc: getContent(params.category, params.topic, params.article),
-        meta: getPageMeta(params.category, params.topic, params.article),
+        doc: doc,
+        meta: meta,
     };
 }) satisfies PageServerLoad;

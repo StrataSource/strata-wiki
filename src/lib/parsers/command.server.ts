@@ -1,8 +1,8 @@
-import fs from "fs";
+import { promises as fs } from "fs";
 import { error } from "@sveltejs/kit";
 import { parseMarkdown } from "./markdown.server";
 import { reportLint } from "$lib/linter.server";
-import { getGames } from "$lib/content.server.js";
+import { getGames, fileExists } from "$lib/content.server.js";
 
 interface Command {
     name: string;
@@ -74,20 +74,20 @@ interface ExpandedCommand extends Command {
 const cache: { [id: string]: { [commandName: string]: ExpandedCommand } } = {};
 const unknownCache: { [id: string]: { [game: string]: boolean } } = {};
 
-function parseJSON(p: string) {
+async function parseJSON(p: string) {
     if (p && cache[p]) {
         return cache[p];
     }
 
     console.log("Indexing Commands for", p, "This might take a while...");
 
-    const games = getGames();
+    const games = await getGames();
 
     cache[p] = {};
     unknownCache[p] = {};
 
     for (const game of Object.keys(games)) {
-        if (!fs.existsSync(`../docs/${p}/commands_${game}.json`)) {
+        if (!await fileExists(`../docs/${p}/commands_${game}.json`)) {
             reportLint(
                 "caution",
                 `commands_${game}`,
@@ -99,7 +99,7 @@ function parseJSON(p: string) {
         }
 
         const raw: Command[] = JSON.parse(
-            fs.readFileSync(`../docs/${p}/commands_${game}.json`, "utf-8")
+            await fs.readFile(`../docs/${p}/commands_${game}.json`, { encoding: 'utf8' })
         );
 
         for (const c of raw) {
@@ -117,11 +117,13 @@ function parseJSON(p: string) {
         }
     }
 
+    console.log("Done indexing Commands for", p, "!");
+
     return cache[p];
 }
 
-export function parseCommand(p: string, name: string) {
-    const all = parseJSON(p);
+export async function parseCommand(p: string, name: string) {
+    const all = await parseJSON(p);
 
     const out: string[] = [];
 
@@ -236,17 +238,17 @@ export function parseCommand(p: string, name: string) {
         );
     }
 
-    if (fs.existsSync(`../docs/${p}/${name}.md`)) {
-        out.push(fs.readFileSync(`../docs/${p}/${name}.md`, "utf-8"));
+    if (await fileExists(`../docs/${p}/${name}.md`)) {
+        out.push(await fs.readFile(`../docs/${p}/${name}.md`, { encoding: 'utf8' }));
     }
 
     return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
 }
 
-export function getCommandTopic(p: string) {
+export async function getCommandTopic(p: string) {
     const res: MenuArticle[] = [];
 
-    const all = parseJSON(p);
+    const all = await parseJSON(p);
 
     for (const c of Object.values(all)) {
         res.push({
@@ -257,7 +259,7 @@ export function getCommandTopic(p: string) {
                     ...Object.keys(unknownCache[p]).map(
                         (v) => `UNKNOWN_${v.toUpperCase()}`
                     ),
-                    ...c.games.map((v) => v.toUpperCase()),
+                    ...c.games.map((v: string) => v.toUpperCase()),
                 ],
             },
         });
@@ -266,8 +268,8 @@ export function getCommandTopic(p: string) {
     return res;
 }
 
-export function getCommandPageMeta(p: string, name: string): ArticleMeta {
-    const all = parseJSON(p);
+export async function getCommandPageMeta(p: string, name: string): Promise<ArticleMeta> {
+    const all = await parseJSON(p);
 
     const c = all[name];
 

@@ -1,4 +1,4 @@
-import fs from "fs";
+import { promises as fs } from "fs";
 import {
     getMarkdownPageMeta,
     getMarkdownTopic,
@@ -39,25 +39,24 @@ import {
 } from "./parsers/command.server.js";
 import { dev } from "$app/environment";
 
-export function getContentMeta(
+export async function fileExists(path: string): Promise<boolean> {
+    try {
+        await fs.access(path, fs.constants.R_OK);
+    } catch {
+        return false;
+    }
+    return true;
+}
+
+export async function getContentMeta(
     category: string,
     topic: string
-): {
-    type:
-        | "markdown"
-        | "material"
-        | "entity"
-        | "typedoc"
-        | "vscript"
-        | "sound_operators"
-        | "command";
-    meta: ArticleMeta;
-} {
+): Promise<ContentMeta> {
     let meta: ArticleMeta;
 
     //Check if meta.json exists, if not complain and fall back to using ID as the title
-    if (fs.existsSync(`../docs/${category}/${topic || ""}/meta.json`)) {
-        const metaRaw = fs.readFileSync(
+    if (await fileExists(`../docs/${category}/${topic || ""}/meta.json`)) {
+        const metaRaw = await fs.readFile(
             `../docs/${category}/${topic || ""}/meta.json`,
             "utf-8"
         );
@@ -77,43 +76,33 @@ export function getContentMeta(
     }
 
     //Check if topic type is material
-    if (fs.existsSync(`../docs/${category}/${topic || ""}/materials.json`)) {
+    if (await fileExists(`../docs/${category}/${topic || ""}/materials.json`)) {
         return { type: "material", meta: meta };
     }
 
     //Check if topic type is typedoc
-    if (fs.existsSync(`../docs/${category}/${topic || ""}/typedoc.json`)) {
+    if (await fileExists(`../docs/${category}/${topic || ""}/typedoc.json`)) {
         return { type: "typedoc", meta: meta };
     }
 
     //Check if topic type is vscript
-    if (fs.existsSync(`../docs/${category}/${topic || ""}/vscript.json`)) {
+    if (await fileExists(`../docs/${category}/${topic || ""}/vscript.json`)) {
         return { type: "vscript", meta: meta };
     }
 
     //Check if topic type is vscript
-    if (
-        fs.existsSync(`../docs/${category}/${topic || ""}/sound_operators.json`)
-    ) {
+    if (await fileExists(`../docs/${category}/${topic || ""}/sound_operators.json`)) {
         return { type: "sound_operators", meta: meta };
     }
 
     //Check if topic type is entity by looping over every game and looking for that file.
-    const games = getGames();
+    const games = await getGames();
 
     for (const game of Object.keys(games)) {
-        if (
-            fs.existsSync(
-                `../docs/${category}/${topic || ""}/entities_${game}.json`
-            )
-        ) {
+        if (await fileExists(`../docs/${category}/${topic || ""}/entities_${game}.json`)) {
             return { type: "entity", meta: meta };
         }
-        if (
-            fs.existsSync(
-                `../docs/${category}/${topic || ""}/commands_${game}.json`
-            )
-        ) {
+        if (await fileExists(`../docs/${category}/${topic || ""}/commands_${game}.json`)) {
             return { type: "command", meta: meta };
         }
     }
@@ -121,23 +110,23 @@ export function getContentMeta(
     return { type: "markdown", meta: meta };
 }
 
-export function getContent(category: string, topic: string, page: string) {
+export async function getContent(meta: ContentMeta, category: string, topic: string, page: string) {
     if (dev) {
         console.log(`\n--- ${category}/${topic}/${page} ---\n`);
     }
 
     let c: Root;
 
-    switch (getContentMeta(category, topic).type) {
+    switch (meta.type) {
         case "markdown":
-            if (!fs.existsSync(`../docs/${category}/${topic}/${page}.md`)) {
+            if (!(await fileExists(`../docs/${category}/${topic}/${page}.md`))) {
                 error(404, "Page not found");
             }
 
             c = parseMarkdown(
-                fs.readFileSync(
+                await fs.readFile(
                     `../docs/${category}/${topic}/${page}.md`,
-                    "utf-8"
+                    { encoding: 'utf8' }
                 ),
                 `${category}/${topic}/${page}`
             );
@@ -164,7 +153,7 @@ export function getContent(category: string, topic: string, page: string) {
             break;
 
         case "command":
-            c = parseCommand(`${category}/${topic}`, page);
+            c = await parseCommand(`${category}/${topic}`, page);
             break;
 
         default:
@@ -192,30 +181,30 @@ function sortByWeight(
     }
 }
 
-export function getMenu(category: string) {
-    if (!fs.existsSync(`../docs/${category}`)) {
+export async function getMenu(category: string) {
+    if (!(await fileExists(`../docs/${category}`))) {
         error(404);
     }
 
-    const topics = fs.readdirSync(`../docs/${category}`);
+    const topics = await fs.readdir(`../docs/${category}`);
 
     const menu: MenuCategory[] = [];
 
     for (const topic of topics) {
-        const stat = fs.lstatSync(`../docs/${category}/${topic}`);
+        const stat = await fs.lstat(`../docs/${category}/${topic}`);
         if (!stat.isDirectory()) {
             continue;
         }
 
-        menu.push(getMenuTopic(category, topic));
+        const contentmeta = await getContentMeta(category, topic);
+        const menutopic = await getMenuTopic(contentmeta, category, topic);
+        menu.push(menutopic);
     }
 
     return menu.sort(sortByWeight);
 }
 
-export function getMenuTopic(category: string, topic: string) {
-    const meta = getContentMeta(category, topic);
-
+export async function getMenuTopic(meta: ContentMeta, category: string, topic: string) {
     const entry: MenuCategory = {
         id: topic,
         title: meta.meta.title,
@@ -249,7 +238,7 @@ export function getMenuTopic(category: string, topic: string) {
             break;
 
         case "command":
-            entry.articles = getCommandTopic(`${category}/${topic}`);
+            entry.articles = await getCommandTopic(`${category}/${topic}`);
             break;
 
         default:
@@ -262,8 +251,8 @@ export function getMenuTopic(category: string, topic: string) {
 
     return entry;
 }
-export function getPageMeta(category: string, topic: string, article: string) {
-    const meta = getContentMeta(category, topic);
+
+export async function getPageMeta(meta: ContentMeta, category: string, topic: string, article: string) {
 
     switch (meta.type) {
         case "markdown":
@@ -291,7 +280,7 @@ export function getPageMeta(category: string, topic: string, article: string) {
             break;
 
         case "command":
-            return getCommandPageMeta(`${category}/${topic}`, article);
+            return await getCommandPageMeta(`${category}/${topic}`, article);
             break;
 
         default:
@@ -299,31 +288,31 @@ export function getPageMeta(category: string, topic: string, article: string) {
     }
 }
 
-export function getCategories() {
-    const categories = fs.readdirSync(`../docs`);
+export async function getCategories() {
+    const categories = await fs.readdir(`../docs`);
 
     const menu: ArticleMeta[] = [];
 
     for (const category of categories) {
-        const stat = fs.lstatSync(`../docs/${category}`);
+        const stat = await fs.lstat(`../docs/${category}`);
         if (!stat.isDirectory()) {
             continue;
         }
 
-        menu.push({ id: category, ...getContentMeta(category, "").meta });
+        menu.push({ id: category, ...(await getContentMeta(category, "")).meta });
     }
-
+    
     return menu;
 }
 
-export function getGames() {
-    const gamesList = fs.readdirSync(`../games`);
+export async function getGames() {
+    const gamesList = await fs.readdir(`../games`);
 
     const games: GameMetaCollection = {};
 
     for (const game of gamesList) {
         games[game] = JSON.parse(
-            fs.readFileSync(`../games/${game}/meta.json`, "utf-8")
+            await fs.readFile(`../games/${game}/meta.json`, "utf-8")
         );
     }
 

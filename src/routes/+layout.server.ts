@@ -1,19 +1,11 @@
-import { getGames, getMenu } from "$lib/content.server";
+import { getGames, getMenu, getContentMeta } from "$lib/content.server";
 import type { LayoutServerLoad } from "./$types";
 
 export const load = (async ({ params }) => {
-    let menu: MenuCategory[] | undefined = undefined;
-
-    try {
-        if (params.category) {
-            menu = getMenu(params.category);
-        }
-    } catch {
-        /* empty */
-    }
-
+    const games = await getGames();
+    const menu = params.category ? await getMenu(params.category) : undefined;
     return {
-        games: getGames(),
+        games: games,
         menu: menu,
     };
 }) satisfies LayoutServerLoad;

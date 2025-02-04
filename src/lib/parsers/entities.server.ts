@@ -82,6 +82,8 @@ function indexEntities(p: string) {
     }
 
     isIndexed.push(p);
+
+    console.log("Done indexing Entities for", p, "!");
 }
 
 export function parseEntity(p: string, name: string) {
