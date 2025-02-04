@@ -23,18 +23,20 @@
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
 
-    interface Props {
-        menu?: MenuCategory[] | undefined;
-    }
-
-    let { menu = undefined }: Props = $props();
+    let menu: MenuCategory[] | undefined = $state(undefined);
 
     let loaded = $state(false);
 
-    onMount(() => {
+    onMount(async () => {
         loaded = true;
-        navigating.subscribe(() => {
+        menu = undefined;
+        navigating.subscribe(async () => {
             $openMenu = false;
+           
+            menu = undefined;
+            if($page.params.category) {
+                menu = await (await fetch("/_/menu/" + $page.params.category)).json();
+            }
         });
     });
 </script>

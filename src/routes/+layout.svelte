@@ -26,7 +26,7 @@
 
 <Topbar></Topbar>
 
-<Sidebar menu={data.menu}></Sidebar>
+<Sidebar></Sidebar>
 
 <div>
     <main>
