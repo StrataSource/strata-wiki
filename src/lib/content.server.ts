@@ -213,8 +213,14 @@ export function getMenu(category: string) {
     return menu.sort(sortByWeight);
 }
 
+const topicCache: { [id: string]: MenuCategory } = {};
+
 export function getMenuTopic(category: string, topic: string) {
     const meta = getContentMeta(category, topic);
+
+    if (topicCache[category + ";" + topic]) {
+        return topicCache[category + ";" + topic];
+    }
 
     const entry: MenuCategory = {
         id: topic,
@@ -259,6 +265,8 @@ export function getMenuTopic(category: string, topic: string) {
     entry.articles = entry.articles.sort((a, b) =>
         sortByWeight(a.meta, b.meta)
     );
+
+    topicCache[category + ";" + topic] = entry;
 
     return entry;
 }
