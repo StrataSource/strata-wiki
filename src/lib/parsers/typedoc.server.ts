@@ -3,22 +3,19 @@ import type { Root } from "mdast";
 import { parseMarkdown } from "./markdown.server";
 
 import {
-    InterfaceParser,
-    InterfacePropertyParser,
-    ParameterParser,
+    type InterfaceParser,
+    type InterfacePropertyParser,
+    type ParameterParser,
     ProjectParser,
-    PropertyParser,
-    SignatureParser,
-    TypeAliasParser,
+    type SignatureParser,
+    type TypeAliasParser,
     TypeParser,
-    VariableParser,
+    type VariableParser,
     type NamespaceParser,
 } from "typedoc-json-parser";
 import { reportLint } from "$lib/linter.server";
 import { urlifyString } from "$lib/util";
 import { error } from "@sveltejs/kit";
-import { page } from "$app/stores";
-import { get } from "svelte/store";
 
 // TSdoc "path" that means it's supported everywhere
 const sharedName = "shared";

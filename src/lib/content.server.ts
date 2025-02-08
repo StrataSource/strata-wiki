@@ -192,7 +192,13 @@ function sortByWeight(
     }
 }
 
+const menuCache: { [id: string]: MenuCategory[] } = {};
+
 export function getMenu(category: string) {
+    if (menuCache[category]) {
+        return menuCache[category];
+    }
+
     if (!fs.existsSync(`../docs/${category}`)) {
         error(404);
     }
@@ -210,7 +216,7 @@ export function getMenu(category: string) {
         menu.push(getMenuTopic(category, topic));
     }
 
-    return menu.sort(sortByWeight);
+    return (menuCache[category] = menu.sort(sortByWeight));
 }
 
 const topicCache: { [id: string]: MenuCategory } = {};
