@@ -63,13 +63,12 @@ export function getMarkdownPageMeta(
         `${category}/${topic}/${article}`
     );
 
-    let metaRaw = "title: " + article;
+    let metaRaw = `title: "${article}"`;
 
     if (parsed.children[0].type == "yaml") {
         metaRaw = parsed.children[0].value;
     }
 
     const meta = <ArticleMeta>yaml.load(metaRaw);
-
     return meta;
 }

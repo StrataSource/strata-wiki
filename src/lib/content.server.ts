@@ -272,6 +272,10 @@ export function getMenuTopic(category: string, topic: string) {
         sortByWeight(a.meta, b.meta)
     );
 
+    if (meta.meta.reverseOrder) {
+        entry.articles.reverse();
+    }
+
     topicCache[category + ";" + topic] = entry;
 
     return entry;
