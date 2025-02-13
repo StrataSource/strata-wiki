@@ -10,6 +10,7 @@ interface ArticleMeta {
      * Disables page actions like editing or history.
      */
     disablePageActions?: boolean;
+    reverseOrder?: boolean;
 }
 
 type NoticeType =

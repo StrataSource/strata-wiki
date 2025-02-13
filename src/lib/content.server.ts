@@ -215,7 +215,7 @@ export function getMenu(category: string) {
 
 export function getMenuTopic(category: string, topic: string) {
     const meta = getContentMeta(category, topic);
-
+    
     const entry: MenuCategory = {
         id: topic,
         title: meta.meta.title,
@@ -259,6 +259,10 @@ export function getMenuTopic(category: string, topic: string) {
     entry.articles = entry.articles.sort((a, b) =>
         sortByWeight(a.meta, b.meta)
     );
+
+    if (meta.meta.reverseOrder) {
+        entry.articles.reverse();
+    }
 
     return entry;
 }
