@@ -6,7 +6,15 @@ export const load = (async ({ params }) => {
 
     try {
         if (params.category) {
-            menu = getMenu(params.category);
+            menu = JSON.parse(JSON.stringify(getMenu(params.category)));
+
+            if (!menu) {
+                return;
+            }
+
+            for (const topic of menu) {
+                topic.articles = topic.articles.slice(0, 100);
+            }
         }
     } catch {
         /* empty */

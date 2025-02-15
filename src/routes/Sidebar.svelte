@@ -31,13 +31,44 @@
 
     let loaded = $state(false);
 
-    onMount(() => {
-        loaded = true;
+    const menuCache: { [id: string]: MenuCategory[] } = {};
+
+    onMount(async () => {
         navigating.subscribe(() => {
             $openMenu = false;
+            fetchFullMenu();
         });
+
+        await fetchFullMenu();
     });
+
+    async function fetchFullMenu() {
+        if (!$page.params.category) {
+            menu = undefined;
+            return;
+        }
+
+        if (menuCache[$page.params.category]) {
+            menu = menuCache[$page.params.category];
+            return;
+        }
+
+        const req = await fetch(`/_/menu/${$page.params.category}.json`);
+        menu = await req.json();
+
+        if (!menu) {
+            return;
+        }
+
+        menuCache[$page.params.category] = menu;
+
+        loaded = true;
+    }
 </script>
+
+{#if $page.params.category}
+    <link href="/_/menu/{$page.params.category}.json" />
+{/if}
 
 {#if $openMenu}
     <button
