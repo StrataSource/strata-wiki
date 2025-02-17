@@ -35,10 +35,15 @@
 
     const menuCache: { [id: string]: MenuCategory[] } = {};
 
+    let lastCategory = "";
+
     onMount(async () => {
         $effect(() => {
-            actualMenu = menu;
-            fetchFullMenu;
+            if (lastCategory != $page.params.category) {
+                lastCategory = $page.params.category;
+                actualMenu = menu;
+                fetchFullMenu;
+            }
         });
 
         navigating.subscribe(async () => {
