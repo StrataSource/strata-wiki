@@ -29,46 +29,47 @@
 
     let { menu = undefined }: Props = $props();
 
+    let actualMenu: MenuCategory[] | undefined = $state(menu);
+
     let loaded = $state(false);
 
     const menuCache: { [id: string]: MenuCategory[] } = {};
 
     onMount(async () => {
-        navigating.subscribe(() => {
-            $openMenu = false;
-            fetchFullMenu();
+        $effect(() => {
+            actualMenu = menu;
+            fetchFullMenu;
         });
 
-        await fetchFullMenu();
+        navigating.subscribe(async () => {
+            $openMenu = false;
+            await fetchFullMenu();
+        });
     });
 
     async function fetchFullMenu() {
         if (!$page.params.category) {
-            menu = undefined;
+            actualMenu = undefined;
             return;
         }
 
         if (menuCache[$page.params.category]) {
-            menu = menuCache[$page.params.category];
+            actualMenu = menuCache[$page.params.category];
             return;
         }
 
         const req = await fetch(`/_/menu/${$page.params.category}.json`);
-        menu = await req.json();
+        actualMenu = await req.json();
 
-        if (!menu) {
+        if (!actualMenu) {
             return;
         }
 
-        menuCache[$page.params.category] = menu;
+        menuCache[$page.params.category] = actualMenu;
 
         loaded = true;
     }
 </script>
-
-{#if $page.params.category}
-    <link href="/_/menu/{$page.params.category}.json" />
-{/if}
 
 {#if $openMenu}
     <button
@@ -81,7 +82,7 @@
 
 <nav
     data-pagefind-ignore="all"
-    class:empty={menu === undefined}
+    class:empty={actualMenu === undefined}
     class:open={$openMenu}
 >
     <div class="mobile">
@@ -114,8 +115,8 @@
     </div>
 
     <div class="menu">
-        {#if menu}
-            {#each menu as topic}
+        {#if actualMenu}
+            {#each actualMenu as topic}
                 <details open={$page.params.topic == topic.id}>
                     <summary
                         class:active={$page.params.topic == topic.id}
@@ -167,7 +168,7 @@
                         {/if}
                     {/each}
 
-                    {#if topic.articles.length > 100 && !loaded}
+                    {#if topic.articles.length > 99 && !loaded}
                         <a
                             class="item"
                             href="/{$page.params.category}/{topic.id}"
