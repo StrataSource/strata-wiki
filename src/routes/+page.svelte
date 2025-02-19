@@ -14,6 +14,7 @@
         mdiSphere,
         mdiTestTube,
         mdiViewDashboard,
+        mdiDiceMultiple,
     } from "@mdi/js";
     import Icon from "$lib/components/Icon.svelte";
     import Metadata from "$lib/components/Metadata.svelte";
@@ -78,6 +79,13 @@
             title: "Console",
             description: "ConCommands and ConVars Reference",
             icon: mdiConsoleLine,
+            seperation: false,
+        },
+        {
+            id: "misc",
+            title: "Misc",
+            description: "Miscellaneous Pages",
+            icon: mdiDiceMultiple,
             seperation: false,
         },
         { seperation: true, title: "Scripting" },
