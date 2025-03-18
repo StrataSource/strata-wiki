@@ -16,6 +16,7 @@
         mdiTestTube,
         mdiViewDashboard,
         mdiDiceMultiple,
+        mdiWrench,
     } from "@mdi/js";
     import Icon from "$lib/components/Icon.svelte";
     import Metadata from "$lib/components/Metadata.svelte";
@@ -94,6 +95,13 @@
             title: "Misc",
             description: "Miscellaneous Pages",
             icon: mdiDiceMultiple,
+            seperation: false,
+        },
+        {
+            id: "community",
+            title: "Community",
+            description: "Community Tools & Resources",
+            icon: mdiWrench,
             seperation: false,
         },
         { seperation: true, title: "Scripting" },
