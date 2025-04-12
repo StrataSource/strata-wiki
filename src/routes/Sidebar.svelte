@@ -24,16 +24,16 @@
     import { fade } from "svelte/transition";
 
     interface Props {
-        menu?: MenuCategory[] | undefined;
+        menu?: MenuTopic[] | undefined;
     }
 
     let { menu = undefined }: Props = $props();
 
-    let actualMenu: MenuCategory[] | undefined = $state(menu);
+    let actualMenu: MenuTopic[] | undefined = $state(menu);
 
     let loaded = $state(false);
 
-    const menuCache: { [id: string]: MenuCategory[] } = {};
+    const menuCache: { [id: string]: MenuTopic[] } = {};
 
     let lastCategory = "";
 

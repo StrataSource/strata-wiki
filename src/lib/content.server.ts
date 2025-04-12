@@ -192,7 +192,7 @@ function sortByWeight(
     }
 }
 
-const menuCache: { [id: string]: MenuCategory[] } = {};
+const menuCache: { [id: string]: MenuTopic[] } = {};
 
 export function getMenu(category: string) {
     if (menuCache[category]) {
@@ -205,7 +205,7 @@ export function getMenu(category: string) {
 
     const topics = fs.readdirSync(`../docs/${category}`);
 
-    const menu: MenuCategory[] = [];
+    const menu: MenuTopic[] = [];
 
     for (const topic of topics) {
         const stat = fs.lstatSync(`../docs/${category}/${topic}`);
@@ -219,7 +219,7 @@ export function getMenu(category: string) {
     return (menuCache[category] = menu.sort(sortByWeight));
 }
 
-const topicCache: { [id: string]: MenuCategory } = {};
+const topicCache: { [id: string]: MenuTopic } = {};
 
 export function getMenuTopic(category: string, topic: string) {
     const meta = getContentMeta(category, topic);
@@ -228,7 +228,7 @@ export function getMenuTopic(category: string, topic: string) {
         return topicCache[category + ";" + topic];
     }
 
-    const entry: MenuCategory = {
+    const entry: MenuTopic = {
         id: topic,
         title: meta.meta.title,
         weight: typeof meta.meta.weight == "number" ? meta.meta.weight : null,
