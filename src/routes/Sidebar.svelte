@@ -25,16 +25,16 @@
     import { fade } from "svelte/transition";
 
     interface Props {
-        menu?: MenuTopic[] | undefined;
+        menu?: MenuTopic | undefined;
     }
 
     let { menu = undefined }: Props = $props();
 
-    let actualMenu: MenuTopic[] | undefined = $state(menu);
+    let actualMenu: MenuTopic | undefined = $state(menu);
 
     let loaded = $state(false);
 
-    const menuCache: { [id: string]: MenuTopic[] } = {};
+    const menuCache: { [id: string]: MenuTopic } = {};
 
     let lastCategory = "";
 
@@ -121,6 +121,8 @@
         
     </div>
     
+    <h1>{actualMenu?.title}</h1>
+
     <SidebarTopic menu={actualMenu}></SidebarTopic>
     
 </nav>

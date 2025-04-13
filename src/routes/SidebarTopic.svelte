@@ -4,6 +4,7 @@
     import SidebarTopic from "./SidebarTopic.svelte";
     import {
         currentArticle,
+        currentTopic,
         currentGame,
         gameMeta,
         openMenu,
@@ -18,7 +19,7 @@
     import { onMount } from "svelte";
 
     interface Props {
-        menu?: MenuTopic[] | undefined;
+        menu?: MenuTopic | undefined;
     }
 
     let { menu = undefined }: Props = $props();
@@ -35,18 +36,17 @@
 
 <div class="menu">
     {#if menu}
-        {#each menu as topic}
-            <details open={$page.params.topic == topic.id}>
+        {#each menu.subtopics as topic}
+            <details open={$currentTopic == topic.id}>
                 <summary
-                    class:active={$page.params.topic == topic.id}
-                    class:activeDirect={$page.params.topic == topic.id &&
-                        !$page.params.article}
+                    class:active={$currentTopic == topic.id}
+                    class:activeDirect={$currentTopic == topic.id && !$page.params.article}
                 >
                     {topic.title}
                 </summary>
 
                 {#if topic.subtopics.length > 0}
-                    <SidebarTopic menu = {topic.subtopics}></SidebarTopic>
+                    <SidebarTopic menu = {topic}></SidebarTopic>
                 {/if}
 
                 {#each topic.articles as article, i}

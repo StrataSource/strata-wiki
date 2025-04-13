@@ -2,7 +2,7 @@ import { getGames, getMenu } from "$lib/content.server";
 import type { LayoutServerLoad } from "./$types";
 
 export const load = (async ({ params }) => {
-    let menu: MenuTopic[] | undefined = undefined;
+    let menu: MenuTopic | undefined = undefined;
 
     try {
         if (params.category) {
@@ -12,7 +12,7 @@ export const load = (async ({ params }) => {
                 return;
             }
 
-            for (const topic of menu) {
+            for (const topic of menu.subtopics) {
                 topic.articles = topic.articles.slice(0, 100);
             }
         }

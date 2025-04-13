@@ -131,7 +131,7 @@ export function getContent(path: string) {
     return c;
 }
 
-function sortByWeight(
+export function sortByWeight(
     a: { weight?: number | null; title: string },
     b: { weight?: number | null; title: string }
 ) {
@@ -146,38 +146,8 @@ function sortByWeight(
     }
 }
 
-const menuCache: { [id: string]: MenuTopic[] } = {};
-
-export function getMenu(path: string): MenuTopic[] {
-    if (menuCache[path]) {
-        return menuCache[path];
-    }
-
-    if (!fs.existsSync(`../docs/${path}`)) {
-        error(404);
-    }
-
-    const topics = fs.readdirSync(`../docs/${path}`);
-
-    const menu: MenuTopic[] = [];
-
-    for (const topic of topics) {
-        const stat = fs.lstatSync(`../docs/${path}/${topic}`);
-        if (!stat.isDirectory()) {
-            continue;
-        }
-
-        const menuTopic = getMenuTopic(`${path}/${topic}`);
-
-        // Hide any discovered sections that have no actual articles within them
-        if (menuTopic.menu.articles.length == 0 && menuTopic.meta.wasDiscovered) {
-            continue;
-        }
-
-        menu.push(menuTopic.menu);
-    }
-
-    return (menuCache[path] = menu.sort(sortByWeight));
+export function getMenu(path: string): MenuTopic {
+    return getMenuTopic(path).menu;
 }
 
 const topicCache: { [id: string]: MenuTopic } = {};
@@ -205,6 +175,10 @@ export function getMenuTopic(path: string): {menu: MenuTopic, meta: TopicMeta} {
 
     entry.articles = entry.articles.sort((a, b) =>
         sortByWeight(a.meta, b.meta)
+    );
+
+    entry.subtopics = entry.subtopics.sort((a, b) =>
+        sortByWeight(a, b)
     );
 
     if (meta.reverseOrder) {
