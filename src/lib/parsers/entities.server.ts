@@ -294,7 +294,6 @@ function getEntityPageMeta(p: string, name: string) {
 
     const meta: ArticleMeta = {
         type: "entity",
-        id: name,
         title: name,
         features: index[name].support,
         disablePageActions: !fs.existsSync(`../docs/${p}/${name}.md`),

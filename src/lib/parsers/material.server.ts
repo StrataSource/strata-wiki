@@ -78,7 +78,6 @@ function getMaterialTopic(p: string) {
 
 function getMaterialPageMeta(p: string, name: string): ArticleMeta {
     return {
-        id: name,
         title: name,
         type: "material",
         disablePageActions: !fs.existsSync(`../docs/${p}/${name}.md`),

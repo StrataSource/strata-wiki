@@ -1,7 +1,10 @@
 import {
+    isPathTopic,
     getCategories,
     getMenu,
     getMenuTopic,
+    getContent, 
+    getPageMeta,
 } from "$lib/content.server";
 import type { EntryGenerator, PageServerLoad } from "./$types";
 
@@ -25,5 +28,17 @@ export const entries: EntryGenerator = () => {
 };
 
 export const load = (async ({ params }) => {
-    return getMenuTopic(`${params.category}/${params.topic || ""}`);
+    const path = `${params.category}/${params.article}`;
+    if (isPathTopic(path)) {
+        return {
+            isTopic: true,
+            ...getMenuTopic(`${params.category}/${params.topic || ""}`)
+        }
+    } else {
+        return {
+            isTopic: false,
+            doc: getContent(path),
+            articleMeta: getPageMeta(path),
+        }
+    }
 }) satisfies PageServerLoad;

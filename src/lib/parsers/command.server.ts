@@ -265,7 +265,6 @@ function getCommandPageMeta(p: string, name: string): ArticleMeta {
     const c = cache[name];
 
     return {
-        id: name,
         title: name,
         type: "command",
         disablePageActions: true,
