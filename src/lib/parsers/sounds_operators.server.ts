@@ -84,7 +84,6 @@ function getSoundOperatorsPageMeta(
     name: string
 ): ArticleMeta {
     return {
-        id: name,
         title: name,
         type: "sound_operators",
         disablePageActions: true,

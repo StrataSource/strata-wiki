@@ -69,6 +69,7 @@ export function getTopicMeta(
             );
 
             const meta = JSON.parse(metaRaw);
+            meta.id = curPath;
 
             // Always default to markdown if not present
             if (!Object.hasOwn(meta, "type")) {
@@ -94,23 +95,33 @@ export function getTopicMeta(
     );
 
     const meta: TopicMeta = {
+        type: "markdown",
+        id: path,
         title: path,
-        type: "markdown"
     };
 
     return meta;
 }
 
-export function getContent(path: string, article: string) {
+
+export function isPathTopic(path: string): boolean {
+    // Paths that are topics hold their own meta.json
+    return fs.existsSync(`../docs/${path}/meta.json`);
+}
+
+
+export function getContent(path: string) {
+
+    const meta = getTopicMeta(path);
+    const article = path.slice(meta.id.length + 1);
+
     if (dev) {
-        console.log(`\n--- ${path}/${article} ---\n`);
+        console.log(`\n--- ${path} (topic: "${meta.id}", article: "${article}") ---\n`);
     }
 
     let c: Root;
-
-    const type = getTopicMeta(path).type;
-    if(Object.hasOwn(pageGenerators, type)) {
-        c = pageGenerators[type].getPageContent(path, article);
+    if(Object.hasOwn(pageGenerators, meta.type)) {
+        c = pageGenerators[meta.type].getPageContent(meta.id, article);
     } else {
         error(500, "Invalid content type");
     }
@@ -205,11 +216,12 @@ export function getMenuTopic(path: string): {menu: MenuTopic, meta: TopicMeta} {
     return {menu: entry, meta: meta};
 }
 
-export function getPageMeta(path: string, article: string) {
+export function getPageMeta(path: string) {
     const meta = getTopicMeta(path);
+    const article = path.slice(meta.id.length + 1);
 
     if(Object.hasOwn(pageGenerators, meta.type)) {
-        return pageGenerators[meta.type].getPageMeta(path, article);
+        return pageGenerators[meta.type].getPageMeta(meta.id, article);
     }
 }
 
@@ -220,11 +232,11 @@ export function getCategories() : TopicMeta[] {
 
     for (const category of categories) {
         const stat = fs.lstatSync(`../docs/${category}`);
-        if (!stat.isDirectory()) {
+        if (!stat.isDirectory() || !isPathTopic(category)) {
             continue;
         }
 
-        menu.push({ id: category, ...getTopicMeta(category) });
+        menu.push(getTopicMeta(category));
     }
 
     return menu;

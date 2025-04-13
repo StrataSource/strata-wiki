@@ -101,7 +101,6 @@ export function getVScriptTopic(p: string) {
 
 export function getVScriptPageMeta(p: string, name: string): ArticleMeta {
     return {
-        id: name,
         title: name,
         type: "vscript",
         disablePageActions: true,

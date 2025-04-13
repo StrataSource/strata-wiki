@@ -1,3 +1,4 @@
+
 <script lang="ts">
     import { afterNavigate, beforeNavigate } from "$app/navigation";
     import Metadata from "$lib/components/Metadata.svelte";
@@ -18,38 +19,54 @@
 
     let { data }: Props = $props();
 
-    afterNavigate(() => {
-        $currentArticle = data.meta;
-    });
+    if (!data.isTopic) {
+        afterNavigate(() => {
+            $currentArticle = data.articleMeta;
+        });
+    }
 </script>
 
-<Metadata title={data.meta?.title || ""}></Metadata>
+<!--
+    <Metadata title={data.meta.title}></Metadata>
+
+    <h1>{data.meta.title}</h1>
+    
+    {#each data.menu.articles as article}
+    <div>
+        <Link href="/{$page.params.category}/{$page.params.topic}/{article.id}"
+        >{article.meta.title}</Link
+        >
+    </div>
+    {/each}
+-->
+
+<Metadata title={data.articleMeta?.title || ""}></Metadata>
 
 <div class="notices">
-    {#if data.meta?.deprecated}
+    {#if data.articleMeta?.deprecated}
         <DeprecationNotice></DeprecationNotice>
     {/if}
-    {#if data.meta?.experimental}
+    {#if data.articleMeta?.experimental}
         <ExperimentalNotice></ExperimentalNotice>
     {/if}
-    {#key data.meta?.features}
-        {#if (data.meta?.features?.length || 0) > 0}
+    {#key data.articleMeta?.features}
+        {#if (data.articleMeta?.features?.length || 0) > 0}
             <div
                 data-pagefind-meta="support:{getGamesWithSupport(
-                    data.meta?.features || []
+                    data.articleMeta?.features || []
                 ).all
                     ? 'all'
-                    : getGamesWithSupport(data.meta?.features || []).games.join(
+                    : getGamesWithSupport(data.articleMeta?.features || []).games.join(
                           ','
                       )}"
                 data-pagefind-ignore
             >
                 {#if $currentGame == ""}
-                    <SupportUnknownNotice features={data.meta?.features || []}
+                    <SupportUnknownNotice features={data.articleMeta?.features || []}
                     ></SupportUnknownNotice>
-                {:else if getGamesWithSupport(data.meta?.features || []).unknownGames.includes($currentGame)}
+                {:else if getGamesWithSupport(data.articleMeta?.features || []).unknownGames.includes($currentGame)}
                     <UnknownSupportNotice></UnknownSupportNotice>
-                {:else if !getGamesWithSupport(data.meta?.features || []).games.includes($currentGame)}
+                {:else if !getGamesWithSupport(data.articleMeta?.features || []).games.includes($currentGame)}
                     <NoSupportNotice></NoSupportNotice>
                 {/if}
             </div>

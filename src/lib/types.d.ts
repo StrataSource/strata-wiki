@@ -24,7 +24,6 @@ type NoticeType =
 interface BasePageMeta {
     type: GeneratorType;
     title: string;
-    id?: string;
     weight?: number;
 }
 
@@ -42,6 +41,7 @@ interface ArticleMeta extends BasePageMeta {
 
 // Topics hold articles. These also get reused for categories
 interface TopicMeta extends BasePageMeta {
+    id: string;
     reverseOrder?: boolean;
 
     // Helper for if we've recursively discovered this instead of a real meta file for the directory
