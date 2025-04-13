@@ -1,3 +1,8 @@
+// Categories are the top level of organization. These are for large separate sections of documentation
+// Categories hold topics
+// Topics can hold articles or more topics
+// Articles are the pages you read
+
 type GeneratorType =
     | "markdown"
     | "material"
@@ -6,25 +11,6 @@ type GeneratorType =
     | "vscript"
     | "sound_operators"
     | "command";
-
-interface ArticleMeta {
-    type: GeneratorType;
-    title: string;
-    description?: string;
-    weight?: number;
-    id?: string;
-    deprecated?: boolean;
-    experimental?: boolean;
-    features?: string[];
-    /**
-     * Disables page actions like editing or history.
-     */
-    disablePageActions?: boolean;
-    reverseOrder?: boolean;
-
-    // Helper for if we've recursively discovered this instead of a real meta file for the directory
-    wasDiscovered?: boolean;
-}
 
 type NoticeType =
     | "normal"
@@ -35,10 +21,38 @@ type NoticeType =
     | "tip"
     | "game";
 
+interface BasePageMeta {
+    type: GeneratorType;
+    title: string;
+    id?: string;
+    weight?: number;
+}
+
+// Articles are the pages you read
+interface ArticleMeta extends BasePageMeta {
+    description?: string;
+    deprecated?: boolean;
+    experimental?: boolean;
+    features?: string[];
+    /**
+     * Disables page actions like editing or history.
+     */
+    disablePageActions?: boolean;
+}
+
+// Topics hold articles. These also get reused for categories
+interface TopicMeta extends BasePageMeta {
+    reverseOrder?: boolean;
+
+    // Helper for if we've recursively discovered this instead of a real meta file for the directory
+    wasDiscovered?: boolean;
+}
+
 interface MenuArticle {
     id: string;
     meta: ArticleMeta;
 }
+
 interface MenuTopic {
     id: string;
     title: string;

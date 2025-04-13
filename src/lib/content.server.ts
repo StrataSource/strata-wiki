@@ -51,9 +51,9 @@ export function initGenerators() {
     console.log("Generators ready!");
 }
 
-export function getContentMeta(
+export function getTopicMeta(
     path: string,
-): ArticleMeta
+): TopicMeta
 {
     const slug: string[] = path.split('/');
 
@@ -93,7 +93,7 @@ export function getContentMeta(
         `${path}`
     );
 
-    const meta: ArticleMeta = {
+    const meta: TopicMeta = {
         title: path,
         type: "markdown"
     };
@@ -108,7 +108,7 @@ export function getContent(path: string, article: string) {
 
     let c: Root;
 
-    const type = getContentMeta(path).type;
+    const type = getTopicMeta(path).type;
     if(Object.hasOwn(pageGenerators, type)) {
         c = pageGenerators[type].getPageContent(path, article);
     } else {
@@ -172,8 +172,8 @@ export function getMenu(path: string): MenuTopic[] {
 const topicCache: { [id: string]: MenuTopic } = {};
 
 
-export function getMenuTopic(path: string): {menu: MenuTopic, meta: ArticleMeta} {
-    const meta = getContentMeta(path);
+export function getMenuTopic(path: string): {menu: MenuTopic, meta: TopicMeta} {
+    const meta = getTopicMeta(path);
 
     if (topicCache[path]) {
         return {menu: topicCache[path], meta: meta};
@@ -206,17 +206,17 @@ export function getMenuTopic(path: string): {menu: MenuTopic, meta: ArticleMeta}
 }
 
 export function getPageMeta(path: string, article: string) {
-    const meta = getContentMeta(path);
+    const meta = getTopicMeta(path);
 
     if(Object.hasOwn(pageGenerators, meta.type)) {
         return pageGenerators[meta.type].getPageMeta(path, article);
     }
 }
 
-export function getCategories() {
+export function getCategories() : TopicMeta[] {
     const categories = fs.readdirSync(`../docs`);
 
-    const menu: ArticleMeta[] = [];
+    const menu: TopicMeta[] = [];
 
     for (const category of categories) {
         const stat = fs.lstatSync(`../docs/${category}`);
@@ -224,7 +224,7 @@ export function getCategories() {
             continue;
         }
 
-        menu.push({ id: category, ...getContentMeta(category) });
+        menu.push({ id: category, ...getTopicMeta(category) });
     }
 
     return menu;
