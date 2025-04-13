@@ -25,16 +25,17 @@ const namespaceCache: { [p: string]: { [fn: string]: NamespaceParser } } = {};
 const typeCache: { [p: string]: { [fn: string]: TypeAliasParser } } = {};
 const interfaceCache: { [p: string]: { [fn: string]: InterfaceParser } } = {};
 
-function getProject(p: string) {
-    if (cache[p]) {
-        return cache[p];
-    }
-
+function initTypedoc() {
+    // Little hack, as I don't want to rip out the support for multiple typedoc files and also don't want to properly split out pano from this yet
+    const p = "panorama/reference"
+    
     const dataRaw: ProjectParser.Json = JSON.parse(
-        fs.readFileSync(`../docs/${p}/typedoc.json`, "utf-8")
+        fs.readFileSync(`../dumps/typedoc.json`, "utf-8")
     );
     cache[p] = new ProjectParser({ data: dataRaw, dependencies: {} });
+}
 
+function getProject(p: string) {
     return cache[p];
 }
 
@@ -90,7 +91,7 @@ function getInterfaces(p: string) {
     return interfaceCache[p];
 }
 
-export function parseTypedoc(p: string, name: string): Root {
+function parseTypedoc(p: string, name: string): Root {
     const out: string[] = [];
 
     if (name.startsWith("interface/")) {
@@ -445,13 +446,22 @@ function renderMainPage(p: string, name: string): string[] {
 export function getTypedocTopic(p: string): MenuArticle[] {
     const out: MenuArticle[] = [];
 
-    out.push({ id: "types", meta: { title: "Types", weight: -100 } });
+    out.push({
+        id: "types",
+        meta:
+        {
+            type: "typedoc",
+            title: "Types",
+            weight: -100
+        }
+    });
     
     const namespaces = getNamespaces(p);
     for (const [id, namespace] of Object.entries(namespaces)) {
         out.push({
             id: id,
             meta: {
+                type: "typedoc",
                 title: id,
                 features:
                     namespace.source?.path == sharedName ||
@@ -465,7 +475,7 @@ export function getTypedocTopic(p: string): MenuArticle[] {
     return out;
 }
 
-export function getTypedocSubtopics(p: string): MenuTopic[] {
+function getTypedocSubtopics(p: string): MenuTopic[] {
     const out: MenuTopic[] = [];
 
     const interfaces = getInterfaces(p);
@@ -480,6 +490,7 @@ export function getTypedocSubtopics(p: string): MenuTopic[] {
         interfaceTopic.articles.push({
             id: id,
             meta: {
+                type: "typedoc",
                 title: id,
                 features:
                 namespace.source?.path == sharedName ||
@@ -495,18 +506,24 @@ export function getTypedocSubtopics(p: string): MenuTopic[] {
     return out;
 }
 
-export function getTypedocPageMeta(p: string, name: string): ArticleMeta {
+function getTypedocPageMeta(p: string, name: string): ArticleMeta {
     //Handling for type and interface page
 
     if (name.startsWith("interface/")) {
         return {
+            type: "typedoc",
             title: "Interface: " + name.slice(10),
             disablePageActions: true,
         };
     } else if (name == "types") {
-        return { title: "Type Overview", disablePageActions: true };
+        return {
+            type: "typedoc",
+            title: "Type Overview",
+            disablePageActions: true
+        };
     } else if (name == "interface") {
         return {
+            type: "typedoc",
             title: "Interface Overview",
             disablePageActions: true,
         };
@@ -517,6 +534,7 @@ export function getTypedocPageMeta(p: string, name: string): ArticleMeta {
     const namespace = namespaces[name];
 
     return {
+        type: "typedoc",
         title: namespace.name,
         features:
             namespace.source?.path == sharedName || !namespace.source?.path
@@ -525,3 +543,12 @@ export function getTypedocPageMeta(p: string, name: string): ArticleMeta {
         disablePageActions: true,
     };
 }
+
+
+export const generatorTypedoc: PageGenerator = {
+    init: initTypedoc,
+    getPageContent: parseTypedoc,
+    getPageMeta: getTypedocPageMeta,
+    getTopic: getTypedocTopic,
+    getSubtopics: getTypedocSubtopics,
+};

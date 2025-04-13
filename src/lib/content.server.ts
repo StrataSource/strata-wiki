@@ -1,124 +1,104 @@
 import fs from "fs";
 import {
-    getMarkdownPageMeta,
-    getMarkdownTopic,
-    parseMarkdown,
+    generatorMarkdown
 } from "./parsers/markdown.server";
 import { error } from "@sveltejs/kit";
 import {
-    getMaterialPageMeta,
-    getMaterialTopic,
-    parseMaterial,
+    generatorMaterial
 } from "./parsers/material.server";
 import {
-    getEntityPageMeta,
-    getEntityTopic,
-    parseEntity,
+    generatorEntity
 } from "./parsers/entities.server";
 import type { Root } from "mdast";
 import { flushLint, reportLint } from "./linter.server";
 import {
-    getTypedocPageMeta,
-    getTypedocTopic,
-    getTypedocSubtopics,
-    parseTypedoc,
+    generatorTypedoc
 } from "./parsers/typedoc.server";
 import {
-    getVscriptPageMeta,
-    getVscriptTopic,
-    parseVscript,
+    generatorVScript
 } from "./parsers/vscript.server";
 import {
-    getSoundOperatorsPageMeta,
-    getSoundOperatorsTopic,
-    parseSoundOperators,
+    generatorSoundOperators
 } from "./parsers/sounds_operators.server";
 import {
-    getCommandPageMeta,
-    getCommandTopic,
-    parseCommand,
+    generatorCommand,
 } from "./parsers/command.server.js";
 import { dev } from "$app/environment";
 
+const pageGenerators : { [id: string /*GeneratorType*/ ] : PageGenerator } = {
+    "markdown" : generatorMarkdown,
+    "material" : generatorMaterial,
+    "entity" : generatorEntity,
+    "typedoc" : generatorTypedoc,
+    "vscript" : generatorVScript,
+    "sound_operators" : generatorSoundOperators,
+    "command" : generatorCommand,
+};
+
+
+let hasInitializedBefore = false;
+export function initGenerators() {
+    if(!hasInitializedBefore) {
+        console.log("Setting up generators!");
+
+        for (const name of Object.keys(pageGenerators)) {
+            console.log(`Indexing ${name}`);
+            pageGenerators[name].init();
+        }
+
+        hasInitializedBefore = true;
+    }
+    console.log("Generators ready!");
+}
+
 export function getContentMeta(
     path: string,
-): {
-    type:
-        | "markdown"
-        | "material"
-        | "entity"
-        | "typedoc"
-        | "vscript"
-        | "sound_operators"
-        | "command";
-    meta: ArticleMeta;
-} {
-    let meta: ArticleMeta;
+): ArticleMeta
+{
+    const slug: string[] = path.split('/');
 
-    //Check if meta.json exists, if not complain and fall back to using ID as the title
-    if (fs.existsSync(`../docs/${path}/meta.json`)) {
-        const metaRaw = fs.readFileSync(
-            `../docs/${path}/meta.json`,
-            "utf-8"
-        );
+    // Step through the path backwards and determine if this a real slug or a virtual one provided by some generator
+    for (let i = slug.length; i >= 0; i--) {
+        const curPath = slug.slice(0, i).join('/');
 
-        meta = JSON.parse(metaRaw);
-    } else {
-        reportLint(
-            "caution",
-            `meta_missing_${path}`,
-            `${path} is missing a meta.json!`,
-            `${path}`
-        );
+        //Check if meta.json exists, if not complain and fall back to using ID as the title
+        if (fs.existsSync(`../docs/${curPath}/meta.json`)) {
+            const metaRaw = fs.readFileSync(
+                `../docs/${curPath}/meta.json`,
+                "utf-8"
+            );
 
-        meta = {
-            title: path,
-        };
-    }
+            const meta = JSON.parse(metaRaw);
 
-    //Check if topic type is material
-    if (fs.existsSync(`../docs/${path}/materials.json`)) {
-        return { type: "material", meta: meta };
-    }
+            // Always default to markdown if not present
+            if (!Object.hasOwn(meta, "type")) {
+                meta.type = "markdown";
+            }
+            
+            // Sanity helper. Set the name if it didn't resolve its own meta
+            if (i != slug.length) {
+                meta.title = path;
+                meta.wasDiscovered = true;
+            }
 
-    //Check if topic type is typedoc
-    if (fs.existsSync(`../docs/${path}/typedoc.json`)) {
-        return { type: "typedoc", meta: meta };
-    }
-
-    //Check if topic type is vscript
-    if (fs.existsSync(`../docs/${path}/vscript.json`)) {
-        return { type: "vscript", meta: meta };
-    }
-
-    //Check if topic type is vscript
-    if (
-        fs.existsSync(`../docs/${path}/sound_operators.json`)
-    ) {
-        return { type: "sound_operators", meta: meta };
-    }
-
-    //Check if topic type is entity by looping over every game and looking for that file.
-    const games = getGames();
-
-    for (const game of Object.keys(games)) {
-        if (
-            fs.existsSync(
-                `../docs/${path}/entities_${game}.json`
-            )
-        ) {
-            return { type: "entity", meta: meta };
-        }
-        if (
-            fs.existsSync(
-                `../docs/${path}/commands_${game}.json`
-            )
-        ) {
-            return { type: "command", meta: meta };
+            return meta;
         }
     }
 
-    return { type: "markdown", meta: meta };
+    // Never found a meta file! We'll assume it was type markdown
+    reportLint(
+        "caution",
+        `meta_missing_${path}`,
+        `${path} is missing a meta.json!`,
+        `${path}`
+    );
+
+    const meta: ArticleMeta = {
+        title: path,
+        type: "markdown"
+    };
+
+    return meta;
 }
 
 export function getContent(path: string, article: string) {
@@ -128,48 +108,11 @@ export function getContent(path: string, article: string) {
 
     let c: Root;
 
-    switch (getContentMeta(path).type) {
-        case "markdown":
-            if (!fs.existsSync(`../docs/${path}/${article}.md`)) {
-                error(404, "Page not found");
-            }
-
-            c = parseMarkdown(
-                fs.readFileSync(
-                    `../docs/${path}/${article}.md`,
-                    "utf-8"
-                ),
-                `${path}/${article}`
-            );
-            break;
-
-        case "material":
-            c = parseMaterial(path, article);
-            break;
-
-        case "entity":
-            c = parseEntity(path, article);
-            break;
-
-        case "typedoc":
-            c = parseTypedoc(path, article);
-            break;
-
-        case "vscript":
-            c = parseVscript(path, article);
-            break;
-
-        case "sound_operators":
-            c = parseSoundOperators(path, article);
-            break;
-
-        case "command":
-            c = parseCommand(path, article);
-            break;
-
-        default:
-            error(500, "Invalid content type");
-            break;
+    const type = getContentMeta(path).type;
+    if(Object.hasOwn(pageGenerators, type)) {
+        c = pageGenerators[type].getPageContent(path, article);
+    } else {
+        error(500, "Invalid content type");
     }
 
     flushLint();
@@ -194,7 +137,7 @@ function sortByWeight(
 
 const menuCache: { [id: string]: MenuTopic[] } = {};
 
-export function getMenu(path: string) {
+export function getMenu(path: string): MenuTopic[] {
     if (menuCache[path]) {
         return menuCache[path];
     }
@@ -213,7 +156,14 @@ export function getMenu(path: string) {
             continue;
         }
 
-        menu.push(getMenuTopic(`${path}/${topic}`));
+        const menuTopic = getMenuTopic(`${path}/${topic}`);
+
+        // Hide any discovered sections that have no actual articles within them
+        if (menuTopic.menu.articles.length == 0 && menuTopic.meta.wasDiscovered) {
+            continue;
+        }
+
+        menu.push(menuTopic.menu);
     }
 
     return (menuCache[path] = menu.sort(sortByWeight));
@@ -222,103 +172,44 @@ export function getMenu(path: string) {
 const topicCache: { [id: string]: MenuTopic } = {};
 
 
-export function getMenuTopic(path: string) {
+export function getMenuTopic(path: string): {menu: MenuTopic, meta: ArticleMeta} {
     const meta = getContentMeta(path);
 
     if (topicCache[path]) {
-        return topicCache[path];
+        return {menu: topicCache[path], meta: meta};
     }
 
     const entry: MenuTopic = {
         id: path,
-        title: meta.meta.title,
-        weight: typeof meta.meta.weight == "number" ? meta.meta.weight : null,
+        title: meta.title,
+        weight: typeof meta.weight == "number" ? meta.weight : null,
         articles: [],
         subtopics: [],
     };
     
-    entry.subtopics = getMenu(path);
-
-    switch (meta.type) {
-        case "markdown":
-            entry.articles = getMarkdownTopic(path);
-            break;
-
-        case "material":
-            entry.articles = getMaterialTopic(path);
-            break;
-
-        case "entity":
-            entry.articles = getEntityTopic(path);
-            break;
-
-        case "typedoc":
-            entry.articles = getTypedocTopic(path);
-            entry.subtopics = getTypedocSubtopics(path);
-            break;
-
-        case "vscript":
-            entry.articles = getVscriptTopic(path);
-            break;
-
-        case "sound_operators":
-            entry.articles = getSoundOperatorsTopic(path);
-            break;
-
-        case "command":
-            entry.articles = getCommandTopic(path);
-            break;
-
-        default:
-            break;
+    if(Object.hasOwn(pageGenerators, meta.type)) {
+        entry.articles = pageGenerators[meta.type].getTopic(path);
+        entry.subtopics = pageGenerators[meta.type].getSubtopics(path);
     }
 
     entry.articles = entry.articles.sort((a, b) =>
         sortByWeight(a.meta, b.meta)
     );
 
-    if (meta.meta.reverseOrder) {
+    if (meta.reverseOrder) {
         entry.articles.reverse();
     }
 
     topicCache[path] = entry;
 
-    return entry;
+    return {menu: entry, meta: meta};
 }
+
 export function getPageMeta(path: string, article: string) {
     const meta = getContentMeta(path);
 
-    switch (meta.type) {
-        case "markdown":
-            return getMarkdownPageMeta(path, article);
-            break;
-
-        case "material":
-            return getMaterialPageMeta(path, article);
-            break;
-
-        case "entity":
-            return getEntityPageMeta(path, article);
-            break;
-
-        case "typedoc":
-            return getTypedocPageMeta(path, article);
-            break;
-
-        case "vscript":
-            return getVscriptPageMeta(path, article);
-            break;
-
-        case "sound_operators":
-            return getSoundOperatorsPageMeta(path, article);
-            break;
-
-        case "command":
-            return getCommandPageMeta(path, article);
-            break;
-
-        default:
-            break;
+    if(Object.hasOwn(pageGenerators, meta.type)) {
+        return pageGenerators[meta.type].getPageMeta(path, article);
     }
 }
 
@@ -333,7 +224,7 @@ export function getCategories() {
             continue;
         }
 
-        menu.push({ id: category, ...getContentMeta(category).meta });
+        menu.push({ id: category, ...getContentMeta(category) });
     }
 
     return menu;

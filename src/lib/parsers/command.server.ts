@@ -71,35 +71,31 @@ interface ExpandedCommand extends Command {
     games: string[];
 }
 
-const cache: { [id: string]: { [commandName: string]: ExpandedCommand } } = {};
-const unknownCache: { [id: string]: { [game: string]: boolean } } = {};
+let cache: { [commandName: string]: ExpandedCommand } = {};
+let unknownCache: { [game: string]: boolean } = {};
 
-function parseJSON(p: string) {
-    if (p && cache[p]) {
-        return cache[p];
-    }
-
-    console.log("Indexing Commands for", p, "This might take a while...");
+function parseJSON() {
 
     const games = getGames();
 
-    cache[p] = {};
-    unknownCache[p] = {};
+    cache = {};
+    unknownCache = {};
 
     for (const game of Object.keys(games)) {
-        if (!fs.existsSync(`../docs/${p}/commands_${game}.json`)) {
+        const dumpPath = `../dumps/commands_${game}.json`;
+        if (!fs.existsSync(dumpPath)) {
             reportLint(
                 "caution",
                 `commands_${game}`,
                 `${game} is missing a command/cvar dump!`,
-                `${p}`
+                ""
             );
-            unknownCache[p][game] = true;
+            unknownCache[game] = true;
             continue;
         }
 
         const raw: Command[] = JSON.parse(
-            fs.readFileSync(`../docs/${p}/commands_${game}.json`, "utf-8")
+            fs.readFileSync(dumpPath, "utf-8")
         );
 
         for (const c of raw) {
@@ -107,25 +103,23 @@ function parseJSON(p: string) {
                 continue;
             }
 
-            if (!cache[p][c.name]) {
-                cache[p][c.name] = { games: [game], ...c };
+            if (!cache[c.name]) {
+                cache[c.name] = { games: [game], ...c };
             }
 
-            if (!cache[p][c.name].games.includes(game)) {
-                cache[p][c.name].games.push(game);
+            if (!cache[c.name].games.includes(game)) {
+                cache[c.name].games.push(game);
             }
         }
     }
 
-    return cache[p];
+    return cache;
 }
 
-export function parseCommand(p: string, name: string) {
-    const all = parseJSON(p);
-
+function parseCommand(p: string, name: string) {
     const out: string[] = [];
 
-    const command = all[name];
+    const command = cache[name];
 
     if (!command) {
         error(404, "Page not found");
@@ -243,18 +237,18 @@ export function parseCommand(p: string, name: string) {
     return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
 }
 
-export function getCommandTopic(p: string) {
+function getCommandTopic(p: string) {
     const res: MenuArticle[] = [];
 
-    const all = parseJSON(p);
 
-    for (const c of Object.values(all)) {
+    for (const c of Object.values(cache)) {
         res.push({
             id: c.name,
             meta: {
                 title: c.name,
+                type: "command",
                 features: [
-                    ...Object.keys(unknownCache[p]).map(
+                    ...Object.keys(unknownCache).map(
                         (v) => `UNKNOWN_${v.toUpperCase()}`
                     ),
                     ...c.games.map((v) => v.toUpperCase()),
@@ -266,20 +260,28 @@ export function getCommandTopic(p: string) {
     return res;
 }
 
-export function getCommandPageMeta(p: string, name: string): ArticleMeta {
-    const all = parseJSON(p);
+function getCommandPageMeta(p: string, name: string): ArticleMeta {
 
-    const c = all[name];
+    const c = cache[name];
 
     return {
         id: name,
         title: name,
+        type: "command",
         disablePageActions: true,
         features: [
-            ...Object.keys(unknownCache[p]).map(
+            ...Object.keys(unknownCache).map(
                 (v) => `UNKNOWN_${v.toUpperCase()}`
             ),
             ...c.games.map((v) => v.toUpperCase()),
         ],
     };
 }
+
+export const generatorCommand: PageGenerator = {
+    init: parseJSON,
+    getPageContent: parseCommand,
+    getPageMeta: getCommandPageMeta,
+    getTopic: getCommandTopic,
+    getSubtopics: (p: string) => { return []; },
+};

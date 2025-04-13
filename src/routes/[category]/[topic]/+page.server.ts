@@ -1,6 +1,5 @@
 import {
     getCategories,
-    getContentMeta,
     getMenu,
     getMenuTopic,
 } from "$lib/content.server";
@@ -26,8 +25,5 @@ export const entries: EntryGenerator = () => {
 };
 
 export const load = (async ({ params }) => {
-    return {
-        meta: getContentMeta(`${params.category}/${params.topic || ""}`).meta,
-        menu: getMenuTopic(`${params.category}/${params.topic || ""}`),
-    };
+    return getMenuTopic(`${params.category}/${params.topic || ""}`);
 }) satisfies PageServerLoad;

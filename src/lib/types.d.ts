@@ -1,4 +1,14 @@
+type GeneratorType =
+    | "markdown"
+    | "material"
+    | "entity"
+    | "typedoc"
+    | "vscript"
+    | "sound_operators"
+    | "command";
+
 interface ArticleMeta {
+    type: GeneratorType;
     title: string;
     description?: string;
     weight?: number;
@@ -11,6 +21,9 @@ interface ArticleMeta {
      */
     disablePageActions?: boolean;
     reverseOrder?: boolean;
+
+    // Helper for if we've recursively discovered this instead of a real meta file for the directory
+    wasDiscovered?: boolean;
 }
 
 type NoticeType =
@@ -41,4 +54,12 @@ interface GameMeta {
 }
 interface GameMetaCollection {
     [id: string]: GameMeta;
+}
+
+interface PageGenerator {
+    init: () => void;
+    getPageContent: (path: string, article: string) => any;
+    getPageMeta: (path: string, article: string) => ArticleMeta;
+    getTopic: (path: string) => MenuArticle[];
+    getSubtopics: (path: string) => MenuTopic[];
 }

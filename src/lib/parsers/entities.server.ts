@@ -39,59 +39,51 @@ interface EntityConnection {
     origin: string;
 }
 
-const index: {
-    [p: string]: {
-        [id: string]: { entity: Entity; support: string[] };
-    };
+let index: {
+    [id: string]: { entity: Entity; support: string[] };
 } = {};
-const isIndexed: string[] = [];
 
-function indexEntities(p: string) {
-    if (isIndexed.includes(p)) {
-        return;
-    }
-    console.log("Indexing Entities for", p, "This might take a while...");
+function indexEntities() {
 
-    index[p] = {};
+    index = {};
 
     for (const game of Object.keys(getGames())) {
-        if (!fs.existsSync(`../docs/${p}/entities_${game}.json`)) {
+        const jsonPath = `../dumps/entities_${game}.json`;
+
+        if (!fs.existsSync(jsonPath)) {
             reportLint(
                 "caution",
                 "entity_noDump_" + game,
                 `${game} does not an entity dump`,
-                `${p}`
+                ""
             );
             continue;
         }
 
         const entities: Entity[] = JSON.parse(
-            fs.readFileSync(`../docs/${p}/entities_${game}.json`, "utf-8")
+            fs.readFileSync(jsonPath, "utf-8")
         );
 
         for (const entity of entities) {
-            if (index[p][entity.classname]) {
-                index[p][entity.classname].support.push(game.toUpperCase());
+            if (index[entity.classname]) {
+                index[entity.classname].support.push(game.toUpperCase());
             } else {
-                index[p][entity.classname] = {
+                index[entity.classname] = {
                     entity: entity,
                     support: [game.toUpperCase()],
                 };
             }
         }
     }
-
-    isIndexed.push(p);
 }
 
-export function parseEntity(p: string, name: string) {
-    indexEntities(p);
+function parseEntity(p: string, name: string) {
 
-    if (!index[p][name]) {
+    if (!index[name]) {
         error(404, "Page not found");
     }
 
-    const entity = index[p][name].entity;
+    const entity = index[name].entity;
 
     let temp = "";
 
@@ -145,7 +137,7 @@ export function parseEntity(p: string, name: string) {
 
         if (en.bases) {
             for (const base of en.bases) {
-                const e = index[p][base].entity;
+                const e = index[base].entity;
 
                 parseEntityBase(e);
             }
@@ -277,33 +269,44 @@ export function parseEntity(p: string, name: string) {
     return parseMarkdown(temp, `${p}/${name}`);
 }
 
-export function getEntityTopic(p: string) {
-    indexEntities(p);
+function getEntityTopic(p: string) {
 
     const res: MenuArticle[] = [];
 
-    for (const entity of Object.values(index[p])) {
+    for (const entity of Object.values(index)) {
         if (entity.entity.type == baseType) {
             continue;
         }
         res.push({
             id: entity.entity.classname,
-            meta: { title: entity.entity.classname, features: entity.support },
+            meta: {
+                type: "entity",
+                title: entity.entity.classname,
+                features: entity.support
+            },
         });
     }
 
     return res;
 }
 
-export function getEntityPageMeta(p: string, name: string) {
-    indexEntities(p);
+function getEntityPageMeta(p: string, name: string) {
 
     const meta: ArticleMeta = {
+        type: "entity",
         id: name,
         title: name,
-        features: index[p][name].support,
+        features: index[name].support,
         disablePageActions: !fs.existsSync(`../docs/${p}/${name}.md`),
     };
 
     return meta;
 }
+
+export const generatorEntity: PageGenerator = {
+    init: indexEntities,
+    getPageContent: parseEntity,
+    getPageMeta: getEntityPageMeta,
+    getTopic: getEntityTopic,
+    getSubtopics: (p: string) => { return []; },
+};
