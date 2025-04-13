@@ -32,7 +32,7 @@ export const load = (async ({ params }) => {
     if (isPathTopic(path)) {
         return {
             isTopic: true,
-            ...getMenuTopic(`${params.category}/${params.topic || ""}`)
+            ...getMenuTopic(path)
         }
     } else {
         return {
