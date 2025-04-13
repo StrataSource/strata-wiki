@@ -2,6 +2,7 @@
     import type { Image } from "mdast";
     import { page } from "$app/stores";
     import YouTube from "../embeds/YouTube.svelte";
+    import { currentTopic } from "$lib/stores";
 
     interface Props {
         dat: Image;
@@ -29,13 +30,11 @@
 {:else if type == "aside"}
     <aside>
         <a
-            href="/_/raw/{$page.params.category}/{$page.params
-                .topic}/{dat.url.slice(6)}"
+            href="/_/raw/{$currentTopic}/{dat.url.slice(6)}"
             target="_blank"
         >
             <img
-                src="/_/img/lo/{$page.params.category}/{$page.params
-                    .topic}/{dat.url.slice(6)}"
+                src="/_/img/lo/{$currentTopic}/{dat.url.slice(6)}"
                 alt={dat.alt}
                 title={dat.alt}
             />
@@ -43,12 +42,11 @@
     </aside>
 {:else}
     <a
-        href="/_/raw/{$page.params.category}/{$page.params.topic}/{dat.url}"
+        href="/_/raw/{$currentTopic}/{dat.url}"
         target="_blank"
     >
         <img
-            src="/_/img/md/{$page.params.category}/{$page.params
-                .topic}/{dat.url}"
+            src="/_/img/md/{$currentTopic}/{dat.url}"
             alt={dat.alt}
             title={dat.alt}
         />

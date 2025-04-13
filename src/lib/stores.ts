@@ -9,3 +9,5 @@ export const gameMeta: Writable<GameMetaCollection> = writable({});
 export const openMenu = writable(false);
 
 export const currentArticle: Writable<ArticleMeta | undefined> = writable();
+
+export const currentTopic: Writable<string | undefined> = writable();

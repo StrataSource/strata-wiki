@@ -8,7 +8,7 @@ import yaml from "js-yaml";
 import { error } from "@sveltejs/kit";
 import { dev } from "$app/environment";
 
-import { getMenu } from "$lib/content.server";
+import { getMenuTopic, sortByWeight } from "$lib/content.server";
 
 const cache: { [id: string]: { content: Root; original: string } } = {};
 
@@ -92,10 +92,34 @@ function getMarkdownPageContent(
     );
 }
 
+function getMarkdownSubtopics(path: string) {
+    const menu: MenuTopic[] = [];
+    
+    const topics = fs.readdirSync(`../docs/${path}`);
+
+    for (const topic of topics) {
+        const stat = fs.lstatSync(`../docs/${path}/${topic}`);
+        if (!stat.isDirectory()) {
+            continue;
+        }
+
+        const menuTopic = getMenuTopic(`${path}/${topic}`);
+
+        // Hide any discovered sections that have no actual articles within them
+        if (menuTopic.menu.articles.length == 0 && menuTopic.meta.wasDiscovered) {
+            continue;
+        }
+
+        menu.push(menuTopic.menu);
+    }
+
+    return menu.sort(sortByWeight);
+}
+
 export const generatorMarkdown: PageGenerator = {
     init : () => {},
     getPageContent: getMarkdownPageContent,
     getPageMeta: getMarkdownPageMeta,
     getTopic: getMarkdownTopic,
-    getSubtopics: (p) => { return getMenu(p); },
+    getSubtopics: getMarkdownSubtopics,
 };

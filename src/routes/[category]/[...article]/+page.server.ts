@@ -5,6 +5,7 @@ import {
     getMenuTopic,
     getContent, 
     getPageMeta,
+    getTopicMeta,
 } from "$lib/content.server";
 import type { EntryGenerator, PageServerLoad } from "./$types";
 
@@ -39,6 +40,7 @@ export const load = (async ({ params }) => {
             isTopic: false,
             doc: getContent(path),
             articleMeta: getPageMeta(path),
+            topicID: getTopicMeta(path).id,
         }
     }
 }) satisfies PageServerLoad;

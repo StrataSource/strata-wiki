@@ -9,7 +9,7 @@
     import NoSupportNotice from "$lib/components/notices/NoSupportNotice.svelte";
     import SupportUnknownNotice from "$lib/components/notices/SupportUnknownNotice.svelte";
     import RootRenderer from "$lib/components/renderers/RootRenderer.svelte";
-    import { currentArticle, currentGame } from "$lib/stores";
+    import { currentArticle, currentTopic, currentGame } from "$lib/stores";
     import { getGamesWithSupport } from "$lib/supportChecker";
     import { onMount } from "svelte";
     import type { PageData } from "./$types";
@@ -21,11 +21,11 @@
 
     let { data }: Props = $props();
 
-    if (!data.isTopic) {
-        afterNavigate(() => {
-            $currentArticle = data.articleMeta;
-        });
-    }
+    afterNavigate(() => {
+        $currentArticle = data.articleMeta;
+        $currentTopic = data.topicID;
+    });
+
 </script>
 
 {#if data.isTopic}
