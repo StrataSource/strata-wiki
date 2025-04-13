@@ -20,38 +20,30 @@ interface Dump {
     classes: Class[];
 }
 
-const cache: { [id: string]: { [className: string]: Class } } = {};
+let cache: { [className: string]: Class } = {};
 
-function parseJSON(p: string) {
-    if (p && cache[p]) {
-        return cache[p];
-    }
-
+function parseJSON() {
     const raw: Dump = JSON.parse(
-        fs.readFileSync(`../docs/${p}/vscript.json`, "utf-8")
+        fs.readFileSync(`../dumps/vscript.json`, "utf-8")
     );
 
-    cache[p] = {};
+    cache = {};
 
-    cache[p].Globals = {
+    cache.Globals = {
         class: "Globals",
         extends: "",
         methods: raw.globals,
     };
 
     for (const c of raw.classes) {
-        cache[p][c.class] = c;
+        cache[c.class] = c;
     }
-
-    return cache[p];
 }
 
-export function parseVscript(p: string, name: string) {
-    const all = parseJSON(p);
-
+export function parseVScript(p: string, name: string) {
     const out: string[] = [];
 
-    const scriptClass = all[name];
+    const scriptClass = cache[name];
 
     if (!scriptClass) {
         error(404, "Page not found");
@@ -62,7 +54,7 @@ export function parseVscript(p: string, name: string) {
     let extension = scriptClass.class;
 
     while (extension != "") {
-        const c = all[extension];
+        const c = cache[extension];
 
         if (!c) {
             reportLint(
@@ -89,16 +81,15 @@ export function parseVscript(p: string, name: string) {
     return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
 }
 
-export function getVscriptTopic(p: string) {
+export function getVScriptTopic(p: string) {
     const res: MenuArticle[] = [];
 
-    const all = parseJSON(p);
-
-    for (const c of Object.keys(all)) {
+    for (const c of Object.keys(cache)) {
         res.push({
             id: c,
             meta: {
                 title: c,
+                type: "vscript",
                 weight: c == "Globals" ? 0 : undefined,
                 features: ["USE_VSCRIPT"],
             },
@@ -108,11 +99,21 @@ export function getVscriptTopic(p: string) {
     return res;
 }
 
-export function getVscriptPageMeta(p: string, name: string): ArticleMeta {
+export function getVScriptPageMeta(p: string, name: string): ArticleMeta {
     return {
         id: name,
         title: name,
+        type: "vscript",
         disablePageActions: true,
         features: ["USE_VSCRIPT"],
     };
 }
+
+
+export const generatorVScript: PageGenerator = {
+    init: parseJSON,
+    getPageContent: parseVScript,
+    getPageMeta: getVScriptPageMeta,
+    getTopic: getVScriptTopic,
+    getSubtopics: (p: string) => { return []; },
+};

@@ -13,24 +13,16 @@ interface Property {
     type: string;
 }
 
-const cache: { [id: string]: { [className: string]: Operator } } = {};
+let cache: { [className: string]: Operator } = {};
 
-function parseJSON(p: string) {
-    if (p && cache[p]) {
-        return cache[p];
-    }
-
-    cache[p] = JSON.parse(
-        fs.readFileSync(`../docs/${p}/sound_operators.json`, "utf-8")
+function parseJSON() {
+    cache = JSON.parse(
+        fs.readFileSync(`../dumps/sound_operators.json`, "utf-8")
     );
-
-    return cache[p];
 }
 
-export function parseSoundOperators(p: string, name: string) {
-    const all = parseJSON(p);
-
-    const operator = all[name];
+function parseSoundOperators(p: string, name: string) {
+    const operator = cache[name];
 
     if (!operator) {
         error(404, "Page not found");
@@ -71,16 +63,15 @@ export function parseSoundOperators(p: string, name: string) {
     return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
 }
 
-export function getSoundOperatorsTopic(p: string) {
+function getSoundOperatorsTopic(p: string) {
     const res: MenuArticle[] = [];
 
-    const all = parseJSON(p);
-
-    for (const c of Object.keys(all)) {
+    for (const c of Object.keys(cache)) {
         res.push({
             id: c,
             meta: {
                 title: c,
+                type: "sound_operators",
             },
         });
     }
@@ -88,13 +79,23 @@ export function getSoundOperatorsTopic(p: string) {
     return res;
 }
 
-export function getSoundOperatorsPageMeta(
+function getSoundOperatorsPageMeta(
     p: string,
     name: string
 ): ArticleMeta {
     return {
         id: name,
         title: name,
+        type: "sound_operators",
         disablePageActions: true,
     };
 }
+
+
+export const generatorSoundOperators: PageGenerator = {
+    init: parseJSON,
+    getPageContent: parseSoundOperators,
+    getPageMeta: getSoundOperatorsPageMeta,
+    getTopic: getSoundOperatorsTopic,
+    getSubtopics: (p: string) => { return []; },
+};

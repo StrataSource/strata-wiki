@@ -14,26 +14,17 @@ interface MaterialParam {
     default: string;
 }
 
-const cache: { [id: string]: { content: Material[]; original: string } } = {};
+let cache: Material[] = []
 
-function parseJSON(p: string) {
-    const raw = fs.readFileSync(`../docs/${p}/materials.json`, "utf-8");
+function parseJSON() {
+    const raw = fs.readFileSync(`../dumps/materials.json`, "utf-8");
 
-    if (p && cache[p] && cache[p].original === raw) {
-        return cache[p].content;
-    }
-
-    const parsed: Material[] = JSON.parse(raw);
-
-    cache[p] = { content: parsed, original: raw };
-
-    return parsed;
+    cache = JSON.parse(raw);
 }
 
-export function parseMaterial(p: string, name: string) {
-    const all = parseJSON(p);
+function parseMaterial(p: string, name: string) {
 
-    for (const mat of all) {
+    for (const mat of cache) {
         if (mat.name != name) {
             continue;
         }
@@ -75,22 +66,30 @@ export function parseMaterial(p: string, name: string) {
     error(404, "Page not found");
 }
 
-export function getMaterialTopic(p: string) {
+function getMaterialTopic(p: string) {
     const res: MenuArticle[] = [];
 
-    const all = parseJSON(p);
-
-    for (const mat of all) {
-        res.push({ id: mat.name, meta: { title: mat.name } });
+    for (const mat of cache) {
+        res.push({ id: mat.name, meta: { title: mat.name, type: "material" } });
     }
 
     return res;
 }
 
-export function getMaterialPageMeta(p: string, name: string): ArticleMeta {
+function getMaterialPageMeta(p: string, name: string): ArticleMeta {
     return {
         id: name,
         title: name,
+        type: "material",
         disablePageActions: !fs.existsSync(`../docs/${p}/${name}.md`),
     };
 }
+
+
+export const generatorMaterial: PageGenerator = {
+    init: parseJSON,
+    getPageContent: parseMaterial,
+    getPageMeta: getMaterialPageMeta,
+    getTopic: getMaterialTopic,
+    getSubtopics: (p: string) => { return []; },
+};

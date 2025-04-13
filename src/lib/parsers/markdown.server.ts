@@ -8,6 +8,8 @@ import yaml from "js-yaml";
 import { error } from "@sveltejs/kit";
 import { dev } from "$app/environment";
 
+import { getMenu } from "$lib/content.server";
+
 const cache: { [id: string]: { content: Root; original: string } } = {};
 
 export function parseMarkdown(doc: string, id?: string) {
@@ -31,7 +33,7 @@ export function parseMarkdown(doc: string, id?: string) {
     return res;
 }
 
-export function getMarkdownTopic(path: string) {
+function getMarkdownTopic(path: string) {
     if (!fs.existsSync(`../docs/${path}`)) {
         error(404, "Page not found");
     }
@@ -53,7 +55,7 @@ export function getMarkdownTopic(path: string) {
     return res;
 }
 
-export function getMarkdownPageMeta(
+function getMarkdownPageMeta(
     path: string,
     article: string
 ) {
@@ -69,5 +71,31 @@ export function getMarkdownPageMeta(
     }
 
     const meta = <ArticleMeta>yaml.load(metaRaw);
+    meta.type = "markdown";
     return meta;
 }
+
+function getMarkdownPageContent(
+    path: string,
+    article: string
+) {
+    if (!fs.existsSync(`../docs/${path}/${article}.md`)) {
+        error(404, "Page not found");
+    }
+
+    return parseMarkdown(
+        fs.readFileSync(
+            `../docs/${path}/${article}.md`,
+            "utf-8"
+        ),
+        `${path}/${article}`
+    );
+}
+
+export const generatorMarkdown: PageGenerator = {
+    init : () => {},
+    getPageContent: getMarkdownPageContent,
+    getPageMeta: getMarkdownPageMeta,
+    getTopic: getMarkdownTopic,
+    getSubtopics: (p) => { return getMenu(p); },
+};
