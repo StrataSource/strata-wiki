@@ -14,7 +14,7 @@ const config = {
         adapter: adapter({
             assets: "build",
             pages: "build",
-            strict: true,
+            strict: false, // Has to be false for now, as youtube component is only used in dev builds
         }),
     },
 };

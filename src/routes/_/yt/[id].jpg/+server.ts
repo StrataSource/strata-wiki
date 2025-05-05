@@ -2,7 +2,8 @@ import type { RequestHandler } from "./$types";
 
 import fetch from "node-fetch";
 
-export const prerender = true;
+// Needs to be auto, as youtube links are only used on the test page right now
+export const prerender = 'auto';
 
 export const GET: RequestHandler = async ({ params }) => {
     const req = await fetch(

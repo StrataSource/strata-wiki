@@ -47,14 +47,17 @@ export function initGenerators() {
         }
 
         hasInitializedBefore = true;
+        console.log("Generators ready!");
     }
-    console.log("Generators ready!");
 }
 
 export function getTopicMeta(
     path: string,
 ): TopicMeta
 {
+    // getTopicMeta is called by everything, so as a bit of a hack, we'll stuff this here. I'm not sure how to do initialization properly for static mode
+    initGenerators();
+
     const slug: string[] = path.split('/');
 
     // Step through the path backwards and determine if this a real slug or a virtual one provided by some generator
