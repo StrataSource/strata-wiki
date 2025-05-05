@@ -14,6 +14,7 @@
     import { onMount } from "svelte";
     import type { PageData } from "./$types";
     import UnknownSupportNotice from "$lib/components/notices/UnknownSupportNotice.svelte";
+    import { browser } from '$app/environment';
 
     interface Props {
         data: PageData;
@@ -21,6 +22,11 @@
 
     let { data }: Props = $props();
 
+    if (!browser) {
+        $currentArticle = data.articleMeta;
+        $currentTopic = data.topicID;
+    }
+    
     afterNavigate(() => {
         $currentArticle = data.articleMeta;
         $currentTopic = data.topicID;
