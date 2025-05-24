@@ -40,21 +40,21 @@
             <details open={$currentTopic == topic.id}>
                 <summary
                     class:active={$currentTopic == topic.id}
-                    class:activeDirect={$currentTopic == topic.id && !$page.params.article}
+                    class:activeDirect={$currentTopic == topic.id &&
+                        !$page.params.article}
                 >
                     {topic.title}
                 </summary>
 
                 {#if topic.subtopics.length > 0}
-                    <SidebarTopic menu = {topic}></SidebarTopic>
+                    <SidebarTopic menu={topic}></SidebarTopic>
                 {/if}
 
                 {#each topic.articles as article, i}
                     {#if i < 100 || loaded}
                         <a
                             class="item"
-                            class:active={article.id ===
-                                $page.params.article}
+                            class:active={article.id === $page.params.article}
                             href="/{topic.id}/{article.id}"
                         >
                             <div>{article.meta.title || article.id}</div>
@@ -81,8 +81,7 @@
                                             $currentGame
                                         ].name}"
                                     >
-                                        <Icon d={mdiBlockHelper} inline
-                                        ></Icon>
+                                        <Icon d={mdiBlockHelper} inline></Icon>
                                     </span>
                                 {/if}
                             {/if}
@@ -91,10 +90,7 @@
                 {/each}
 
                 {#if topic.articles.length > 99 && !loaded}
-                    <a
-                        class="item"
-                        href="/{topic.id}"
-                    >
+                    <a class="item" href="/{topic.id}">
                         <div>More...</div>
                     </a>
                 {/if}
@@ -104,11 +100,14 @@
 </div>
 
 <style lang="scss">
-
     .menu {
         display: flex;
         flex-direction: column;
         gap: 0.1rem;
+        padding-left: 1rem;
+    }
+
+    :global(nav) > .menu {
         padding: 0.5rem 1rem;
     }
 

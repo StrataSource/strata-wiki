@@ -27,8 +27,8 @@ const interfaceCache: { [p: string]: { [fn: string]: InterfaceParser } } = {};
 
 function initTypedoc() {
     // Little hack, as I don't want to rip out the support for multiple typedoc files and also don't want to properly split out pano from this yet
-    const p = "panorama/reference"
-    
+    const p = "panorama/reference";
+
     const dataRaw: ProjectParser.Json = JSON.parse(
         fs.readFileSync(`../dumps/typedoc.json`, "utf-8")
     );
@@ -93,6 +93,8 @@ function getInterfaces(p: string) {
 
 function parseTypedoc(p: string, name: string): Root {
     const out: string[] = [];
+
+    console.log("TYPEDOC NAME", name);
 
     if (name.startsWith("interface/")) {
         out.push(...renderInterfacePage(name.slice(10), p));
@@ -448,14 +450,13 @@ export function getTypedocTopic(p: string): MenuArticle[] {
 
     out.push({
         id: "types",
-        meta:
-        {
+        meta: {
             type: "typedoc",
             title: "Types",
-            weight: -100
-        }
+            weight: -100,
+        },
     });
-    
+
     const namespaces = getNamespaces(p);
     for (const [id, namespace] of Object.entries(namespaces)) {
         out.push({
@@ -493,15 +494,14 @@ function getTypedocSubtopics(p: string): MenuTopic[] {
                 type: "typedoc",
                 title: id,
                 features:
-                namespace.source?.path == sharedName ||
-                !namespace.source?.path
-                ? []
-                : [namespace.source.path.toUpperCase()],
+                    namespace.source?.path == sharedName ||
+                    !namespace.source?.path
+                        ? []
+                        : [namespace.source.path.toUpperCase()],
             },
         });
     }
     out.push(interfaceTopic);
-
 
     return out;
 }
@@ -510,16 +510,21 @@ function getTypedocPageMeta(p: string, name: string): ArticleMeta {
     //Handling for type and interface page
 
     if (name.startsWith("interface/")) {
+        const i = getInterfaces(p)[name.slice(10)];
         return {
             type: "typedoc",
             title: "Interface: " + name.slice(10),
             disablePageActions: true,
+            features:
+                i.source?.path == sharedName || !i.source?.path
+                    ? []
+                    : [i.source.path.toUpperCase()],
         };
     } else if (name == "types") {
         return {
             type: "typedoc",
             title: "Type Overview",
-            disablePageActions: true
+            disablePageActions: true,
         };
     } else if (name == "interface") {
         return {
@@ -543,7 +548,6 @@ function getTypedocPageMeta(p: string, name: string): ArticleMeta {
         disablePageActions: true,
     };
 }
-
 
 export const generatorTypedoc: PageGenerator = {
     init: initTypedoc,
