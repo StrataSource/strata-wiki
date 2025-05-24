@@ -118,16 +118,18 @@
         </div>
 
         <GameSelector></GameSelector>
-        
     </div>
-    
+
     <h1>{actualMenu?.title}</h1>
 
     <SidebarTopic menu={actualMenu}></SidebarTopic>
-    
 </nav>
 
 <style lang="scss">
+    h1 {
+        margin: 0.5rem 0.5rem 0 1rem;
+    }
+
     nav {
         width: 18rem;
         max-width: 100vw;
@@ -194,5 +196,4 @@
             padding-bottom: 1rem;
         }
     }
-
 </style>
