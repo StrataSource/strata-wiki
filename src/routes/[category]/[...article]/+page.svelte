@@ -1,4 +1,3 @@
-
 <script lang="ts">
     import { page } from "$app/stores";
     import { afterNavigate, beforeNavigate } from "$app/navigation";
@@ -14,7 +13,7 @@
     import { onMount } from "svelte";
     import type { PageData } from "./$types";
     import UnknownSupportNotice from "$lib/components/notices/UnknownSupportNotice.svelte";
-    import { browser } from '$app/environment';
+    import { browser } from "$app/environment";
 
     interface Props {
         data: PageData;
@@ -26,27 +25,27 @@
         $currentArticle = data.articleMeta;
         $currentTopic = data.topicID;
     }
-    
+
     afterNavigate(() => {
         $currentArticle = data.articleMeta;
         $currentTopic = data.topicID;
     });
-
 </script>
 
 {#if data.isTopic}
-    <Metadata title={data.meta.title}></Metadata>
+    <Metadata title={data.meta?.title || "Category"}></Metadata>
 
-    <h1>{data.meta.title}</h1>
+    <h1>{data.meta?.title}</h1>
 
-    {#each data.menu.articles as article}
+    {#each data.menu?.articles || [] as article}
         <div>
-            <Link href="/{$page.params.category}/{$page.params.article}/{article.id}">{article.meta.title}</Link>
+            <Link
+                href="/{$page.params.category}/{$page.params
+                    .article}/{article.id}">{article.meta.title}</Link
+            >
         </div>
     {/each}
-
 {:else}
-
     <Metadata title={data.articleMeta?.title || ""}></Metadata>
 
     <div class="notices">
@@ -63,13 +62,14 @@
                         data.articleMeta?.features || []
                     ).all
                         ? 'all'
-                        : getGamesWithSupport(data.articleMeta?.features || []).games.join(
-                            ','
-                        )}"
+                        : getGamesWithSupport(
+                              data.articleMeta?.features || []
+                          ).games.join(',')}"
                     data-pagefind-ignore
                 >
                     {#if $currentGame == ""}
-                        <SupportUnknownNotice features={data.articleMeta?.features || []}
+                        <SupportUnknownNotice
+                            features={data.articleMeta?.features || []}
                         ></SupportUnknownNotice>
                     {:else if getGamesWithSupport(data.articleMeta?.features || []).unknownGames.includes($currentGame)}
                         <UnknownSupportNotice></UnknownSupportNotice>
@@ -82,7 +82,7 @@
     </div>
 
     {#key data}
-        {#each data.doc.children as obj}
+        {#each data.doc?.children || [] as obj}
             <RootRenderer dat={obj}></RootRenderer>
         {/each}
     {/key}
