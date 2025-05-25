@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { navigating, page } from "$app/stores";
+    import { page, navigating } from "$app/state";
     import Icon from "$lib/components/Icon.svelte";
     import SidebarTopic from "./SidebarTopic.svelte";
     import {
@@ -28,8 +28,10 @@
 
     onMount(() => {
         loaded = true;
-        navigating.subscribe(() => {
-            $openMenu = false;
+        $effect(() => {
+            if (navigating.to) {
+                $openMenu = false;
+            }
         });
     });
 </script>
@@ -41,7 +43,7 @@
                 <summary
                     class:active={$currentTopic == topic.id}
                     class:activeDirect={$currentTopic == topic.id &&
-                        !$page.params.article}
+                        !page.params.article}
                 >
                     {topic.title}
                 </summary>
@@ -54,10 +56,13 @@
                     {#if i < 100 || loaded}
                         <a
                             class="item"
-                            class:active={article.id === $page.params.article}
+                            class:active={`${topic.id.slice(page.params.category.length + 1)}/${article.id}` ===
+                                page.params.article}
                             href="/{topic.id}/{article.id}"
                         >
-                            <div>{article.meta.title || article.id}</div>
+                            <div>
+                                {article.meta.title || article.id}
+                            </div>
 
                             {#if article.meta.deprecated}
                                 <span title="Deprecated">
