@@ -11,6 +11,7 @@
         mdiLayers,
         mdiScript,
         mdiSpeaker,
+        mdiLightbulb,
         mdiSphere,
         mdiTestTube,
         mdiViewDashboard,
@@ -65,6 +66,13 @@
             title: "Materials",
             description: "Material Reference",
             icon: mdiCubeOutline,
+            seperation: false,
+        },
+        {
+            id: "lighting",
+            title: "Lighting",
+            description: "Lighting reference",
+            icon: mdiLightbulb,
             seperation: false,
         },
         {
