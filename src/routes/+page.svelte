@@ -69,7 +69,7 @@
             seperation: false,
         },
         {
-            id: "lighting",
+            id: "lighting/clustered",
             title: "Lighting",
             description: "Lighting reference",
             icon: mdiLightbulb,
