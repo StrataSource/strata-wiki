@@ -185,7 +185,7 @@
     }
 
     .wrapper {
-        margin-bottom: 0.5rem;
+        margin-bottom: 1.0rem;
         border-radius: $radius;
         width: 100%;
         position: relative;
@@ -201,6 +201,7 @@
         overflow-x: auto;
         white-space: pre;
         font-family: $font;
+        tab-size: 4;
     }
 
     .actions {
