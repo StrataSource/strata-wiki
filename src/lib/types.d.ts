@@ -9,6 +9,7 @@ type GeneratorType =
     | "entity"
     | "typedoc"
     | "vscript"
+    | "angelscript"
     | "sound_operators"
     | "command";
 
