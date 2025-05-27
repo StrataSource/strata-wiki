@@ -22,7 +22,10 @@ import {
 } from "./parsers/sounds_operators.server";
 import {
     generatorCommand,
-} from "./parsers/command.server.js";
+} from "./parsers/command.server";
+import {
+    generatorAngelScript,
+} from "./parsers/angelscript.server";
 import { dev } from "$app/environment";
 
 const pageGenerators : { [id: string /*GeneratorType*/ ] : PageGenerator } = {
@@ -33,6 +36,7 @@ const pageGenerators : { [id: string /*GeneratorType*/ ] : PageGenerator } = {
     "vscript" : generatorVScript,
     "sound_operators" : generatorSoundOperators,
     "command" : generatorCommand,
+    "angelscript" : generatorAngelScript,
 };
 
 
