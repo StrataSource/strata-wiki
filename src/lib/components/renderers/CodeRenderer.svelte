@@ -13,6 +13,9 @@
 
     let { dat }: Props = $props();
 
+    // If the code block has a ":: somefilename.txt", add it as a little header
+    const codeFilename = dat.meta?.startsWith('::') ? dat.meta.slice(3) : null;
+
     if (dat.lang == "kv" || dat.lang == "vdf") {
         hljs.registerLanguage("kv", (hljs) => ({
             name: "KeyValues",
@@ -144,7 +147,12 @@
     }
 </script>
 
-<div class="wrapper">
+{#if codeFilename}
+<div class="code-header">
+    <span>{codeFilename}</span>
+</div>
+{/if}
+<div class="wrapper" class:has-header={codeFilename}>
     <div class="actions">
         <button onclick={copy} title="Copy code">
             {#if copySuccess > 0}
@@ -161,20 +169,38 @@
 </div>
 
 <style lang="scss">
-    .wrapper {
-        background-color: #333;
-        border-radius: 0.25rem;
-        margin: 0.25rem 0;
-        width: 100%;
+    $font: 'Source Code Pro', monospace;
+    $radius: 0.25rem;
 
+    .code-header {
+        border-radius: $radius $radius 0 0;
+        padding: 0.4rem 1rem;
+        width: fit-content;
+        
+        background-color: #222;
+        color: #aaa;
+
+        font-family: $font;
+        font-size: 0.8em;
+    }
+
+    .wrapper {
+        margin-bottom: 0.5rem;
+        border-radius: $radius;
+        width: 100%;
         position: relative;
+        background-color: #333;
+
+        &.has-header {
+            border-top-left-radius: 0;
+        }
     }
 
     .code {
         padding: 1rem;
         overflow-x: auto;
         white-space: pre;
-        font-family: "Source Code Pro", monospace;
+        font-family: $font;
     }
 
     .actions {
