@@ -1,5 +1,6 @@
 <script lang="ts">
     import { gameMeta } from "$lib/stores";
+    import "@fontsource/inter";
     import "@fontsource/lexend-deca";
     import type { LayoutData } from "./$types";
     import Topbar from "./Topbar.svelte";
@@ -44,8 +45,8 @@
 
     :global(body) {
         background: #111;
-        color: #fff;
-        font-family: "Inter", "Helvetica Neue", sans-serif;
+        color: #bbb;
+        font-family: "Inter", "Helvetica Neue", system-ui, sans-serif;
 
         margin: 0;
 
@@ -59,8 +60,20 @@
         --strataDark: #a32b2b;
     }
 
+	:global(div.notice, code) {
+		color: #ccc;
+	}
+
+	:global(h1, h2, h3, h4, h5, h6, div.code) {
+		color: #eee;
+	}
+
 	:global(h1, h2, h3, h4, h5, h6) {
-		font-family: "Lexend Deca", "Helvetica Neue", sans-serif;
+		font-family: "Lexend Deca", "Helvetica Neue", system-ui, sans-serif;
+	}
+
+	:global(a h1, a h2, a h3, a h4, a h5, a h6, a code, a div.code) {
+		color: inherit;
 	}
 
     div {

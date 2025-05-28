@@ -138,6 +138,7 @@
 
         &.active {
             background-color: var(--strataDark);
+			color: #fff;
         }
 
         & div {
