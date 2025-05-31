@@ -84,7 +84,8 @@
 
     <h1>Search</h1>
 
-    <input type="text" placeholder="Search..." bind:value={$term} />
+    <!-- svelte-ignore a11y_autofocus -->
+    <input type="text" placeholder="Search..." autofocus bind:value={$term} />
 
     <div class="results">
         {#if $term == ""}
