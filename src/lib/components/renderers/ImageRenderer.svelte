@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Image } from "mdast";
-    import { page } from "$app/stores";
+    import { page } from "$app/state";
     import YouTube from "../embeds/YouTube.svelte";
     import { currentTopic } from "$lib/stores";
 
@@ -41,32 +41,35 @@
         </a>
     </aside>
 {:else}
-    <a
-        href="/_/raw/{$currentTopic}/{dat.url}"
-        target="_blank"
-    >
-        <img
-            src="/_/img/md/{$currentTopic}/{dat.url}"
-            alt={dat.alt}
-            title={dat.alt}
-        />
-    </a>
+    <div class="center">
+        <a
+            href="/_/raw/{$currentTopic}/{dat.url}"
+            target="_blank"
+        >
+            <img
+                src="/_/img/md/{$currentTopic}/{dat.url}"
+                alt={dat.alt}
+                title={dat.alt}
+            />
+        </a>
+    </div>
 {/if}
 
 <style lang="scss">
-    img {
-        max-height: 20rem;
-        max-width: 100%;
-
-        object-fit: contain;
-
-        display: block;
+    div.center {
+        display: flex;
+        justify-content: center;
+		margin: 1.0em 0;
     }
 
     a {
-        display: inline-block;
-        width: fit-content;
-        max-width: 100%;
+		display: contents;
+    }
+
+    img {
+        border-radius: 0.25rem;
+		max-height: 20rem;
+        max-width: 80%;
     }
 
     aside {

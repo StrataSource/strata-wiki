@@ -40,13 +40,21 @@
 
     table {
         border-spacing: 0;
-        border: solid 0.05rem #333;
-
+        border-collapse: collapse;
+        border: none;
         text-wrap: nowrap;
+    }
+    
+    tr {
+        border-bottom: solid 0.1rem #8882;
+    }
+
+    tr:first-child {
+        color: #fff;
+		font-weight: bold;
     }
 
     td {
-        border: solid 0.05rem #333;
-        padding: 0.5rem 1rem;
+        padding: 0.3rem 0.8rem;
     }
 </style>
