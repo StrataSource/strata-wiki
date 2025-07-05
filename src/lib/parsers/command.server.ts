@@ -161,7 +161,7 @@ function parseCommand(p: string, name: string) {
     if (command.flags.includes("cheat")) {
         out.push(
             "> [!WARNING]\n" +
-                "> This is a cheat command and can only be used when [`sv_cheats`](./sv_cheats) is set to `1`."
+                "> This is a cheat command and can only be used when [`sv_cheats`](/console/variable/sv_cheats) is set to `1`."
         );
     }
 
@@ -237,15 +237,19 @@ function parseCommand(p: string, name: string) {
     return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
 }
 
-function getCommandIndex(p: string): PageGeneratorIndex {
+function getCommandIndex(isVariables: boolean, p: string): PageGeneratorIndex {
     const index: PageGeneratorIndex = {topics: [], articles: []};
 
     for (const c of Object.values(cache)) {
+        if(isVariables != (c.type == "cvar")) {
+            continue;
+        }
+
         index.articles.push({
             id: c.name,
             meta: {
                 title: c.name,
-                type: "command",
+                type: isVariables ? "convar" : "concommand",
                 features: [
                     ...Object.keys(unknownCache).map(
                         (v) => `UNKNOWN_${v.toUpperCase()}`
@@ -259,13 +263,13 @@ function getCommandIndex(p: string): PageGeneratorIndex {
     return index;
 }
 
-function getCommandPageMeta(p: string, name: string): ArticleMeta {
+function getCommandPageMeta(isVariables: boolean, p: string, name: string): ArticleMeta {
 
     const c = cache[name];
 
     return {
         title: name,
-        type: "command",
+        type: isVariables ? "convar" : "concommand",
         disablePageActions: true,
         features: [
             ...Object.keys(unknownCache).map(
@@ -276,9 +280,16 @@ function getCommandPageMeta(p: string, name: string): ArticleMeta {
     };
 }
 
-export const generatorCommand: PageGenerator = {
+export const generatorConCommand: PageGenerator = {
     init: parseJSON,
     getPageContent: parseCommand,
-    getPageMeta: getCommandPageMeta,
-    getIndex: getCommandIndex,
+    getPageMeta: (path: string, article: string) => { return getCommandPageMeta(false, path, article); },
+    getIndex: (path: string) => { return getCommandIndex(false, path); },
+};
+
+export const generatorConVar: PageGenerator = {
+    init: () => {},
+    getPageContent: parseCommand,
+    getPageMeta: (path: string, article: string) => { return getCommandPageMeta(true, path, article); },
+    getIndex: (path: string) => { return getCommandIndex(true, path); },
 };
