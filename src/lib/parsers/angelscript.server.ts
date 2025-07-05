@@ -83,6 +83,12 @@ function getASArticleScope(o: {scope?: ASScope[];}): ArticleScope|undefined
     return server && client ? "shared" : ( server ? "server" : (client ? "client" : undefined))
 }
 
+function compareScope(a: {scope?: ASScope[];}, b: {scope?: ASScope[];})
+{
+    // cheesy!
+    return getASArticleScope(a) === getASArticleScope(b);
+}
+
 let angelscriptDump: ASDump = { namespace: [], enum: [], property: [], function: [], type: [] };
 
 function isValidTypeName(type: string) {
@@ -228,6 +234,13 @@ function getScopeString(o: ASNamed): string {
     return "Unknown";
 }
 
+function getASTypeLink(p:string, type: string): string {
+    if (isValidTypeName(type)) {
+        type = `[${type}](/${p}/type/${urlifyString(type)})`;
+    }
+    return type;
+}
+
 function renderEnumPages(name: string, p: string): string[] {
     const out: string[] = [];
 
@@ -238,6 +251,8 @@ function renderEnumPages(name: string, p: string): string[] {
     }
 
     out.push(`# Enum: ${getASName(asEnum)}`);
+
+    out.push(getScopeString(asEnum));
 
     out.push("## Values");
     out.push("| Name | Value |");
@@ -286,10 +301,7 @@ function renderPropertyPageInternal(p:string, properties: ASProperty[], header: 
 
     for(const asProp of properties)
     {
-        let type = asProp.type
-        if (isValidTypeName(type)) {
-            type = `[${asProp.type}](/${p}/type/${urlifyString(asProp.type)})`;
-        }
+        let type = getASTypeLink(p, asProp.type);
         if (asProp.is_const) {
             type = "const " + type;
         }
@@ -324,6 +336,26 @@ function renderPropertyPage(p: string, properties: ASProperty[], subtext?: boole
     return out;
 }
 
+function renderMethods(parent: ASNamed, methods: ASFunction[])
+{
+    const out: string[] = [];
+    for(const asMethod of methods) {
+
+        const scopeSuffix = compareScope(parent, asMethod) ? "" : `(${getScopeString(asMethod)})`;
+    
+        out.push(`### ${asMethod.name}${scopeSuffix}`);
+        
+        if (asMethod.documentation) {
+            out.push(asMethod.documentation);
+        }
+        out.push("```angelscript");
+        out.push(asMethod.declaration);
+        out.push("```");
+    }
+
+    return out;
+}
+
 function renderTypePages(name: string, p: string): string[] {
     const out: string[] = [];
 
@@ -348,33 +380,65 @@ function renderTypePages(name: string, p: string): string[] {
     }
 
     if (asType.base_type) {
-        let name = getASName(asType.base_type);
-        if (isValidTypeName(name)) {
-            name = `[${name}](/${p}/type/${urlifyString(name)})`;
-        }
-        out.push(`Extends: ${name}`);
+        let name = getASTypeLink(p, getASName(asType.base_type));
+        out.push(`Extends: ${name}\n`);
     }
+
+    out.push(getScopeString(asType));
 
     if (asType.property) {
-        out.push(...renderPropertyPage(p, asType.property))
+        out.push(...renderPropertyPage(p, asType.property, true))
     }
 
-    if (asType.method) {
-
-        out.push("## Methods");
-        
-        for(const asMethod of asType.method) {
-            out.push(`### ${asMethod.name}`);
-
-            out.push(getScopeString(asMethod));
-            
-            if (asMethod.documentation) {
-                out.push(asMethod.documentation);
-            }
-            out.push("```angelscript");
-            out.push(asMethod.declaration);
-            out.push("```");
+    /* From testing with VPlane & cplane_t, this seems to come out looking sort of weird?
+    // Tack on anything from our base classes
+    let base = asType.base_type;
+    while(base) {
+        const baseUrlName = urlifyString(getASName(base));
+        const asBaseType: ASType|undefined = angelscriptDump.type.find((o) => urlifyString(getASName(o)) === baseUrlName);
+        if(!asBaseType) {
+            break;
         }
+
+        if(asBaseType.property && asBaseType.property.length > 0) {
+            let name = getASTypeLink(p, getASName(asBaseType));
+            out.push(`### Inherited From ${name}`);
+            out.push(...renderPropertyPage(p, asBaseType.property));
+        }
+
+        base = asBaseType.base_type;
+    }
+    */
+
+    let hasPrintedMethodsHeader = false;
+
+    if (asType.method && asType.method.length > 0) {
+        hasPrintedMethodsHeader = true;
+        out.push("## Methods");
+        out.push(...renderMethods(asType, asType.method));
+    }
+
+    // Tack on anything from our base classes
+    let base = asType.base_type;
+    while(base) {
+        const baseUrlName = urlifyString(getASName(base));
+        const asBaseType: ASType|undefined = angelscriptDump.type.find((o) => urlifyString(getASName(o)) === baseUrlName);
+        if(!asBaseType) {
+            break;
+        }
+
+        if(asBaseType.method && asBaseType.method.length > 0) {
+            if(!hasPrintedMethodsHeader) {
+                hasPrintedMethodsHeader = true;
+                out.push("## Methods");
+            }
+
+            let name = getASTypeLink(p, getASName(asBaseType));
+            out.push(`### Inherited From ${name}`);
+            out.push(...renderMethods(asBaseType, asBaseType.method));
+        }
+            
+        base = asBaseType.base_type;
     }
 
     return out;
