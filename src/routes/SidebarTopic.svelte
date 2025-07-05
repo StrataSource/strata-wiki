@@ -44,10 +44,10 @@
 <div class="menu">
     {#if menu}
         {#each menu.subtopics as topic}
-            <details open={$currentTopic == topic.id}>
+            <details open={$currentTopic?.startsWith(topic.id)}>
                 <summary
-                    class:active={$currentTopic == topic.id}
-                    class:activeDirect={$currentTopic == topic.id &&
+                    class:active={$currentTopic?.startsWith(topic.id)}
+                    class:activeDirect={$currentTopic?.startsWith(topic.id) &&
                         !page.params.article}
                 >
                     {topic.title}

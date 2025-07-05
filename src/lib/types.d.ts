@@ -66,6 +66,7 @@ interface MenuArticle {
 interface MenuTopic extends TopicMeta {
     articles: MenuArticle[];
     subtopics: MenuTopic[];
+    hasCustomIndex?: boolean; // If getContent should be called rather than displaying the default index
 }
 
 interface GameMeta {
