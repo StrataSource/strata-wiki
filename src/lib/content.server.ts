@@ -161,8 +161,8 @@ export function getMenu(path: string): MenuTopic {
 const topicCache: { [id: string]: MenuTopic } = {};
 
 
-export function getMenuTopic(path: string): {menu: MenuTopic, meta: TopicMeta} {
-    const meta = getTopicMeta(path);
+export function getMenuTopic(path: string, topicMeta?: TopicMeta): {menu: MenuTopic, meta: TopicMeta} {
+    const meta = topicMeta ?? getTopicMeta(path);
 
     if (topicCache[path]) {
         return {menu: topicCache[path], meta: meta};
@@ -171,7 +171,8 @@ export function getMenuTopic(path: string): {menu: MenuTopic, meta: TopicMeta} {
     const entry: MenuTopic = {
         id: path,
         title: meta.title,
-        weight: typeof meta.weight == "number" ? meta.weight : null,
+        weight: typeof meta.weight == "number" ? meta.weight : undefined,
+        type: meta.type,
         articles: [],
         subtopics: [],
     };
@@ -200,12 +201,47 @@ export function getMenuTopic(path: string): {menu: MenuTopic, meta: TopicMeta} {
 }
 
 export function getPageMeta(path: string) {
-    const meta = getTopicMeta(path);
-    const article = path.slice(meta.id.length + 1);
+    const topicMeta = getTopicMeta(path);
+    const topic = getMenuTopic(topicMeta.id, topicMeta);
 
-    if(Object.hasOwn(pageGenerators, meta.type)) {
-        return pageGenerators[meta.type].getPageMeta(meta.id, article);
+    // Navigate to the correct subtopic
+    let menu = topic.menu;
+    const slug = path.slice(topicMeta.id.length + 1).split('/');
+    if(slug.length > 1) {
+        let front = topicMeta.id;
+        for(const chunk of slug) {
+            let f = menu.subtopics.find((t) => t.id == `${front}/${chunk}`);
+            if (f) {
+                menu = f;
+                front = `${front}/${chunk}`;
+            } else {
+                break;
+            }
+        }
     }
+    
+    const article = slug[slug.length-1];
+
+    // Find and return the article
+    const fa = menu.articles.find((a) => a.id == article);
+    if(fa != undefined) {
+        return fa.meta;
+    }
+
+    // It might be an index page for a subtopic
+    const fs = menu.subtopics.find((a) => a.id == path);
+    if(fs != undefined) {
+        const topicArticleMeta: ArticleMeta = {
+            type: fs.type,
+            title: fs.title,
+            weight: fs.weight,
+            disablePageActions: true,
+        };
+        return topicArticleMeta;
+    }
+
+    error(404, "Unable to find page meta");
+    return undefined;
 }
 
 export function getCategories() : TopicMeta[] {

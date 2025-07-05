@@ -92,6 +92,7 @@ export function getVScriptIndex(p: string): PageGeneratorIndex {
                 type: "vscript",
                 weight: c == "Globals" ? 0 : undefined,
                 features: ["USE_VSCRIPT"],
+                disablePageActions: true,
             },
         });
     }
@@ -99,19 +100,8 @@ export function getVScriptIndex(p: string): PageGeneratorIndex {
     return index;
 }
 
-export function getVScriptPageMeta(p: string, name: string): ArticleMeta {
-    return {
-        title: name,
-        type: "vscript",
-        disablePageActions: true,
-        features: ["USE_VSCRIPT"],
-    };
-}
-
-
 export const generatorVScript: PageGenerator = {
     init: parseJSON,
     getPageContent: parseVScript,
-    getPageMeta: getVScriptPageMeta,
     getIndex: getVScriptIndex,
 };

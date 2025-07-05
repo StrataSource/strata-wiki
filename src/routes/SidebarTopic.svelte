@@ -37,6 +37,8 @@
             }
         });
     });
+
+    const filterArticles = (articles: MenuArticle[]) => articles.filter((a) => !a.meta.hidden);
 </script>
 
 <div class="menu">
@@ -55,7 +57,8 @@
                     <SidebarTopic menu={topic}></SidebarTopic>
                 {/if}
 
-                {#each topic.articles as article, i}
+                {#each filterArticles(topic.articles) as article, i}
+
                     {#if i < 100 || loaded}
                         <a
                             class="item"

@@ -283,21 +283,14 @@ function getCommandIndex(isVariables: boolean, p: string): PageGeneratorIndex {
     return index;
 }
 
-function getCommandPageMeta(isVariables: boolean, p: string, name: string): ArticleMeta {
-
-    return getCommandMeta(isVariables, cache[name]);
-}
-
 export const generatorConCommand: PageGenerator = {
     init: parseJSON,
     getPageContent: parseCommand,
-    getPageMeta: (path: string, article: string) => { return getCommandPageMeta(false, path, article); },
     getIndex: (path: string) => { return getCommandIndex(false, path); },
 };
 
 export const generatorConVar: PageGenerator = {
     init: () => {},
     getPageContent: parseCommand,
-    getPageMeta: (path: string, article: string) => { return getCommandPageMeta(true, path, article); },
     getIndex: (path: string) => { return getCommandIndex(true, path); },
 };
