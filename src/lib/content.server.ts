@@ -56,11 +56,9 @@ export function initGenerators() {
     }
 }
 
-export function getTopicMeta(
-    path: string,
-): TopicMeta
+export function getTopicMetaRoot(path: string): TopicMeta
 {
-    // getTopicMeta is called by everything, so as a bit of a hack, we'll stuff this here. I'm not sure how to do initialization properly for static mode
+    // getTopicMetaRoot is called by everything, so as a bit of a hack, we'll stuff this here. I'm not sure how to do initialization properly for static mode
     initGenerators();
 
     const slug: string[] = path.split('/');
@@ -111,16 +109,9 @@ export function getTopicMeta(
     return meta;
 }
 
-
-export function isPathTopic(path: string): boolean {
-    // Paths that are topics hold their own meta.json
-    return fs.existsSync(`../docs/${path}/meta.json`);
-}
-
-
 export function getContent(path: string) {
 
-    const meta = getTopicMeta(path);
+    const meta = getTopicMetaRoot(path);
     const article = path.slice(meta.id.length + 1);
 
     if (dev) {
@@ -162,7 +153,7 @@ const topicCache: { [id: string]: MenuTopic } = {};
 
 
 export function getMenuTopic(path: string, topicMeta?: TopicMeta): {menu: MenuTopic, meta: TopicMeta} {
-    const meta = topicMeta ?? getTopicMeta(path);
+    const meta = topicMeta ?? getTopicMetaRoot(path);
 
     if (topicCache[path]) {
         return {menu: topicCache[path], meta: meta};
@@ -200,48 +191,50 @@ export function getMenuTopic(path: string, topicMeta?: TopicMeta): {menu: MenuTo
     return {menu: entry, meta: meta};
 }
 
-export function getPageMeta(path: string) {
-    const topicMeta = getTopicMeta(path);
+export function getPageMeta(path: string) : {root: TopicMeta, topic: MenuTopic, article: ArticleMeta} {
+    const topicMeta = getTopicMetaRoot(path);
     const topic = getMenuTopic(topicMeta.id, topicMeta);
 
     // Navigate to the correct subtopic
+    const slug = path === topicMeta.id ? [] : path.slice(topicMeta.id.length + 1).split('/');
     let menu = topic.menu;
-    const slug = path.slice(topicMeta.id.length + 1).split('/');
-    if(slug.length > 1) {
-        let front = topicMeta.id;
-        for(const chunk of slug) {
-            let f = menu.subtopics.find((t) => t.id == `${front}/${chunk}`);
-            if (f) {
-                menu = f;
-                front = `${front}/${chunk}`;
-            } else {
-                break;
-            }
+    let front = topicMeta.id;
+
+    let i = 0;
+    for(; i < slug.length; i++) {
+        const chunk = slug[i];
+        let f = menu.subtopics.find((t) => t.id == `${front}/${chunk}`);
+        if (f) {
+            menu = f;
+            front = `${front}/${chunk}`;
+        } else {
+            break;
         }
     }
-    
-    const article = slug[slug.length-1];
 
-    // Find and return the article
-    const fa = menu.articles.find((a) => a.id == article);
-    if(fa != undefined) {
-        return fa.meta;
-    }
-
-    // It might be an index page for a subtopic
-    const fs = menu.subtopics.find((a) => a.id == path);
-    if(fs != undefined) {
+    if (i == slug.length) {
+        // It's an index page for a topic
         const topicArticleMeta: ArticleMeta = {
-            type: fs.type,
-            title: fs.title,
-            weight: fs.weight,
+            type: menu.type,
+            title: menu.title,
+            weight: menu.weight,
             disablePageActions: true,
         };
-        return topicArticleMeta;
+        return {root: topicMeta, topic: menu, article: topicArticleMeta};
+    } else if (i == slug.length-1) {
+        // Find and return the article
+        const article = slug[slug.length-1];
+        const fa = menu.articles.find((a) => a.id == article);
+        if(fa != undefined) {
+            return {root: topicMeta, topic: menu, article: fa.meta};
+        }
     }
 
-    error(404, "Unable to find page meta");
-    return undefined;
+    error(404, `Unable to find page meta for "${path}"`);
+}
+
+export function isPathTopic(path: string): boolean {
+    return getPageMeta(path).topic.id === path;
 }
 
 export function getCategories() : TopicMeta[] {
@@ -255,7 +248,7 @@ export function getCategories() : TopicMeta[] {
             continue;
         }
 
-        menu.push(getTopicMeta(category));
+        menu.push(getTopicMetaRoot(category));
     }
 
     return menu;

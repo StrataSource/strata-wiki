@@ -457,13 +457,14 @@ function getTypedocIndex(p: string): PageGeneratorIndex {
         weight: -1,
         articles: [],
         subtopics: [],
+        hasCustomIndex: true,
     };
     for (const [id, namespace] of Object.entries(interfaces)) {
         interfaceTopic.articles.push({
             id: id,
             meta: {
                 type: "typedoc",
-                title: "Interface: " + id.slice(10),
+                title: id,
                 disablePageActions: true,
                 features:
                     namespace.source?.path == sharedName ||
