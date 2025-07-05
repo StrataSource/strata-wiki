@@ -106,7 +106,7 @@
         },
         { seperation: true, title: "Scripting" },
         {
-            id: "angelscript/hammer/classes",
+            id: "angelscript/game",
             title: "Angelscript",
             description: "Reference for Angelscript language",
             icon: mdiScript,
@@ -260,6 +260,7 @@
 
         & h3 {
             margin: 0;
+            color: #eee;
 
             & .i {
                 color: var(--strata);
