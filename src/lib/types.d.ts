@@ -29,12 +29,19 @@ interface BasePageMeta {
     weight?: number;
 }
 
+type ArticleScope = 
+    | "server"
+    | "client"
+    | "shared";
+
 // Articles are the pages you read
 interface ArticleMeta extends BasePageMeta {
     description?: string;
     deprecated?: boolean;
     experimental?: boolean;
     features?: string[];
+    scope?: ArticleScope;
+
     /**
      * Disables page actions like editing or history.
      */

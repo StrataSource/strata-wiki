@@ -12,11 +12,14 @@
     import { getGamesWithSupport } from "$lib/supportChecker";
     import {
         mdiBlockHelper,
+        mdiCircle,
+        mdiCircleHalfFull,
         mdiDelete,
         mdiFlaskEmpty,
         mdiSelectionEllipse,
     } from "@mdi/js";
     import { onMount } from "svelte";
+    import { AssertionError } from "assert";
 
     interface Props {
         menu?: MenuTopic | undefined;
@@ -60,36 +63,56 @@
                                 page.params.article}
                             href="/{topic.id}/{article.id}"
                         >
-                            <div>
+                            <div class="article-name">
                                 {article.meta.title || article.id}
                             </div>
 
-                            {#if article.meta.deprecated}
-                                <span title="Deprecated">
-                                    <Icon d={mdiDelete} inline></Icon>
-                                </span>
-                            {/if}
-                            {#if article.meta.experimental}
-                                <span title="Experimental">
-                                    <Icon d={mdiFlaskEmpty} inline></Icon>
-                                </span>
-                            {/if}
-                            {#if (article.meta?.features?.length || 0) > 0 && !getGamesWithSupport(article.meta.features || []).all}
-                                {#if $currentGame == ""}
-                                    <span title="Limited support">
-                                        <Icon d={mdiSelectionEllipse} inline
-                                        ></Icon>
-                                    </span>
-                                {:else if !getGamesWithSupport(article.meta.features || []).games.includes($currentGame)}
-                                    <span
-                                        title="Unsupported in {$gameMeta[
-                                            $currentGame
-                                        ].name}"
-                                    >
-                                        <Icon d={mdiBlockHelper} inline></Icon>
+                            <div class="article-tags">
+                                {#if article.meta.deprecated}
+                                    <span title="Deprecated">
+                                        <Icon d={mdiDelete} inline></Icon>
                                     </span>
                                 {/if}
-                            {/if}
+
+                                {#if article.meta.experimental}
+                                    <span title="Experimental">
+                                        <Icon d={mdiFlaskEmpty} inline></Icon>
+                                    </span>
+                                {/if}
+
+                                {#if (article.meta?.features?.length || 0) > 0 && !getGamesWithSupport(article.meta.features || []).all}
+                                    {#if $currentGame == ""}
+                                        <span title="Limited support">
+                                            <Icon d={mdiSelectionEllipse} inline
+                                            ></Icon>
+                                        </span>
+                                    {:else if !getGamesWithSupport(article.meta.features || []).games.includes($currentGame)}
+                                        <span
+                                            title="Unsupported in {$gameMeta[
+                                                $currentGame
+                                            ].name}"
+                                        >
+                                            <Icon d={mdiBlockHelper} inline></Icon>
+                                        </span>
+                                    {/if}
+                                {/if}
+
+                                {#if article.meta.scope}
+                                    {#if article.meta.scope == "shared"}
+                                        <span title="Server and Client">
+                                            <Icon d={mdiCircle} inline></Icon>
+                                        </span>
+                                    {:else if article.meta.scope == "server"}
+                                        <span title="Server">
+                                            <Icon d={mdiCircleHalfFull} inline></Icon>
+                                        </span>
+                                    {:else if article.meta.scope == "client"}
+                                        <span title="Client">
+                                            <Icon d={mdiCircleHalfFull} mirror inline></Icon>
+                                        </span>
+                                    {/if}
+                                {/if}
+                            </div>
                         </a>
                     {/if}
                 {/each}
@@ -141,9 +164,13 @@
 			color: #fff;
         }
 
-        & div {
+        .article-name {
             text-overflow: ellipsis;
             overflow: hidden;
+        }
+
+        .article-tags {
+            text-wrap: nowrap;
         }
     }
 
