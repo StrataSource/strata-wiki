@@ -21,7 +21,7 @@ import {
     generatorSoundOperators
 } from "./parsers/sounds_operators.server";
 import {
-    generatorCommand,
+    generatorConCommand, generatorConVar
 } from "./parsers/command.server";
 import {
     generatorAngelScript,
@@ -35,7 +35,8 @@ const pageGenerators : { [id: string /*GeneratorType*/ ] : PageGenerator } = {
     "typedoc" : generatorTypedoc,
     "vscript" : generatorVScript,
     "sound_operators" : generatorSoundOperators,
-    "command" : generatorCommand,
+    "concommand" : generatorConCommand,
+    "convar" : generatorConVar,
     "angelscript" : generatorAngelScript,
 };
 

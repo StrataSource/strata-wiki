@@ -11,7 +11,8 @@ type GeneratorType =
     | "vscript"
     | "angelscript"
     | "sound_operators"
-    | "command";
+    | "concommand"
+    | "convar";
 
 type NoticeType =
     | "normal"
