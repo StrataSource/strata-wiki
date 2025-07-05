@@ -127,12 +127,20 @@ function parseCommand(p: string, name: string) {
 
     out.push(`# ${command.name}`);
 
-    if (command.flags.includes("cl")) {
-        out.push(`🟦 Executable on Client`);
-    } else if (command.flags.includes("sv")) {
-        out.push(`🟩 Executable on Server`);
-    } else {
+
+    const server = command.flags.includes("sv");
+    const client = command.flags.includes("cl");
+    const replicated = command.flags.includes("rep");
+
+    // I think there's something wrong with the dump, but we're missing server and client for replicated. We'll consider them shared
+    if (replicated) {
+        out.push(`🟩 Replicated from Server to Client`);
+    } else if (server && client) {
         out.push(`🟪 Executable on Client and Server`);
+    } else if (client) {
+        out.push(`🟥 Executable on Client only`);
+    } else if (server) {
+        out.push(`🟦 Executable on Server only`);
     }
 
     let sample = `${command.name} ${command.type == "cvar" ? "<value>" : ""}`;
@@ -237,6 +245,27 @@ function parseCommand(p: string, name: string) {
     return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
 }
 
+function getCommandMeta(isVariables: boolean, c: ExpandedCommand): ArticleMeta {
+
+    // I think there's something wrong with the dump, but we'll consider replicated shared
+    const server = c.flags.includes("sv");
+    const client = c.flags.includes("cl");
+    const replicated = c.flags.includes("rep");
+
+    return {
+        title: c.name,
+        type: isVariables ? "convar" : "concommand",
+        disablePageActions: true,
+        features: [
+            ...Object.keys(unknownCache).map(
+                (v) => `UNKNOWN_${v.toUpperCase()}`
+            ),
+            ...c.games.map((v) => v.toUpperCase()),
+        ],
+        scope: (replicated || server && client) ? "shared" : ( server ? "server" : (client ? "client" : undefined))
+    };
+}
+
 function getCommandIndex(isVariables: boolean, p: string): PageGeneratorIndex {
     const index: PageGeneratorIndex = {topics: [], articles: []};
 
@@ -247,16 +276,7 @@ function getCommandIndex(isVariables: boolean, p: string): PageGeneratorIndex {
 
         index.articles.push({
             id: c.name,
-            meta: {
-                title: c.name,
-                type: isVariables ? "convar" : "concommand",
-                features: [
-                    ...Object.keys(unknownCache).map(
-                        (v) => `UNKNOWN_${v.toUpperCase()}`
-                    ),
-                    ...c.games.map((v) => v.toUpperCase()),
-                ],
-            },
+            meta: getCommandMeta(isVariables, c)
         });
     }
 
@@ -265,19 +285,7 @@ function getCommandIndex(isVariables: boolean, p: string): PageGeneratorIndex {
 
 function getCommandPageMeta(isVariables: boolean, p: string, name: string): ArticleMeta {
 
-    const c = cache[name];
-
-    return {
-        title: name,
-        type: isVariables ? "convar" : "concommand",
-        disablePageActions: true,
-        features: [
-            ...Object.keys(unknownCache).map(
-                (v) => `UNKNOWN_${v.toUpperCase()}`
-            ),
-            ...c.games.map((v) => v.toUpperCase()),
-        ],
-    };
+    return getCommandMeta(isVariables, cache[name]);
 }
 
 export const generatorConCommand: PageGenerator = {
