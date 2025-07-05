@@ -1,4 +1,4 @@
-import { getCategories, getTopicMeta, getMenu } from "$lib/content.server";
+import { getCategories, getTopicMetaRoot, getMenu } from "$lib/content.server";
 import type { EntryGenerator, PageServerLoad } from "./$types";
 
 export const entries: EntryGenerator = () => {
@@ -9,7 +9,7 @@ export const entries: EntryGenerator = () => {
 
 export const load = (async ({ params }) => {
     return {
-        meta: getTopicMeta(params.category),
+        meta: getTopicMetaRoot(params.category),
         menu: getMenu(params.category),
     };
 }) satisfies PageServerLoad;
