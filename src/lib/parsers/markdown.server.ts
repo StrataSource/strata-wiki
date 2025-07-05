@@ -111,6 +111,5 @@ function getMarkdownIndex(path: string): PageGeneratorIndex {
 export const generatorMarkdown: PageGenerator = {
     init : () => {},
     getPageContent: getMarkdownPageContent,
-    getPageMeta: getMarkdownPageMeta,
     getIndex: getMarkdownIndex,
 };
