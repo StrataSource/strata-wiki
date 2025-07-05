@@ -37,6 +37,7 @@ type ArticleScope =
 // Articles are the pages you read
 interface ArticleMeta extends BasePageMeta {
     description?: string;
+    hidden?: boolean;
     deprecated?: boolean;
     experimental?: boolean;
     features?: string[];
@@ -62,10 +63,7 @@ interface MenuArticle {
     meta: ArticleMeta;
 }
 
-interface MenuTopic {
-    id: string;
-    title: string;
-    weight: number | null;
+interface MenuTopic extends TopicMeta {
     articles: MenuArticle[];
     subtopics: MenuTopic[];
 }
@@ -87,6 +85,5 @@ interface PageGeneratorIndex {
 interface PageGenerator {
     init: () => void;
     getPageContent: (path: string, article: string) => any;
-    getPageMeta: (path: string, article: string) => ArticleMeta;
     getIndex: (path: string) => PageGeneratorIndex;
 }

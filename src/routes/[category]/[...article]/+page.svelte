@@ -38,12 +38,14 @@
     <h1>{data.meta?.title}</h1>
 
     {#each data.menu?.articles || [] as article}
-        <div>
-            <Link
-                href="/{$page.params.category}/{$page.params
-                    .article}/{article.id}">{article.meta.title}</Link
-            >
-        </div>
+        {#if !article.meta.hidden}
+            <div>
+                <Link
+                    href="/{$page.params.category}/{$page.params
+                        .article}/{article.id}">{article.meta.title}</Link
+                >
+            </div>
+        {/if}
     {/each}
 {:else}
     <Metadata title={data.articleMeta?.title || ""}></Metadata>

@@ -274,15 +274,14 @@ function getEntityIndex(p: string): PageGeneratorIndex {
     const index: PageGeneratorIndex = {topics: [], articles: []};
 
     for (const entity of Object.values(entityIndex)) {
-        if (entity.entity.type == baseType) {
-            continue;
-        }
         index.articles.push({
             id: entity.entity.classname,
             meta: {
                 type: "entity",
                 title: entity.entity.classname,
-                features: entity.support
+                features: entity.support,
+                disablePageActions: !fs.existsSync(`../docs/${p}/${entity.entity.classname}.md`),
+                hidden: entity.entity.type == baseType,
             },
         });
     }
@@ -290,21 +289,8 @@ function getEntityIndex(p: string): PageGeneratorIndex {
     return index;
 }
 
-function getEntityPageMeta(p: string, name: string) {
-
-    const meta: ArticleMeta = {
-        type: "entity",
-        title: name,
-        features: entityIndex[name].support,
-        disablePageActions: !fs.existsSync(`../docs/${p}/${name}.md`),
-    };
-
-    return meta;
-}
-
 export const generatorEntity: PageGenerator = {
     init: indexEntities,
     getPageContent: parseEntity,
-    getPageMeta: getEntityPageMeta,
     getIndex: getEntityIndex,
 };

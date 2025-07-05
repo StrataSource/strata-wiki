@@ -451,6 +451,7 @@ function getTypedocIndex(p: string): PageGeneratorIndex {
     // Get topics
     const interfaces = getInterfaces(p);
     const interfaceTopic: MenuTopic = {
+        type: "typedoc",
         id: `${p}/interface`,
         title: "Interfaces",
         weight: -1,
@@ -462,7 +463,8 @@ function getTypedocIndex(p: string): PageGeneratorIndex {
             id: id,
             meta: {
                 type: "typedoc",
-                title: id,
+                title: "Interface: " + id.slice(10),
+                disablePageActions: true,
                 features:
                     namespace.source?.path == sharedName ||
                     !namespace.source?.path
@@ -478,8 +480,9 @@ function getTypedocIndex(p: string): PageGeneratorIndex {
         id: "types",
         meta: {
             type: "typedoc",
-            title: "Types",
+            title: "Type Overview",
             weight: -100,
+            disablePageActions: true,
         },
     });
 
@@ -490,6 +493,7 @@ function getTypedocIndex(p: string): PageGeneratorIndex {
             meta: {
                 type: "typedoc",
                 title: id,
+                disablePageActions: true,
                 features:
                     namespace.source?.path == sharedName ||
                     !namespace.source?.path
@@ -502,52 +506,8 @@ function getTypedocIndex(p: string): PageGeneratorIndex {
     return index;
 }
 
-function getTypedocPageMeta(p: string, name: string): ArticleMeta {
-    //Handling for type and interface page
-
-    if (name.startsWith("interface/")) {
-        const i = getInterfaces(p)[name.slice(10)];
-        return {
-            type: "typedoc",
-            title: "Interface: " + name.slice(10),
-            disablePageActions: true,
-            features:
-                i.source?.path == sharedName || !i.source?.path
-                    ? []
-                    : [i.source.path.toUpperCase()],
-        };
-    } else if (name == "types") {
-        return {
-            type: "typedoc",
-            title: "Type Overview",
-            disablePageActions: true,
-        };
-    } else if (name == "interface") {
-        return {
-            type: "typedoc",
-            title: "Interface Overview",
-            disablePageActions: true,
-        };
-    }
-
-    const namespaces = getNamespaces(p);
-
-    const namespace = namespaces[name];
-
-    return {
-        type: "typedoc",
-        title: namespace.name,
-        features:
-            namespace.source?.path == sharedName || !namespace.source?.path
-                ? []
-                : [namespace.source.path.toUpperCase()],
-        disablePageActions: true,
-    };
-}
-
 export const generatorTypedoc: PageGenerator = {
     init: initTypedoc,
     getPageContent: parseTypedoc,
-    getPageMeta: getTypedocPageMeta,
     getIndex: getTypedocIndex,
 };

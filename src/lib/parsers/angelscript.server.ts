@@ -228,7 +228,7 @@ export function parseAngelScript(p: string, name: string) {
     return parseMarkdown(out.join("\n"), `${p}/${name}`);
 }
 
-export function getAngelScriptPageMeta(p: string, name: string): ArticleMeta {
+function getAngelScriptPageMeta(name: string): ArticleMeta {
     return {
         title: name,
         type: "angelscript",
@@ -242,6 +242,7 @@ function getAngelScriptIndex(p: string): PageGeneratorIndex {
     const index: PageGeneratorIndex = {topics: [], articles: []};
 
     const enumTopic: MenuTopic = {
+        type: "angelscript",
         id: `${p}/enum`,
         title: "Enums",
         weight: -1,
@@ -251,16 +252,13 @@ function getAngelScriptIndex(p: string): PageGeneratorIndex {
     for (const o of angelscriptDump.enum) {
         enumTopic.articles.push({
             id: urlifyString(getASName(o)),
-            meta: {
-                type: "angelscript",
-                title: getASName(o),
-                features: []
-            },
+            meta: getAngelScriptPageMeta(getASName(o)),
         });
     }
     index.topics.push(enumTopic);
     
     const funcTopic: MenuTopic = {
+        type: "angelscript",
         id: `${p}/function`,
         title: "Functions",
         weight: -1,
@@ -276,16 +274,13 @@ function getAngelScriptIndex(p: string): PageGeneratorIndex {
 
         funcTopic.articles.push({
             id: urlifyString(getASName(o)),
-            meta: {
-                type: "angelscript",
-                title: getASName(o),
-                features: []
-            },
+            meta: getAngelScriptPageMeta(getASName(o)),
         });
     }
     index.topics.push(funcTopic);
 
     const typeTopic: MenuTopic = {
+        type: "angelscript",
         id: `${p}/type`,
         title: "Types",
         weight: -1,
@@ -295,11 +290,7 @@ function getAngelScriptIndex(p: string): PageGeneratorIndex {
     for (const o of angelscriptDump.type) {
         typeTopic.articles.push({
             id: urlifyString(getASName(o)),
-            meta: {
-                type: "angelscript",
-                title: getASName(o),
-                features: []
-            },
+            meta: getAngelScriptPageMeta(getASName(o)),
         });
     }
     index.topics.push(typeTopic);
@@ -309,7 +300,8 @@ function getAngelScriptIndex(p: string): PageGeneratorIndex {
         meta: {
             type: "angelscript",
             title: "Properties",
-            features: [],
+            features: ["USE_SCRIPTSYSTEM"],
+            disablePageActions: true,
             weight: -1,
         },
     });
@@ -320,6 +312,5 @@ function getAngelScriptIndex(p: string): PageGeneratorIndex {
 export const generatorAngelScript: PageGenerator = {
     init: parseJSON,
     getPageContent: parseAngelScript,
-    getPageMeta: getAngelScriptPageMeta,
     getIndex: getAngelScriptIndex,
 };

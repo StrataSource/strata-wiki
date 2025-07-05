@@ -72,6 +72,7 @@ function getSoundOperatorsIndex(p: string): PageGeneratorIndex {
             meta: {
                 title: c,
                 type: "sound_operators",
+                disablePageActions: true,
             },
         });
     }
@@ -79,21 +80,8 @@ function getSoundOperatorsIndex(p: string): PageGeneratorIndex {
     return index;
 }
 
-function getSoundOperatorsPageMeta(
-    p: string,
-    name: string
-): ArticleMeta {
-    return {
-        title: name,
-        type: "sound_operators",
-        disablePageActions: true,
-    };
-}
-
-
 export const generatorSoundOperators: PageGenerator = {
     init: parseJSON,
     getPageContent: parseSoundOperators,
-    getPageMeta: getSoundOperatorsPageMeta,
     getIndex: getSoundOperatorsIndex,
 };
