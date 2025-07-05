@@ -1,6 +1,5 @@
 <script lang="ts">
     import type { Image } from "mdast";
-    import { page } from "$app/stores";
     import YouTube from "../embeds/YouTube.svelte";
     import { currentTopic } from "$lib/stores";
 
@@ -11,8 +10,11 @@
     let { dat }: Props = $props();
     let type: "image" | "aside" | "youtube" = $state("image");
 
+    let contentURL = $state(dat.url);
+
     if (dat.url.startsWith("aside")) {
         type = "aside";
+        contentURL = dat.url.slice(6);
     }
 
     const ytRegex =
@@ -22,19 +24,21 @@
 
     if (ytMatched) {
         type = "youtube";
+        contentURL = ytMatched[8];
     }
+
 </script>
 
 {#if type == "youtube"}
-    <YouTube video={ytMatched ? ytMatched[8] : "error"}></YouTube>
+    <YouTube video={ytMatched ? contentURL : "error"}></YouTube>
 {:else if type == "aside"}
     <aside>
         <a
-            href="/_/raw/{$currentTopic}/{dat.url.slice(6)}"
+            href="/_/raw/{$currentTopic}/{contentURL}"
             target="_blank"
         >
             <img
-                src="/_/img/lo/{$currentTopic}/{dat.url.slice(6)}"
+                src="/_/img/lo/{$currentTopic}/{contentURL}"
                 alt={dat.alt}
                 title={dat.alt}
             />
@@ -42,11 +46,11 @@
     </aside>
 {:else}
     <a
-        href="/_/raw/{$currentTopic}/{dat.url}"
+        href="/_/raw/{$currentTopic}/{contentURL}"
         target="_blank"
     >
         <img
-            src="/_/img/md/{$currentTopic}/{dat.url}"
+            src="/_/img/md/{$currentTopic}/{contentURL}"
             alt={dat.alt}
             title={dat.alt}
         />

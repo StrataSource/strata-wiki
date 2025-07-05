@@ -127,12 +127,20 @@ function parseCommand(p: string, name: string) {
 
     out.push(`# ${command.name}`);
 
-    if (command.flags.includes("cl")) {
-        out.push(`🟦 Executable on Client`);
-    } else if (command.flags.includes("sv")) {
-        out.push(`🟩 Executable on Server`);
-    } else {
+
+    const server = command.flags.includes("sv");
+    const client = command.flags.includes("cl");
+    const replicated = command.flags.includes("rep");
+
+    // I think there's something wrong with the dump, but we're missing server and client for replicated. We'll consider them shared
+    if (replicated) {
+        out.push(`🟩 Replicated from Server to Client`);
+    } else if (server && client) {
         out.push(`🟪 Executable on Client and Server`);
+    } else if (client) {
+        out.push(`🟥 Executable on Client only`);
+    } else if (server) {
+        out.push(`🟦 Executable on Server only`);
     }
 
     let sample = `${command.name} ${command.type == "cvar" ? "<value>" : ""}`;
@@ -161,7 +169,7 @@ function parseCommand(p: string, name: string) {
     if (command.flags.includes("cheat")) {
         out.push(
             "> [!WARNING]\n" +
-                "> This is a cheat command and can only be used when [`sv_cheats`](./sv_cheats) is set to `1`."
+                "> This is a cheat command and can only be used when [`sv_cheats`](/console/variable/sv_cheats) is set to `1`."
         );
     }
 
@@ -237,36 +245,16 @@ function parseCommand(p: string, name: string) {
     return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
 }
 
-function getCommandTopic(p: string) {
-    const res: MenuArticle[] = [];
+function getCommandMeta(isVariables: boolean, c: ExpandedCommand): ArticleMeta {
 
-
-    for (const c of Object.values(cache)) {
-        res.push({
-            id: c.name,
-            meta: {
-                title: c.name,
-                type: "command",
-                features: [
-                    ...Object.keys(unknownCache).map(
-                        (v) => `UNKNOWN_${v.toUpperCase()}`
-                    ),
-                    ...c.games.map((v) => v.toUpperCase()),
-                ],
-            },
-        });
-    }
-
-    return res;
-}
-
-function getCommandPageMeta(p: string, name: string): ArticleMeta {
-
-    const c = cache[name];
+    // I think there's something wrong with the dump, but we'll consider replicated shared
+    const server = c.flags.includes("sv");
+    const client = c.flags.includes("cl");
+    const replicated = c.flags.includes("rep");
 
     return {
-        title: name,
-        type: "command",
+        title: c.name,
+        type: isVariables ? "convar" : "concommand",
         disablePageActions: true,
         features: [
             ...Object.keys(unknownCache).map(
@@ -274,13 +262,35 @@ function getCommandPageMeta(p: string, name: string): ArticleMeta {
             ),
             ...c.games.map((v) => v.toUpperCase()),
         ],
+        scope: (replicated || server && client) ? "shared" : ( server ? "server" : (client ? "client" : undefined))
     };
 }
 
-export const generatorCommand: PageGenerator = {
+function getCommandIndex(isVariables: boolean, p: string): PageGeneratorIndex {
+    const index: PageGeneratorIndex = {topics: [], articles: []};
+
+    for (const c of Object.values(cache)) {
+        if(isVariables != (c.type == "cvar")) {
+            continue;
+        }
+
+        index.articles.push({
+            id: c.name,
+            meta: getCommandMeta(isVariables, c)
+        });
+    }
+
+    return index;
+}
+
+export const generatorConCommand: PageGenerator = {
     init: parseJSON,
     getPageContent: parseCommand,
-    getPageMeta: getCommandPageMeta,
-    getTopic: getCommandTopic,
-    getSubtopics: (p: string) => { return []; },
+    getIndex: (path: string) => { return getCommandIndex(false, path); },
+};
+
+export const generatorConVar: PageGenerator = {
+    init: () => {},
+    getPageContent: parseCommand,
+    getIndex: (path: string) => { return getCommandIndex(true, path); },
 };

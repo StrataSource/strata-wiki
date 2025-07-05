@@ -35,15 +35,25 @@
 {#if data.isTopic}
     <Metadata title={data.meta?.title || "Category"}></Metadata>
 
-    <h1>{data.meta?.title}</h1>
+    <h1>{data.menu?.title}</h1>
 
-    {#each data.menu?.articles || [] as article}
+    {#each data.menu?.subtopics || [] as subtopics}
         <div>
             <Link
-                href="/{$page.params.category}/{$page.params
-                    .article}/{article.id}">{article.meta.title}</Link
+                href="/{subtopics.id}">{subtopics.title}</Link
             >
         </div>
+    {/each}
+
+    {#each data.menu?.articles || [] as article}
+        {#if !article.meta.hidden}
+            <div>
+                <Link
+                    href="/{$page.params.category}/{$page.params
+                        .article}/{article.id}">{article.meta.title}</Link
+                >
+            </div>
+        {/if}
     {/each}
 {:else}
     <Metadata title={data.articleMeta?.title || ""}></Metadata>

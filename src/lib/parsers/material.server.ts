@@ -66,29 +66,26 @@ function parseMaterial(p: string, name: string) {
     error(404, "Page not found");
 }
 
-function getMaterialTopic(p: string) {
-    const res: MenuArticle[] = [];
+function getMaterialIndex(p: string): PageGeneratorIndex {
+
+    const index: PageGeneratorIndex = {topics: [], articles: []};
 
     for (const mat of cache) {
-        res.push({ id: mat.name, meta: { title: mat.name, type: "material" } });
+        index.articles.push({
+            id: mat.name,
+            meta: {
+                title: mat.name,
+                type: "material",
+                disablePageActions: !fs.existsSync(`../docs/${p}/${mat.name}.md`),
+            }
+        });
     }
 
-    return res;
+    return index;
 }
-
-function getMaterialPageMeta(p: string, name: string): ArticleMeta {
-    return {
-        title: name,
-        type: "material",
-        disablePageActions: !fs.existsSync(`../docs/${p}/${name}.md`),
-    };
-}
-
 
 export const generatorMaterial: PageGenerator = {
     init: parseJSON,
     getPageContent: parseMaterial,
-    getPageMeta: getMaterialPageMeta,
-    getTopic: getMaterialTopic,
-    getSubtopics: (p: string) => { return []; },
+    getIndex: getMaterialIndex,
 };

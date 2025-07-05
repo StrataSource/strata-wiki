@@ -21,8 +21,11 @@ import {
     generatorSoundOperators
 } from "./parsers/sounds_operators.server";
 import {
-    generatorCommand,
-} from "./parsers/command.server.js";
+    generatorConCommand, generatorConVar
+} from "./parsers/command.server";
+import {
+    generatorAngelScript,
+} from "./parsers/angelscript.server";
 import { dev } from "$app/environment";
 
 const pageGenerators : { [id: string /*GeneratorType*/ ] : PageGenerator } = {
@@ -32,7 +35,9 @@ const pageGenerators : { [id: string /*GeneratorType*/ ] : PageGenerator } = {
     "typedoc" : generatorTypedoc,
     "vscript" : generatorVScript,
     "sound_operators" : generatorSoundOperators,
-    "command" : generatorCommand,
+    "concommand" : generatorConCommand,
+    "convar" : generatorConVar,
+    "angelscript" : generatorAngelScript,
 };
 
 
@@ -51,11 +56,9 @@ export function initGenerators() {
     }
 }
 
-export function getTopicMeta(
-    path: string,
-): TopicMeta
+export function getTopicMetaRoot(path: string): TopicMeta
 {
-    // getTopicMeta is called by everything, so as a bit of a hack, we'll stuff this here. I'm not sure how to do initialization properly for static mode
+    // getTopicMetaRoot is called by everything, so as a bit of a hack, we'll stuff this here. I'm not sure how to do initialization properly for static mode
     initGenerators();
 
     const slug: string[] = path.split('/');
@@ -106,16 +109,9 @@ export function getTopicMeta(
     return meta;
 }
 
-
-export function isPathTopic(path: string): boolean {
-    // Paths that are topics hold their own meta.json
-    return fs.existsSync(`../docs/${path}/meta.json`);
-}
-
-
 export function getContent(path: string) {
 
-    const meta = getTopicMeta(path);
+    const meta = getTopicMetaRoot(path);
     const article = path.slice(meta.id.length + 1);
 
     if (dev) {
@@ -135,8 +131,8 @@ export function getContent(path: string) {
 }
 
 export function sortByWeight(
-    a: { weight?: number | null; title: string },
-    b: { weight?: number | null; title: string }
+    a: { weight?: number | null; title: string; },
+    b: { weight?: number | null; title: string; }
 ) {
     if (a.weight === b.weight) {
         return a.title.localeCompare(b.title);
@@ -156,8 +152,8 @@ export function getMenu(path: string): MenuTopic {
 const topicCache: { [id: string]: MenuTopic } = {};
 
 
-export function getMenuTopic(path: string): {menu: MenuTopic, meta: TopicMeta} {
-    const meta = getTopicMeta(path);
+export function getMenuTopic(path: string, topicMeta?: TopicMeta): {menu: MenuTopic, meta: TopicMeta} {
+    const meta = topicMeta ?? getTopicMetaRoot(path);
 
     if (topicCache[path]) {
         return {menu: topicCache[path], meta: meta};
@@ -166,14 +162,16 @@ export function getMenuTopic(path: string): {menu: MenuTopic, meta: TopicMeta} {
     const entry: MenuTopic = {
         id: path,
         title: meta.title,
-        weight: typeof meta.weight == "number" ? meta.weight : null,
+        weight: typeof meta.weight == "number" ? meta.weight : undefined,
+        type: meta.type,
         articles: [],
         subtopics: [],
     };
     
     if(Object.hasOwn(pageGenerators, meta.type)) {
-        entry.articles = pageGenerators[meta.type].getTopic(path);
-        entry.subtopics = pageGenerators[meta.type].getSubtopics(path);
+        const index: PageGeneratorIndex = pageGenerators[meta.type].getIndex(path);
+        entry.articles = index.articles;
+        entry.subtopics = index.topics;
     }
 
     entry.articles = entry.articles.sort((a, b) =>
@@ -193,13 +191,50 @@ export function getMenuTopic(path: string): {menu: MenuTopic, meta: TopicMeta} {
     return {menu: entry, meta: meta};
 }
 
-export function getPageMeta(path: string) {
-    const meta = getTopicMeta(path);
-    const article = path.slice(meta.id.length + 1);
+export function getPageMeta(path: string) : {root: TopicMeta, topic: MenuTopic, article: ArticleMeta} {
+    const topicMeta = getTopicMetaRoot(path);
+    const topic = getMenuTopic(topicMeta.id, topicMeta);
 
-    if(Object.hasOwn(pageGenerators, meta.type)) {
-        return pageGenerators[meta.type].getPageMeta(meta.id, article);
+    // Navigate to the correct subtopic
+    const slug = path === topicMeta.id ? [] : path.slice(topicMeta.id.length + 1).split('/');
+    let menu = topic.menu;
+    let front = topicMeta.id;
+
+    let i = 0;
+    for(; i < slug.length; i++) {
+        const chunk = slug[i];
+        let f = menu.subtopics.find((t) => t.id == `${front}/${chunk}`);
+        if (f) {
+            menu = f;
+            front = `${front}/${chunk}`;
+        } else {
+            break;
+        }
     }
+
+    if (i == slug.length) {
+        // It's an index page for a topic
+        const topicArticleMeta: ArticleMeta = {
+            type: menu.type,
+            title: menu.title,
+            weight: menu.weight,
+            disablePageActions: true,
+        };
+        return {root: topicMeta, topic: menu, article: topicArticleMeta};
+    } else if (i == slug.length-1) {
+        // Find and return the article
+        const article = slug[slug.length-1];
+        const fa = menu.articles.find((a) => a.id == article);
+        if(fa != undefined) {
+            return {root: topicMeta, topic: menu, article: fa.meta};
+        }
+    }
+
+    error(404, `Unable to find page meta for "${path}"`);
+}
+
+export function isPathTopic(path: string): boolean {
+    return getPageMeta(path).topic.id === path;
 }
 
 export function getCategories() : TopicMeta[] {
@@ -213,7 +248,7 @@ export function getCategories() : TopicMeta[] {
             continue;
         }
 
-        menu.push(getTopicMeta(category));
+        menu.push(getTopicMetaRoot(category));
     }
 
     return menu;

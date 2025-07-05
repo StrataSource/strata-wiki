@@ -6,6 +6,7 @@
     import Icon from "../Icon.svelte";
     import { mdiDownload, mdiOpenInNew } from "@mdi/js";
     import { page } from "$app/stores";
+    import { currentTopic } from "$lib/stores";
 
     interface Props {
         dat: LinkType;
@@ -20,8 +21,7 @@
     <span>
         {#if dat.url.startsWith("button:download:")}
             <Btn
-                href="/_/raw/{$page.params.category}/{$page.params
-                    .topic}/{dat.url.slice(16)}"
+                href="/_/raw/{$currentTopic}/{dat.url.slice(16)}"
                 title={dat.title ? dat.title : undefined}
                 download
             >

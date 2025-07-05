@@ -9,8 +9,10 @@ type GeneratorType =
     | "entity"
     | "typedoc"
     | "vscript"
+    | "angelscript"
     | "sound_operators"
-    | "command";
+    | "concommand"
+    | "convar";
 
 type NoticeType =
     | "normal"
@@ -27,12 +29,20 @@ interface BasePageMeta {
     weight?: number;
 }
 
+type ArticleScope = 
+    | "server"
+    | "client"
+    | "shared";
+
 // Articles are the pages you read
 interface ArticleMeta extends BasePageMeta {
     description?: string;
+    hidden?: boolean;
     deprecated?: boolean;
     experimental?: boolean;
     features?: string[];
+    scope?: ArticleScope;
+
     /**
      * Disables page actions like editing or history.
      */
@@ -53,12 +63,10 @@ interface MenuArticle {
     meta: ArticleMeta;
 }
 
-interface MenuTopic {
-    id: string;
-    title: string;
-    weight: number | null;
+interface MenuTopic extends TopicMeta {
     articles: MenuArticle[];
     subtopics: MenuTopic[];
+    hasCustomIndex?: boolean; // If getContent should be called rather than displaying the default index
 }
 
 interface GameMeta {
@@ -70,10 +78,13 @@ interface GameMetaCollection {
     [id: string]: GameMeta;
 }
 
+interface PageGeneratorIndex {
+    topics: MenuTopic[];
+    articles: MenuArticle[];
+}
+
 interface PageGenerator {
     init: () => void;
     getPageContent: (path: string, article: string) => any;
-    getPageMeta: (path: string, article: string) => ArticleMeta;
-    getTopic: (path: string) => MenuArticle[];
-    getSubtopics: (path: string) => MenuTopic[];
+    getIndex: (path: string) => PageGeneratorIndex;
 }

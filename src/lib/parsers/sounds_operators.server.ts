@@ -63,38 +63,25 @@ function parseSoundOperators(p: string, name: string) {
     return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
 }
 
-function getSoundOperatorsTopic(p: string) {
-    const res: MenuArticle[] = [];
+function getSoundOperatorsIndex(p: string): PageGeneratorIndex {
+    const index: PageGeneratorIndex = {topics: [], articles: []};
 
     for (const c of Object.keys(cache)) {
-        res.push({
+        index.articles.push({
             id: c,
             meta: {
                 title: c,
                 type: "sound_operators",
+                disablePageActions: true,
             },
         });
     }
 
-    return res;
+    return index;
 }
-
-function getSoundOperatorsPageMeta(
-    p: string,
-    name: string
-): ArticleMeta {
-    return {
-        title: name,
-        type: "sound_operators",
-        disablePageActions: true,
-    };
-}
-
 
 export const generatorSoundOperators: PageGenerator = {
     init: parseJSON,
     getPageContent: parseSoundOperators,
-    getPageMeta: getSoundOperatorsPageMeta,
-    getTopic: getSoundOperatorsTopic,
-    getSubtopics: (p: string) => { return []; },
+    getIndex: getSoundOperatorsIndex,
 };

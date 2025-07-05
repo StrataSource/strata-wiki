@@ -445,47 +445,19 @@ function renderMainPage(p: string, name: string): string[] {
     return out;
 }
 
-export function getTypedocTopic(p: string): MenuArticle[] {
-    const out: MenuArticle[] = [];
+function getTypedocIndex(p: string): PageGeneratorIndex {
+    const index: PageGeneratorIndex = {topics: [], articles: []};
 
-    out.push({
-        id: "types",
-        meta: {
-            type: "typedoc",
-            title: "Types",
-            weight: -100,
-        },
-    });
-
-    const namespaces = getNamespaces(p);
-    for (const [id, namespace] of Object.entries(namespaces)) {
-        out.push({
-            id: id,
-            meta: {
-                type: "typedoc",
-                title: id,
-                features:
-                    namespace.source?.path == sharedName ||
-                    !namespace.source?.path
-                        ? []
-                        : [namespace.source.path.toUpperCase()],
-            },
-        });
-    }
-
-    return out;
-}
-
-function getTypedocSubtopics(p: string): MenuTopic[] {
-    const out: MenuTopic[] = [];
-
+    // Get topics
     const interfaces = getInterfaces(p);
     const interfaceTopic: MenuTopic = {
+        type: "typedoc",
         id: `${p}/interface`,
         title: "Interfaces",
         weight: -1,
         articles: [],
         subtopics: [],
+        hasCustomIndex: true,
     };
     for (const [id, namespace] of Object.entries(interfaces)) {
         interfaceTopic.articles.push({
@@ -493,6 +465,7 @@ function getTypedocSubtopics(p: string): MenuTopic[] {
             meta: {
                 type: "typedoc",
                 title: id,
+                disablePageActions: true,
                 features:
                     namespace.source?.path == sharedName ||
                     !namespace.source?.path
@@ -501,58 +474,41 @@ function getTypedocSubtopics(p: string): MenuTopic[] {
             },
         });
     }
-    out.push(interfaceTopic);
+    index.topics.push(interfaceTopic);
 
-    return out;
-}
-
-function getTypedocPageMeta(p: string, name: string): ArticleMeta {
-    //Handling for type and interface page
-
-    if (name.startsWith("interface/")) {
-        const i = getInterfaces(p)[name.slice(10)];
-        return {
-            type: "typedoc",
-            title: "Interface: " + name.slice(10),
-            disablePageActions: true,
-            features:
-                i.source?.path == sharedName || !i.source?.path
-                    ? []
-                    : [i.source.path.toUpperCase()],
-        };
-    } else if (name == "types") {
-        return {
+    // Get articles
+    index.articles.push({
+        id: "types",
+        meta: {
             type: "typedoc",
             title: "Type Overview",
+            weight: -100,
             disablePageActions: true,
-        };
-    } else if (name == "interface") {
-        return {
-            type: "typedoc",
-            title: "Interface Overview",
-            disablePageActions: true,
-        };
-    }
+        },
+    });
 
     const namespaces = getNamespaces(p);
+    for (const [id, namespace] of Object.entries(namespaces)) {
+        index.articles.push({
+            id: id,
+            meta: {
+                type: "typedoc",
+                title: id,
+                disablePageActions: true,
+                features:
+                    namespace.source?.path == sharedName ||
+                    !namespace.source?.path
+                        ? []
+                        : [namespace.source.path.toUpperCase()],
+            },
+        });
+    }
 
-    const namespace = namespaces[name];
-
-    return {
-        type: "typedoc",
-        title: namespace.name,
-        features:
-            namespace.source?.path == sharedName || !namespace.source?.path
-                ? []
-                : [namespace.source.path.toUpperCase()],
-        disablePageActions: true,
-    };
+    return index;
 }
 
 export const generatorTypedoc: PageGenerator = {
     init: initTypedoc,
     getPageContent: parseTypedoc,
-    getPageMeta: getTypedocPageMeta,
-    getTopic: getTypedocTopic,
-    getSubtopics: getTypedocSubtopics,
+    getIndex: getTypedocIndex,
 };

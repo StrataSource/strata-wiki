@@ -1,11 +1,8 @@
 import {
-    isPathTopic,
     getCategories,
     getMenu,
-    getMenuTopic,
     getContent, 
     getPageMeta,
-    getTopicMeta,
 } from "$lib/content.server";
 import type { EntryGenerator, PageServerLoad } from "./$types";
 
@@ -39,17 +36,20 @@ export const entries: EntryGenerator = () => {
 
 export const load = (async ({ params }) => {
     const path = `${params.category}/${params.article}`;
-    if (isPathTopic(path)) {
+    const meta = getPageMeta(path);
+    if (meta.topic.id === path && !meta.topic.hasCustomIndex) {
         return {
             isTopic: true,
-            ...getMenuTopic(path)
+            menu: meta.topic,
+            meta: meta.root,
+            topicID: meta.topic.id,
         }
     } else {
         return {
             isTopic: false,
             doc: getContent(path),
-            articleMeta: getPageMeta(path),
-            topicID: getTopicMeta(path).id,
+            articleMeta: meta.article,
+            topicID: meta.topic.id,
         }
     }
 }) satisfies PageServerLoad;

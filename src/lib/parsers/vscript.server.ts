@@ -81,38 +81,27 @@ export function parseVScript(p: string, name: string) {
     return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
 }
 
-export function getVScriptTopic(p: string) {
-    const res: MenuArticle[] = [];
+export function getVScriptIndex(p: string): PageGeneratorIndex {
+    const index: PageGeneratorIndex = {topics: [], articles: []};
 
     for (const c of Object.keys(cache)) {
-        res.push({
+        index.articles.push({
             id: c,
             meta: {
                 title: c,
                 type: "vscript",
                 weight: c == "Globals" ? 0 : undefined,
                 features: ["USE_VSCRIPT"],
+                disablePageActions: true,
             },
         });
     }
 
-    return res;
+    return index;
 }
-
-export function getVScriptPageMeta(p: string, name: string): ArticleMeta {
-    return {
-        title: name,
-        type: "vscript",
-        disablePageActions: true,
-        features: ["USE_VSCRIPT"],
-    };
-}
-
 
 export const generatorVScript: PageGenerator = {
     init: parseJSON,
     getPageContent: parseVScript,
-    getPageMeta: getVScriptPageMeta,
-    getTopic: getVScriptTopic,
-    getSubtopics: (p: string) => { return []; },
+    getIndex: getVScriptIndex,
 };
