@@ -139,8 +139,8 @@ export function getContent(path: string) {
 }
 
 export function sortByWeight(
-    a: { weight?: number | null; title: string },
-    b: { weight?: number | null; title: string }
+    a: { weight?: number | null; title: string; },
+    b: { weight?: number | null; title: string; }
 ) {
     if (a.weight === b.weight) {
         return a.title.localeCompare(b.title);
@@ -176,8 +176,9 @@ export function getMenuTopic(path: string): {menu: MenuTopic, meta: TopicMeta} {
     };
     
     if(Object.hasOwn(pageGenerators, meta.type)) {
-        entry.articles = pageGenerators[meta.type].getTopic(path);
-        entry.subtopics = pageGenerators[meta.type].getSubtopics(path);
+        const index: PageGeneratorIndex = pageGenerators[meta.type].getIndex(path);
+        entry.articles = index.articles;
+        entry.subtopics = index.topics;
     }
 
     entry.articles = entry.articles.sort((a, b) =>

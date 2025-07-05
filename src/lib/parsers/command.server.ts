@@ -237,12 +237,11 @@ function parseCommand(p: string, name: string) {
     return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
 }
 
-function getCommandTopic(p: string) {
-    const res: MenuArticle[] = [];
-
+function getCommandIndex(p: string): PageGeneratorIndex {
+    const index: PageGeneratorIndex = {topics: [], articles: []};
 
     for (const c of Object.values(cache)) {
-        res.push({
+        index.articles.push({
             id: c.name,
             meta: {
                 title: c.name,
@@ -257,7 +256,7 @@ function getCommandTopic(p: string) {
         });
     }
 
-    return res;
+    return index;
 }
 
 function getCommandPageMeta(p: string, name: string): ArticleMeta {
@@ -281,6 +280,5 @@ export const generatorCommand: PageGenerator = {
     init: parseJSON,
     getPageContent: parseCommand,
     getPageMeta: getCommandPageMeta,
-    getTopic: getCommandTopic,
-    getSubtopics: (p: string) => { return []; },
+    getIndex: getCommandIndex,
 };
