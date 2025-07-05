@@ -84,7 +84,7 @@
             seperation: false,
         },
         {
-            id: "console/commands",
+            id: "console/command",
             title: "Console",
             description: "ConCommands and ConVars Reference",
             icon: mdiConsoleLine,
