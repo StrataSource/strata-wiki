@@ -39,13 +39,13 @@ interface EntityConnection {
     origin: string;
 }
 
-let index: {
+let entityIndex: {
     [id: string]: { entity: Entity; support: string[] };
 } = {};
 
 function indexEntities() {
 
-    index = {};
+    entityIndex = {};
 
     for (const game of Object.keys(getGames())) {
         const jsonPath = `../dumps/entities_${game}.json`;
@@ -65,10 +65,10 @@ function indexEntities() {
         );
 
         for (const entity of entities) {
-            if (index[entity.classname]) {
-                index[entity.classname].support.push(game.toUpperCase());
+            if (entityIndex[entity.classname]) {
+                entityIndex[entity.classname].support.push(game.toUpperCase());
             } else {
-                index[entity.classname] = {
+                entityIndex[entity.classname] = {
                     entity: entity,
                     support: [game.toUpperCase()],
                 };
@@ -79,11 +79,11 @@ function indexEntities() {
 
 function parseEntity(p: string, name: string) {
 
-    if (!index[name]) {
+    if (!entityIndex[name]) {
         error(404, "Page not found");
     }
 
-    const entity = index[name].entity;
+    const entity = entityIndex[name].entity;
 
     let temp = "";
 
@@ -137,7 +137,7 @@ function parseEntity(p: string, name: string) {
 
         if (en.bases) {
             for (const base of en.bases) {
-                const e = index[base].entity;
+                const e = entityIndex[base].entity;
 
                 parseEntityBase(e);
             }
@@ -269,15 +269,15 @@ function parseEntity(p: string, name: string) {
     return parseMarkdown(temp, `${p}/${name}`);
 }
 
-function getEntityTopic(p: string) {
+function getEntityIndex(p: string): PageGeneratorIndex {
 
-    const res: MenuArticle[] = [];
+    const index: PageGeneratorIndex = {topics: [], articles: []};
 
-    for (const entity of Object.values(index)) {
+    for (const entity of Object.values(entityIndex)) {
         if (entity.entity.type == baseType) {
             continue;
         }
-        res.push({
+        index.articles.push({
             id: entity.entity.classname,
             meta: {
                 type: "entity",
@@ -287,7 +287,7 @@ function getEntityTopic(p: string) {
         });
     }
 
-    return res;
+    return index;
 }
 
 function getEntityPageMeta(p: string, name: string) {
@@ -295,7 +295,7 @@ function getEntityPageMeta(p: string, name: string) {
     const meta: ArticleMeta = {
         type: "entity",
         title: name,
-        features: index[name].support,
+        features: entityIndex[name].support,
         disablePageActions: !fs.existsSync(`../docs/${p}/${name}.md`),
     };
 
@@ -306,6 +306,5 @@ export const generatorEntity: PageGenerator = {
     init: indexEntities,
     getPageContent: parseEntity,
     getPageMeta: getEntityPageMeta,
-    getTopic: getEntityTopic,
-    getSubtopics: (p: string) => { return []; },
+    getIndex: getEntityIndex,
 };
