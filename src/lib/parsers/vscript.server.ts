@@ -81,11 +81,11 @@ export function parseVScript(p: string, name: string) {
     return parseMarkdown(out.join("\n\n"), `${p}/${name}`);
 }
 
-export function getVScriptTopic(p: string) {
-    const res: MenuArticle[] = [];
+export function getVScriptIndex(p: string): PageGeneratorIndex {
+    const index: PageGeneratorIndex = {topics: [], articles: []};
 
     for (const c of Object.keys(cache)) {
-        res.push({
+        index.articles.push({
             id: c,
             meta: {
                 title: c,
@@ -96,7 +96,7 @@ export function getVScriptTopic(p: string) {
         });
     }
 
-    return res;
+    return index;
 }
 
 export function getVScriptPageMeta(p: string, name: string): ArticleMeta {
@@ -113,6 +113,5 @@ export const generatorVScript: PageGenerator = {
     init: parseJSON,
     getPageContent: parseVScript,
     getPageMeta: getVScriptPageMeta,
-    getTopic: getVScriptTopic,
-    getSubtopics: (p: string) => { return []; },
+    getIndex: getVScriptIndex,
 };

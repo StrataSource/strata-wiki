@@ -228,22 +228,6 @@ export function parseAngelScript(p: string, name: string) {
     return parseMarkdown(out.join("\n"), `${p}/${name}`);
 }
 
-export function getAngelScriptTopic(p: string) {
-    const res: MenuArticle[] = [];
-    
-    res.push({
-        id: "property",
-        meta: {
-            type: "angelscript",
-            title: "Properties",
-            features: [],
-            weight: -1,
-        },
-    });
-
-    return res;
-}
-
 export function getAngelScriptPageMeta(p: string, name: string): ArticleMeta {
     return {
         title: name,
@@ -254,8 +238,8 @@ export function getAngelScriptPageMeta(p: string, name: string): ArticleMeta {
 }
 
 
-function getAngelScriptSubtopics(p: string): MenuTopic[] {
-    const out: MenuTopic[] = [];
+function getAngelScriptIndex(p: string): PageGeneratorIndex {
+    const index: PageGeneratorIndex = {topics: [], articles: []};
 
     const enumTopic: MenuTopic = {
         id: `${p}/enum`,
@@ -274,7 +258,7 @@ function getAngelScriptSubtopics(p: string): MenuTopic[] {
             },
         });
     }
-    out.push(enumTopic);
+    index.topics.push(enumTopic);
     
     const funcTopic: MenuTopic = {
         id: `${p}/function`,
@@ -299,7 +283,7 @@ function getAngelScriptSubtopics(p: string): MenuTopic[] {
             },
         });
     }
-    out.push(funcTopic);
+    index.topics.push(funcTopic);
 
     const typeTopic: MenuTopic = {
         id: `${p}/type`,
@@ -318,15 +302,24 @@ function getAngelScriptSubtopics(p: string): MenuTopic[] {
             },
         });
     }
-    out.push(typeTopic);
+    index.topics.push(typeTopic);
 
-    return out;
+    index.articles.push({
+        id: "property",
+        meta: {
+            type: "angelscript",
+            title: "Properties",
+            features: [],
+            weight: -1,
+        },
+    });
+
+    return index;
 }
 
 export const generatorAngelScript: PageGenerator = {
     init: parseJSON,
     getPageContent: parseAngelScript,
     getPageMeta: getAngelScriptPageMeta,
-    getTopic: getAngelScriptTopic,
-    getSubtopics: getAngelScriptSubtopics,
+    getIndex: getAngelScriptIndex,
 };

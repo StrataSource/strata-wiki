@@ -71,10 +71,14 @@ interface GameMetaCollection {
     [id: string]: GameMeta;
 }
 
+interface PageGeneratorIndex {
+    topics: MenuTopic[];
+    articles: MenuArticle[];
+}
+
 interface PageGenerator {
     init: () => void;
     getPageContent: (path: string, article: string) => any;
     getPageMeta: (path: string, article: string) => ArticleMeta;
-    getTopic: (path: string) => MenuArticle[];
-    getSubtopics: (path: string) => MenuTopic[];
+    getIndex: (path: string) => PageGeneratorIndex;
 }

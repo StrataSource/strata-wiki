@@ -33,28 +33,6 @@ export function parseMarkdown(doc: string, id?: string) {
     return res;
 }
 
-function getMarkdownTopic(path: string) {
-    if (!fs.existsSync(`../docs/${path}`)) {
-        error(404, "Page not found");
-    }
-
-    const articles = fs.readdirSync(`../docs/${path}`);
-
-    const res: MenuArticle[] = [];
-
-    for (const article of articles) {
-        if (!article.endsWith(".md")) {
-            continue;
-        }
-
-        const meta = getMarkdownPageMeta(path, article.slice(0, -3));
-
-        res.push({ id: article.slice(0, -3), meta: meta });
-    }
-
-    return res;
-}
-
 function getMarkdownPageMeta(
     path: string,
     article: string
@@ -92,34 +70,47 @@ function getMarkdownPageContent(
     );
 }
 
-function getMarkdownSubtopics(path: string) {
-    const menu: MenuTopic[] = [];
+function getMarkdownIndex(path: string): PageGeneratorIndex {
     
-    const topics = fs.readdirSync(`../docs/${path}`);
-
-    for (const topic of topics) {
-        const stat = fs.lstatSync(`../docs/${path}/${topic}`);
-        if (!stat.isDirectory()) {
-            continue;
-        }
-
-        const menuTopic = getMenuTopic(`${path}/${topic}`);
-
-        // Hide any discovered sections that have no actual articles within them
-        if (menuTopic.menu.articles.length == 0 && menuTopic.meta.wasDiscovered) {
-            continue;
-        }
-
-        menu.push(menuTopic.menu);
+    if (!fs.existsSync(`../docs/${path}`)) {
+        error(404, "Page not found");
     }
 
-    return menu.sort(sortByWeight);
+    const index: PageGeneratorIndex = {topics: [], articles: []};
+
+    const files = fs.readdirSync(`../docs/${path}`);
+
+    for (const file of files) {
+        const stat = fs.lstatSync(`../docs/${path}/${file}`);
+        
+        if (!stat.isDirectory()) {
+            // Got an article
+            if (file.endsWith(".md")) {
+                const meta = getMarkdownPageMeta(path, file.slice(0, -3));
+
+                index.articles.push({ id: file.slice(0, -3), meta: meta });
+            }
+        }
+        else
+        {
+            // Got a topic
+            const menuTopic = getMenuTopic(`${path}/${file}`);
+
+            // Hide any discovered sections that have no actual articles within them
+            if (menuTopic.menu.articles.length == 0 && menuTopic.meta.wasDiscovered) {
+                continue;
+            }
+
+            index.topics.push(menuTopic.menu);
+        }
+    }
+
+    return index;
 }
 
 export const generatorMarkdown: PageGenerator = {
     init : () => {},
     getPageContent: getMarkdownPageContent,
     getPageMeta: getMarkdownPageMeta,
-    getTopic: getMarkdownTopic,
-    getSubtopics: getMarkdownSubtopics,
+    getIndex: getMarkdownIndex,
 };
