@@ -31,8 +31,8 @@
                 hljs.C_NUMBER_MODE,
                 {
                     scope: "string",
-                    begin: /(\w)/,
-                    end: /[\n ]/,
+                    begin: /[^\s\"{}\[\]]/,
+                    end: /[\n\W]/,
                     contains: [hljs.BACKSLASH_ESCAPE],
                 },
                 {
