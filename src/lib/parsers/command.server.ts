@@ -2,7 +2,7 @@ import fs from "fs";
 import { error } from "@sveltejs/kit";
 import { parseMarkdown } from "./markdown.server";
 import { reportLint } from "$lib/linter.server";
-import { getGames } from "$lib/content.server.js";
+import { getGames } from "$lib/content.server";
 
 interface Command {
     name: string;
@@ -169,7 +169,7 @@ function parseCommand(p: string, name: string) {
     if (command.flags.includes("cheat")) {
         out.push(
             "> [!WARNING]\n" +
-                "> This is a cheat command and can only be used when [`sv_cheats`](/console/variable/sv_cheats) is set to `1`."
+                "> This is a cheat command and can only be used when [`sv_cheats`](../variable/sv_cheats) is set to `1`."
         );
     }
 
