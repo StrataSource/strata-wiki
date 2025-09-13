@@ -341,7 +341,7 @@ function renderMethods(parent: ASNamed, methods: ASFunction[])
     const out: string[] = [];
     for(const asMethod of methods) {
 
-        const scopeSuffix = compareScope(parent, asMethod) ? "" : `(${getScopeString(asMethod)})`;
+        const scopeSuffix = compareScope(parent, asMethod) ? "" : ` (${getScopeString(asMethod)})`;
     
         out.push(`### ${asMethod.name}${scopeSuffix}`);
         
@@ -437,7 +437,7 @@ function renderTypePages(name: string, p: string): string[] {
             out.push(`### Inherited From ${name}`);
             out.push(...renderMethods(asBaseType, asBaseType.method));
         }
-            
+        
         base = asBaseType.base_type;
     }
 
