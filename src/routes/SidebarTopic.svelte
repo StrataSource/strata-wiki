@@ -19,7 +19,6 @@
         mdiSelectionEllipse,
     } from "@mdi/js";
     import { onMount } from "svelte";
-    import { AssertionError } from "assert";
 
     interface Props {
         menu?: MenuTopic | undefined;
