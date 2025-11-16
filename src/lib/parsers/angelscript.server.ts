@@ -207,6 +207,11 @@ function mergeDump(scope: ASScope, dump: ASDump)
     mergeProperties(scope, dump.property, angelscriptDump.property);
 }
 
+// Compare ASNamed objects, for use with sort()
+function compareNamed(a: ASNamed, b: ASNamed): number {
+    return getASName(a).toLowerCase().localeCompare(getASName(b).toLowerCase());
+}
+
 function parseJSON() {
     let server: ASDump = JSON.parse(
         fs.readFileSync(`../dumps/angelscript_server_p2ce.json`, "utf-8")
@@ -217,6 +222,13 @@ function parseJSON() {
     
     mergeDump("server", server);
     mergeDump("client", client);
+
+    // Sort everything
+    angelscriptDump.enum.sort((a, b) => compareNamed(a, b));
+    angelscriptDump.function.sort((a, b) => compareNamed(a, b));
+    angelscriptDump.property.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+    angelscriptDump.type.sort((a, b) => compareNamed(a, b));
+    angelscriptDump.namespace.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 }
 
 function getScopeString(o: ASNamed): string {
