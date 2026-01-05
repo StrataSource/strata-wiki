@@ -4,9 +4,10 @@ import { parseMarkdown } from "./markdown.server";
 import { reportLint } from "$lib/linter.server";
 import { urlifyString } from "$lib/util";
 
-type ASScope = 
+type ASScope =
     | "server"
-    | "client";
+    | "client"
+    | "hammer";
 
 interface ASNamed {
     namespace: string|undefined;
@@ -79,8 +80,18 @@ function getASArticleScope(o: {scope?: ASScope[];}): ArticleScope|undefined
 
     const server = o.scope.includes("server");
     const client = o.scope.includes("client");
-    
-    return server && client ? "shared" : ( server ? "server" : (client ? "client" : undefined))
+    const hammer = o.scope.includes("hammer");
+
+    if (server && client)
+        return "shared";
+    else if (server)
+        return "server";
+    else if (client)
+        return "client";
+    else if (hammer)
+        return "hammer";
+
+    return undefined;
 }
 
 function compareScope(a: {scope?: ASScope[];}, b: {scope?: ASScope[];})
@@ -89,7 +100,7 @@ function compareScope(a: {scope?: ASScope[];}, b: {scope?: ASScope[];})
     return getASArticleScope(a) === getASArticleScope(b);
 }
 
-let angelscriptDump: ASDump = { namespace: [], enum: [], property: [], function: [], type: [] };
+const angelscriptDump: ASDump = { namespace: [], enum: [], property: [], function: [], type: [] };
 
 function isValidTypeName(type: string) {
     if(baseTypeNames.includes(type)) {
@@ -176,7 +187,7 @@ function mergeDump(scope: ASScope, dump: ASDump)
         } else {
             ft.scope?.push(scope);
         }
-        
+
         // TODO: Combine mismatches!
         if((ot.base_type ? getASName(ot.base_type) : undefined) != (ft.base_type ? getASName(ft.base_type) : undefined) || ot.template_parameter?.length != ft.template_parameter?.length) {
             console.log(ot);
@@ -213,15 +224,19 @@ function compareNamed(a: ASNamed, b: ASNamed): number {
 }
 
 function parseJSON() {
-    let server: ASDump = JSON.parse(
+    const server: ASDump = JSON.parse(
         fs.readFileSync(`../dumps/angelscript_server_p2ce.json`, "utf-8")
     );
-    let client: ASDump = JSON.parse(
+    const client: ASDump = JSON.parse(
         fs.readFileSync(`../dumps/angelscript_client_p2ce.json`, "utf-8")
     );
-    
+    const hammer: ASDump = JSON.parse(
+        fs.readFileSync(`../dumps/anglescript_hammer_p2ce.json`, "utf-8")
+    );
+
     mergeDump("server", server);
     mergeDump("client", client);
+    mergeDump("hammer", hammer);
 
     // Sort everything
     angelscriptDump.enum.sort((a, b) => compareNamed(a, b));
@@ -235,12 +250,14 @@ function getScopeString(o: ASNamed): string {
 
     const scope = getASArticleScope(o);
 
-    if(scope === "shared") {
+    if (scope === "shared") {
         return "Server & Client";
-    } else if(scope === "server") {
+    } else if (scope === "server") {
         return "Server Only";
-    } else if(scope === "client") {
+    } else if (scope === "client") {
         return "Client Only";
+    } else if (scope === "hammer") {
+        return "Hammer";
     }
 
     return "Unknown";
@@ -291,7 +308,7 @@ function renderFunctionPages(name: string, p: string, functions: ASFunction[]): 
     for( const asFunc of asFuncs )
     {
         out.push(getScopeString(asFunc));
-        
+
         if (asFunc.documentation) {
             out.push(asFunc.documentation);
         }
@@ -332,17 +349,22 @@ function renderPropertyPage(p: string, properties: ASProperty[], subtext?: boole
     const server: ASProperty[] = properties.filter(o => getASArticleScope(o) === "server");
     const client: ASProperty[] = properties.filter(o => getASArticleScope(o) === "client");
     const shared: ASProperty[] = properties.filter(o => getASArticleScope(o) === "shared");
+    const hammer: ASProperty[] = properties.filter(o => getASArticleScope(o) === "hammer");
 
-    if(shared.length > 0) {
+    if (shared.length > 0) {
         out.push(...renderPropertyPageInternal(p, shared, header + " - Shared"));
     }
 
-    if(server.length > 0) {
+    if (server.length > 0) {
         out.push(...renderPropertyPageInternal(p, server, header + " - Server"));
     }
 
-    if(client.length > 0) {
+    if (client.length > 0) {
         out.push(...renderPropertyPageInternal(p, client, header + " - Client"));
+    }
+
+    if (hammer.length > 0) {
+        out.push(...renderPropertyPageInternal(p, hammer, header + " - Hammer"));
     }
 
     return out;
@@ -354,9 +376,9 @@ function renderMethods(parent: ASNamed, methods: ASFunction[])
     for(const asMethod of methods) {
 
         const scopeSuffix = compareScope(parent, asMethod) ? "" : ` (${getScopeString(asMethod)})`;
-    
+
         out.push(`### ${asMethod.name}${scopeSuffix}`);
-        
+
         if (asMethod.documentation) {
             out.push(asMethod.documentation);
         }
@@ -449,7 +471,7 @@ function renderTypePages(name: string, p: string): string[] {
             out.push(`### Inherited From ${name}`);
             out.push(...renderMethods(asBaseType, asBaseType.method));
         }
-        
+
         base = asBaseType.base_type;
     }
 
@@ -508,7 +530,7 @@ function getAngelScriptIndex(p: string): PageGeneratorIndex {
         });
     }
     index.topics.push(enumTopic);
-    
+
     const funcTopic: MenuTopic = {
         type: "angelscript",
         id: `${p}/function`,
@@ -518,7 +540,7 @@ function getAngelScriptIndex(p: string): PageGeneratorIndex {
         subtopics: [],
     };
     for (const o of angelscriptDump.function) {
-        
+
         // Gross... Need to not emit overloads
         const f = funcTopic.articles.find((a) => a.id === urlifyString(getASName(o)));
         if (f) {

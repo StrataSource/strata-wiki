@@ -29,10 +29,11 @@ interface BasePageMeta {
     weight?: number;
 }
 
-type ArticleScope = 
+type ArticleScope =
     | "server"
     | "client"
-    | "shared";
+    | "shared"
+    | "hammer";
 
 // Articles are the pages you read
 interface ArticleMeta extends BasePageMeta {
