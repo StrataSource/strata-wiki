@@ -231,7 +231,7 @@ function parseJSON() {
         fs.readFileSync(`../dumps/angelscript_client_p2ce.json`, "utf-8")
     );
     const hammer: ASDump = JSON.parse(
-        fs.readFileSync(`../dumps/anglescript_hammer_p2ce.json`, "utf-8")
+        fs.readFileSync(`../dumps/angelscript_hammer_p2ce.json`, "utf-8")
     );
 
     mergeDump("server", server);
