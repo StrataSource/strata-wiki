@@ -10,7 +10,7 @@
         "Portal 2: Wiki Edition",
         "Sixteen Times The Pages",
         "Not to be confused with the Strata Layer",
-        "To be confused with the Strata Wiki",
+        "To be confused with the Strata Source Wiki",
         "Making Source 20% cooler",
         "Works on my machine™",
         "Beware: ambient_generic on premises",

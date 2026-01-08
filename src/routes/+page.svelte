@@ -3,7 +3,7 @@
     import Card from "$lib/components/Card.svelte";
 
     import heroHeader from "$lib/assets/heroHeader.svg";
-    import {
+    import { // List of material icons that will be used on the Home page.
         mdiAccountGroup,
         mdiAlphaVBox,
         mdiConsoleLine,
@@ -22,17 +22,18 @@
     import Metadata from "$lib/components/Metadata.svelte";
     import { dev } from "$app/environment";
 
+    // The list of categories that are featured on the Wiki home page.
     const categories: (
         | {
-              id: string;
-              title: string;
-              description: string;
-              icon: string;
-              separation: false;
+              id: string; // The article (without the ".md") that should be entered into by default when the category is selected.
+              title: string; // Title displayed for the category.
+              description: string; // Description of the category.
+              icon: string; // Icon to use for the category displayed before the "title". Recommended to use a icon imported from the material icons package.
+              separation: false; // This should be left false for category entrees.
           }
-        | { title: string; separation: true }
+        | { title: string; separation: true; } // Alternate structure for headers separators.
     )[] = [
-        /* { separation: true, title: "Getting started" },
+        /* { separation: true, title: "Getting Started" },
         {
             id: "todo",
             title: "Mapping",
@@ -51,7 +52,7 @@
         {
             id: "modding/overview",
             title: "Modding",
-            description: "Modding Strata Source games",
+            description: "Modding Strata Source Games",
             icon: mdiLayers,
             separation: false,
         },
@@ -72,7 +73,7 @@
         {
             id: "lighting/clustered",
             title: "Lighting",
-            description: "Lighting reference",
+            description: "Lighting Reference",
             icon: mdiLightbulb,
             separation: false,
         },
@@ -86,7 +87,7 @@
         {
             id: "console/command",
             title: "Console",
-            description: "ConCommands and ConVars Reference",
+            description: "ConCommands & ConVars Reference",
             icon: mdiConsoleLine,
             separation: false,
         },
@@ -106,16 +107,16 @@
         },
         { separation: true, title: "Scripting" },
         {
-            id: "angelscript/game",
-            title: "Angelscript",
-            description: "Reference for Angelscript language",
+            id: "angelscript/index",
+            title: "AngelScript",
+            description: "Reference for The AngelScript Scripting System",
             icon: mdiScript,
             separation: false,
         },
         {
             id: "vscript/reference/Globals",
             title: "VScript",
-            description: "Reference for VScript language",
+            description: "Reference for the VScript Scripting System",
             icon: mdiAlphaVBox,
             separation: false,
         },
@@ -159,15 +160,15 @@
         { separation: true, title: "Contributing" },
         {
             id: "contribute/basics/getting-started",
-            title: "Contribute to the wiki",
-            description: "How to write content for the wiki",
+            title: "Contribute to The Wiki",
+            description: "How to contribute to the Strata Source Wiki.",
             icon: mdiAccountGroup,
             separation: false,
         },
         {
-            id: dev ? "test" : "",
-            title: "Test suite",
-            description: "(Dev only) Suite for testing the Wiki",
+            id: dev ? "test" : "", // The Test Suite should only appear in local non-production builds of the Wiki.
+            title: "Test Suite",
+            description: "(Dev Only) Suite for testing the Wiki elements and features.",
             icon: mdiTestTube,
             separation: false,
         },
@@ -179,7 +180,7 @@
 <div class="hero" style:--i="url({heroHeader})">
     <Container>
         <div>
-            <h1>Welcome to the Strata Wiki</h1>
+            <h1>Welcome to the Strata Source Wiki</h1>
         </div>
     </Container>
 </div>
