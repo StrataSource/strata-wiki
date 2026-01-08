@@ -3,7 +3,7 @@
     import Card from "$lib/components/Card.svelte";
 
     import heroHeader from "$lib/assets/heroHeader.svg";
-    import {
+    import { // List of material icons that will be used on the Home page.
         mdiAccountGroup,
         mdiAlphaVBox,
         mdiConsoleLine,
@@ -22,153 +22,154 @@
     import Metadata from "$lib/components/Metadata.svelte";
     import { dev } from "$app/environment";
 
+    // The list of categories that are featured on the Wiki home page.
     const categories: (
         | {
-              id: string;
-              title: string;
-              description: string;
-              icon: string;
-              seperation: false;
+              id: string; // The article (without the ".md") that should be entered into by default when the category is selected.
+              title: string; // Title displayed for the category.
+              description: string; // Description of the category.
+              icon: string; // Icon to use for the category displayed before the "title". Recommended to use a icon imported from the material icons package.
+              separation: false; // This should be left false for category entrees.
           }
-        | { title: string; seperation: true }
+        | { title: string; separation: true; } // Alternate structure for headers separators.
     )[] = [
-        /* { seperation: true, title: "Getting started" },
+        /* { separation: true, title: "Getting sSarted" },
         {
             id: "todo",
             title: "Mapping",
             description: "Creating content in Strata Source",
             icon: mdiGridLarge,
-            seperation: false,
+            separation: false,
         }, */
-        { seperation: true, title: "Reference" },
+        { separation: true, title: "Reference" },
         /* {
             id: "todo",
             title: "Sound Operators",
             description: "List of sound operators",
             icon: mdiVolumeHigh,
-            seperation: false,
+            separation: false,
         }, */
         {
             id: "modding/overview",
             title: "Modding",
-            description: "Modding Strata Source games",
+            description: "Modding Strata Source Games",
             icon: mdiLayers,
-            seperation: false,
+            separation: false,
         },
         {
             id: "entities/reference",
             title: "Entities",
             description: "Engine Entity Reference",
             icon: mdiSphere,
-            seperation: false,
+            separation: false,
         },
         {
             id: "material/reference",
             title: "Materials",
             description: "Material Reference",
             icon: mdiCubeOutline,
-            seperation: false,
+            separation: false,
         },
         {
             id: "lighting/clustered",
             title: "Lighting",
-            description: "Lighting reference",
+            description: "Lighting Reference",
             icon: mdiLightbulb,
-            seperation: false,
+            separation: false,
         },
         {
             id: "audio/overview/overview",
             title: "Audio",
             description: "Audio Reference",
             icon: mdiSpeaker,
-            seperation: false,
+            separation: false,
         },
         {
             id: "console/command",
             title: "Console",
-            description: "ConCommands and ConVars Reference",
+            description: "ConCommands & ConVars Reference",
             icon: mdiConsoleLine,
-            seperation: false,
+            separation: false,
         },
         {
             id: "misc",
             title: "Misc",
             description: "Miscellaneous Pages",
             icon: mdiDiceMultiple,
-            seperation: false,
+            separation: false,
         },
         {
             id: "community",
             title: "Community",
             description: "Community Tools & Resources",
             icon: mdiWrench,
-            seperation: false,
+            separation: false,
         },
-        { seperation: true, title: "Scripting" },
+        { separation: true, title: "Scripting" },
         {
-            id: "angelscript/game",
-            title: "Angelscript",
-            description: "Reference for Angelscript language",
+            id: "angelscript/index",
+            title: "AngelScript",
+            description: "Reference for The AngelScript Scripting System",
             icon: mdiScript,
-            seperation: false,
+            separation: false,
         },
         {
             id: "vscript/reference/Globals",
             title: "VScript",
-            description: "Reference for VScript language",
+            description: "Reference for the VScript Scripting System",
             icon: mdiAlphaVBox,
-            seperation: false,
+            separation: false,
         },
         {
             id: "panorama/overview/getting-started",
             title: "Panorama",
             description: "In-Game UI Framework",
             icon: mdiViewDashboard,
-            seperation: false,
-        } /* 
+            separation: false,
+        } /*
         {
             id: "todo",
             title: "Game Events",
             description: "Documentation for every game event",
             icon: mdiNetwork,
-            seperation: false,
+            separation: false,
         },
-        { seperation: true, title: "Assets" },
+        { separation: true, title: "Assets" },
         {
             id: "todo",
             title: "Material Proxies",
             description: "Material Proxy Reference",
             icon: mdiCubeScan,
-            seperation: false,
+            separation: false,
         },
         {
             id: "todo",
             title: "Animation",
             description: "Maybe?",
             icon: mdiAnimation,
-            seperation: false,
+            separation: false,
         },
         {
             id: "todo",
             title: "Model Compilation",
             description: "Compiling and QC files",
             icon: mdiFileDocument,
-            seperation: false,
+            separation: false,
         }, */,
-        { seperation: true, title: "Contributing" },
+        { separation: true, title: "Contributing" },
         {
             id: "contribute/basics/getting-started",
-            title: "Contribute to the wiki",
-            description: "How to write content for the wiki",
+            title: "Contribute to The Wiki",
+            description: "How to contribute to the Strata Source Wiki.",
             icon: mdiAccountGroup,
-            seperation: false,
+            separation: false,
         },
         {
-            id: dev ? "test" : "",
-            title: "Test suite",
-            description: "(Dev only) Suite for testing the Wiki",
+            id: dev ? "test" : "", // The Test Suite should only appear in local non-production builds of the Wiki.
+            title: "Test Suite",
+            description: "(Dev Only) Suite for testing the Wiki elements and features.",
             icon: mdiTestTube,
-            seperation: false,
+            separation: false,
         },
     ];
 </script>
@@ -178,7 +179,7 @@
 <div class="hero" style:--i="url({heroHeader})">
     <Container>
         <div>
-            <h1>Welcome to the Strata Wiki</h1>
+            <h1>Welcome to the Strata Source Wiki</h1>
         </div>
     </Container>
 </div>
@@ -186,7 +187,7 @@
 <Container>
     <div class="grid">
         {#each categories as category}
-            {#if category.seperation}
+            {#if category.separation}
                 <div class="section">
                     <h2>{category.title}</h2>
                 </div>
