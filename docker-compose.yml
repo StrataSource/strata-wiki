@@ -9,7 +9,6 @@ services:
       BIND: ":80"
       DIFFICULTY: "4"
       METRICS_BIND: ":9090"
-      SERVE_ROBOTS_TXT: "true"
       TARGET: "http://wiki"
       OG_PASSTHROUGH: "true"
       OG_EXPIRY_TIME: "24h"
