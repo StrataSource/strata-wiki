@@ -25,3 +25,7 @@ static/pagefind
 
 # Linting
 static/report.json
+
+# Dockers own files
+Dockerfile
+nginx.conf
