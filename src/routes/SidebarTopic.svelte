@@ -14,6 +14,7 @@
         mdiBlockHelper,
         mdiCircle,
         mdiCircleHalfFull,
+        mdiHammer,
         mdiDelete,
         mdiFlaskEmpty,
         mdiSelectionEllipse,
@@ -57,7 +58,6 @@
                 {/if}
 
                 {#each filterArticles(topic.articles) as article, i}
-
                     {#if i < 100 || loaded}
                         <a
                             class="item"
@@ -85,8 +85,7 @@
                                 {#if (article.meta?.features?.length || 0) > 0 && !getGamesWithSupport(article.meta.features || []).all}
                                     {#if $currentGame == ""}
                                         <span title="Limited support">
-                                            <Icon d={mdiSelectionEllipse} inline
-                                            ></Icon>
+                                            <Icon d={mdiSelectionEllipse} inline></Icon>
                                         </span>
                                     {:else if !getGamesWithSupport(article.meta.features || []).games.includes($currentGame)}
                                         <span
@@ -111,6 +110,10 @@
                                     {:else if article.meta.scope == "client"}
                                         <span title="Client">
                                             <Icon d={mdiCircleHalfFull} mirror inline></Icon>
+                                        </span>
+                                    {:else if article.meta.scope == "hammer"}
+                                        <span title="Hammer">
+                                            <Icon d={mdiHammer} inline></Icon>
                                         </span>
                                     {/if}
                                 {/if}
