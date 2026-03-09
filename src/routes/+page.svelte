@@ -33,7 +33,7 @@
           }
         | { title: string; separation: true; } // Alternate structure for headers separators.
     )[] = [
-        /* { separation: true, title: "Getting sSarted" },
+        /* { separation: true, title: "Getting Started" },
         {
             id: "todo",
             title: "Mapping",
