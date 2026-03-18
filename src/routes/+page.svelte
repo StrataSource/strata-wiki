@@ -28,147 +28,148 @@
               title: string;
               description: string;
               icon: string;
-              seperation: false;
+              separation: false;
           }
-        | { title: string; seperation: true }
+        | { title: string; separation: true }
     )[] = [
-        /* { seperation: true, title: "Getting started" },
+        /* { separation: true, title: "Getting started" },
         {
             id: "todo",
             title: "Mapping",
             description: "Creating content in Strata Source",
             icon: mdiGridLarge,
-            seperation: false,
+            separation: false,
         }, */
-        { seperation: true, title: "Reference" },
+        { separation: true, title: "Reference" },
         /* {
             id: "todo",
             title: "Sound Operators",
             description: "List of sound operators",
             icon: mdiVolumeHigh,
-            seperation: false,
+            separation: false,
         }, */
         {
             id: "modding/overview",
             title: "Modding",
             description: "Modding Strata Source games",
             icon: mdiLayers,
-            seperation: false,
+            separation: false,
         },
         {
             id: "entities/reference",
             title: "Entities",
             description: "Engine Entity Reference",
             icon: mdiSphere,
-            seperation: false,
+            separation: false,
         },
         {
             id: "material/reference",
             title: "Materials",
             description: "Material Reference",
             icon: mdiCubeOutline,
-            seperation: false,
+            separation: false,
         },
         {
             id: "lighting/clustered",
             title: "Lighting",
             description: "Lighting reference",
             icon: mdiLightbulb,
-            seperation: false,
+            separation: false,
         },
         {
             id: "audio/overview/overview",
             title: "Audio",
             description: "Audio Reference",
             icon: mdiSpeaker,
-            seperation: false,
+            separation: false,
         },
         {
             id: "console/command",
             title: "Console",
             description: "ConCommands and ConVars Reference",
             icon: mdiConsoleLine,
-            seperation: false,
+            separation: false,
         },
         {
             id: "misc",
             title: "Misc",
             description: "Miscellaneous Pages",
             icon: mdiDiceMultiple,
-            seperation: false,
+            separation: false,
         },
         {
             id: "community",
             title: "Community",
             description: "Community Tools & Resources",
             icon: mdiWrench,
-            seperation: false,
+            separation: false,
         },
-        { seperation: true, title: "Scripting" },
+        { separation: true, title: "Scripting" },
         {
             id: "angelscript/game",
             title: "Angelscript",
             description: "Reference for Angelscript language",
             icon: mdiScript,
-            seperation: false,
+            separation: false,
         },
         {
             id: "vscript/reference/Globals",
             title: "VScript",
             description: "Reference for VScript language",
             icon: mdiAlphaVBox,
-            seperation: false,
+            separation: false,
         },
         {
             id: "panorama/overview/getting-started",
             title: "Panorama",
             description: "In-Game UI Framework",
             icon: mdiViewDashboard,
-            seperation: false,
-        } /* 
+            separation: false,
+        }
+        /*
         {
             id: "todo",
             title: "Game Events",
             description: "Documentation for every game event",
             icon: mdiNetwork,
-            seperation: false,
+            separation: false,
         },
-        { seperation: true, title: "Assets" },
+        { separation: true, title: "Assets" },
         {
             id: "todo",
             title: "Material Proxies",
             description: "Material Proxy Reference",
             icon: mdiCubeScan,
-            seperation: false,
+            separation: false,
         },
         {
             id: "todo",
             title: "Animation",
             description: "Maybe?",
             icon: mdiAnimation,
-            seperation: false,
+            separation: false,
         },
         {
             id: "todo",
             title: "Model Compilation",
             description: "Compiling and QC files",
             icon: mdiFileDocument,
-            seperation: false,
+            separation: false,
         }, */,
-        { seperation: true, title: "Contributing" },
+        { separation: true, title: "Contributing" },
         {
             id: "contribute/basics/getting-started",
             title: "Contribute to the wiki",
             description: "How to write content for the wiki",
             icon: mdiAccountGroup,
-            seperation: false,
+            separation: false,
         },
         {
             id: dev ? "test" : "",
             title: "Test suite",
             description: "(Dev only) Suite for testing the Wiki",
             icon: mdiTestTube,
-            seperation: false,
+            separation: false,
         },
     ];
 </script>
@@ -185,8 +186,8 @@
 
 <Container>
     <div class="grid">
-        {#each categories as category}
-            {#if category.seperation}
+        {#each categories as category (category.title)}
+            {#if category.separation}
                 <div class="section">
                     <h2>{category.title}</h2>
                 </div>
