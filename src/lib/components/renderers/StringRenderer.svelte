@@ -21,7 +21,7 @@
     };
 </script>
 
-{#each dat as e}
+{#each dat as e (e.position)}
     {#if e.type == "text" || e.type == "html"}
         {e.value}
     {:else if e.type == "break"}

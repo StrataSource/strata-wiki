@@ -9,7 +9,7 @@
     let { data }: Props = $props();
 </script>
 
-{#each data.categories as category}
+{#each data.categories as category (category.id)}
     <div>
         <Link href="/{category.id}">{category.title}</Link>
     </div>

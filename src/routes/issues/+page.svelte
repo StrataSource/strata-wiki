@@ -58,7 +58,7 @@
             }
 
             return b[1].links.length - a[1].links.length;
-        }) as [id, issue]}
+        }) as [id, issue] (id)}
             <Notice type={issue.level} title={issue.message}>
                 {#if issue.links.length == 1}
                     Found on <Link href="/{issue.links[0]}"
@@ -68,7 +68,7 @@
                     <details>
                         <summary>Found on {issue.links.length} pages</summary>
                         <ol>
-                            {#each issue.links as link}
+                            {#each issue.links as link (link)}
                                 <li>
                                     <Link href="/{link}">/{link}</Link>
                                 </li>

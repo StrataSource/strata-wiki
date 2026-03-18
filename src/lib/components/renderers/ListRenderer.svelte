@@ -11,9 +11,9 @@
 </script>
 
 <svelte:element this={dat.ordered ? "ol" : "ul"}>
-    {#each dat.children as child}
+    {#each dat.children as child (child.position)}
         <li>
-            {#each child.children as c}
+            {#each child.children as c (c.position)}
                 <RootRenderer dat={c}></RootRenderer>
             {/each}
         </li>

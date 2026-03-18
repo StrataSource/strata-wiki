@@ -68,7 +68,7 @@
 </script>
 
 <Notice {type} {game}>
-    {#each d.children as child, i}
+    {#each d.children as child, i (i)}
         <RootRenderer dat={child} {i}></RootRenderer>
     {/each}
 </Notice>

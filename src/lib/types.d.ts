@@ -29,7 +29,7 @@ interface BasePageMeta {
     weight?: number;
 }
 
-type ArticleScope = 
+type ArticleScope =
     | "server"
     | "client"
     | "shared";
@@ -85,6 +85,6 @@ interface PageGeneratorIndex {
 
 interface PageGenerator {
     init: () => void;
-    getPageContent: (path: string, article: string) => any;
+    getPageContent: (path: string, article: string) => void;
     getIndex: (path: string) => PageGeneratorIndex;
 }

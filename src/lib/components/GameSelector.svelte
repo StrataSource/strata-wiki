@@ -10,7 +10,7 @@
             Disable support info
         {/if}
     </option>
-    {#each Object.entries($gameMeta) as [id, game]}
+    {#each Object.entries($gameMeta) as [id, game] (game.name)}
         <option value={id}>{game.name}</option>
     {/each}
 </select>

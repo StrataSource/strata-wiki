@@ -93,7 +93,7 @@
         {:else if loading > 0}
             <div class="center">Loading...</div>
         {:else}
-            {#each results as result}
+            {#each results as result (result)}
                 <a href={result.url.slice(0, -5)} class="card">
                     <h3>
                         {result.meta.title}
