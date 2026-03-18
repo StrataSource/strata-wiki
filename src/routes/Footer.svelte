@@ -35,6 +35,17 @@
         "WARNING: Too many light styles on a face at (-81.000000, 1002.000000, -63.750000)",
         "Breaking news: Wallace Wrench has lost his wrench.",
         "Now with up to 46% more bugs!",
+        "Now with 5x the crashing",
+        "Try our NEW Strata protein bars, available in 57 different flavors!",
+        "Adding Revolutionary Momentum to the Community",
+        "Coming soon to a [brand-friendly store] near you!",
+        "Cat? What cat?",
+        "Huh? Behind the walls... Can you do it?",
+        "Have you tried unplugging it and plugging it back in?",
+        "It's me, Gordon, Barney from Black Mesa!",
+        "Metal_SeafloorCar.BulletImpact",
+        "Run ALT+F4 for a fun surprise!",
+        "Made by nerds, for nerds."
     ]);
 
     for (let i = messages.length - 1; i >= 0; i--) {
