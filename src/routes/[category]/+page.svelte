@@ -15,7 +15,7 @@
 
 <h1>{data.meta.title}</h1>
 
-{#each data.menu.subtopics as topic}
+{#each data.menu.subtopics as topic (topic.id)}
     <div>
         <Link href="/{topic.id}">{topic.title}</Link>
     </div>

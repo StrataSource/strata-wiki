@@ -42,7 +42,7 @@
 
 <div class="menu">
     {#if menu}
-        {#each menu.subtopics as topic}
+        {#each menu.subtopics as topic (topic.id)}
             <details open={$currentTopic?.startsWith(topic.id)}>
                 <summary
                     class:active={$currentTopic?.startsWith(topic.id)}
@@ -56,7 +56,7 @@
                     <SidebarTopic menu={topic}></SidebarTopic>
                 {/if}
 
-                {#each filterArticles(topic.articles) as article, i}
+                {#each filterArticles(topic.articles) as article, i (i)}
 
                     {#if i < 100 || loaded}
                         <a

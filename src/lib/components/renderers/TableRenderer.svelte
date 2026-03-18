@@ -13,9 +13,9 @@
 <div class="wrapper">
     <table>
         <tbody>
-            {#each dat.children as row}
+            {#each dat.children as row (row.position)}
                 <tr>
-                    {#each row.children as cell, i}
+                    {#each row.children as cell, i (i)}
                         <td
                             style:text-align={dat.align
                                 ? dat.align[i]
@@ -44,7 +44,7 @@
         border: none;
         text-wrap: nowrap;
     }
-    
+
     tr {
         border-bottom: solid 0.1rem #8882;
     }

@@ -37,7 +37,7 @@
 
     <h1>{data.menu?.title}</h1>
 
-    {#each data.menu?.subtopics || [] as subtopics}
+    {#each data.menu?.subtopics || [] as subtopics (subtopics.id)}
         <div>
             <Link
                 href="/{subtopics.id}">{subtopics.title}</Link
@@ -45,7 +45,7 @@
         </div>
     {/each}
 
-    {#each data.menu?.articles || [] as article}
+    {#each data.menu?.articles || [] as article (article.id)}
         {#if !article.meta.hidden}
             <div>
                 <Link
@@ -92,7 +92,7 @@
     </div>
 
     {#key data}
-        {#each data.doc?.children || [] as obj}
+        {#each data.doc?.children || [] as obj (obj.position)}
             <RootRenderer dat={obj}></RootRenderer>
         {/each}
     {/key}
