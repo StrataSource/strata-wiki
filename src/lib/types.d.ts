@@ -85,6 +85,6 @@ interface PageGeneratorIndex {
 
 interface PageGenerator {
     init: () => void;
-    getPageContent: (path: string, article: string) => void;
+    getPageContent: (path: string, article: string) => any;
     getIndex: (path: string) => PageGeneratorIndex;
 }
