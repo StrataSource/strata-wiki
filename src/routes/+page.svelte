@@ -107,7 +107,7 @@
         },
         { separation: true, title: "Scripting" },
         {
-            id: "angelscript/index",
+            id: "angelscript/game",
             title: "AngelScript",
             description: "Reference for The AngelScript Scripting System",
             icon: mdiScript,
