@@ -61,7 +61,7 @@
                     {#if i < 100 || loaded}
                         <a
                             class="item"
-                            class:active={`${topic.id.slice(page.params.category.length + 1)}/${article.id}` ===
+                            class:active={`${topic.id.slice(page.params.category?.length + 1)}/${article.id}` ===
                                 page.params.article}
                             href="/{topic.id}/{article.id}"
                         >
