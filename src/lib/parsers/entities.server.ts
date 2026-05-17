@@ -18,6 +18,7 @@ interface Entity {
 }
 interface EntityKeyValues {
     name: string;
+	key: string;
     type: string;
     default: string;
     desc: string;
@@ -163,7 +164,7 @@ function parseEntity(p: string, name: string) {
             }
 
             temp +=
-                `> #### ${kv.name} \`<${
+                `> #### ${kv.name} (\`${kv.key}\`) \`<${
                     kv.type.includes("\n") ? "enum" : kv.type
                 }>` +
                 //If default, show it
