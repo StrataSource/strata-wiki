@@ -71,9 +71,9 @@
             separation: false,
         },
         {
-            id: "lighting/clustered",
-            title: "Lighting",
-            description: "Lighting Reference",
+            id: "graphics/clustered",
+            title: "Graphics",
+            description: "Graphics Reference",
             icon: mdiLightbulb,
             separation: false,
         },
