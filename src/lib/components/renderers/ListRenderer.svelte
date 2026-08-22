@@ -1,6 +1,5 @@
 <script lang="ts">
     import type { List } from "mdast";
-    import StringRenderer from "./StringRenderer.svelte";
     import RootRenderer from "./RootRenderer.svelte";
 
     interface Props {
@@ -20,9 +19,14 @@
     {/each}
 </svelte:element>
 
-<style>
+<style lang="scss">
     ol,
     ul {
         margin-top: 0;
+
+        & > :global(p){
+            margin: 0;
+        }
     }
+
 </style>
