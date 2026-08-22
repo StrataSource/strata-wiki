@@ -24,7 +24,7 @@
     ul {
         margin-top: 0;
 
-        & > :global(p){
+        & :global(p){
             margin: 0;
         }
     }
